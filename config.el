@@ -6,8 +6,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
-;;(setq user-full-name "test"
-;;      user-mail-address "test@test.com")
+(setq user-full-name "name"
+      user-mail-address "***REMOVED***")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -19,18 +19,19 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
+;;(setq doom-font (font-spec :family "Inconsolata" :size 36)
+;;      doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
 
-;; (setq doom-font (font-spec :family "Inconsolata" :size 48 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "Fira Code") ; inherits `doom-font''s :size
-;;       doom-unicode-font (font-spec :family "Source Code Pro" :size 12)
-;;       doom-big-font (font-spec :family "Inconsolata" :size 48))
-
-(setq doom-font (font-spec :family "Inconsolata")) ;;FIXME set size make fonts tiny
+(if (equal (display-pixel-width) 3840)
+    (setq doom-font (font-spec :family "Inconsolata" :size 48)
+          doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
+  (setq doom-font (font-spec :family "Inconsolata" :size 14)
+        doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16)))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-snazzy)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -40,6 +41,7 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
@@ -48,7 +50,7 @@
 ;; - `add-load-path!' for adding directories to the `load-path', relative to
 ;;   this file. Emacs searches the `load-path' when you load packages with
 ;;   `require' or `use-package'.
-;; - `Map!' for binding new keys
+;; - `map!' for binding new keys
 ;;
 ;; To get information about any of these functions/macros, move the cursor over
 ;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
@@ -57,10 +59,14 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-(setq all-the-icons-scale-factor 1.0)
-;; (setq text-scale-mode-amount +2)
-;; (setq-default text-scale-mode t) ;;FIXME not loaded
+;; [maximize when start up][https://github.com/hlissner/doom-emacs/issues/397]
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-(package-initialize)
-(require 'ein)
-(require 'ein-notebook)
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  ;; (setq doom-modeline-height 55)
+  (setq doom-modeline-height 1.2)
+  (set-face-attribute 'mode-line nil :height 130)
+  (set-face-attribute 'mode-line-inactive nil :height 130)
+  )
