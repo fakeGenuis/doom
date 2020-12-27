@@ -25,8 +25,8 @@
 (if (equal (display-pixel-width) 3840)
     (setq doom-font (font-spec :family "Inconsolata" :size 48)
           doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
-  (setq doom-font (font-spec :family "Inconsolata" :size 14)
-        doom-variable-pitch-font (font-spec :family "Inconsolata" :size 16)))
+  (setq doom-font (font-spec :family "Inconsolata")
+        doom-variable-pitch-font (font-spec :family "Inconsolata")))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
