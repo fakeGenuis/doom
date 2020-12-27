@@ -33,10 +33,6 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-snazzy)
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
-
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
@@ -69,4 +65,23 @@
   (setq doom-modeline-height 1.2)
   (set-face-attribute 'mode-line nil :height 130)
   (set-face-attribute 'mode-line-inactive nil :height 130)
+  )
+
+(after! org
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+  (setq org-directory "~/org/")
+  (setq org-agenda-files '("~/org/gtd/inbox.org"
+                           "~/org/gtd/todo.org"
+                           "~/org/gtd/projects.org"))
+  (setq org-capture-templates '(("t" "Todo [inbox]" entry
+                               (file+headline "~/org/gtd/inbox.org" "Inbox")
+                               "* TODO %i%?")
+                              ("s" "Someday" entry
+                               (file+headline "~/org/gtd/inbox.org" "Someday")
+                               "* HOLD %i%? \n %U")))
+  (setq org-log-done 'time)
+  ;;(setq org-todo-keywords '((sequence "TODO(t)" "STRT(s)" "WAIT(w@)" "HOLD(h)" "|" "DONE(d!)" "KILL(k@)")
+  ;;                          (sequence "[ ](T)" "[-](S)" "[?](W@)" "|" "[x](D)")))
+  ;;(setq org-modules '(org-habit))
   )
