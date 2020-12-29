@@ -1,20 +1,37 @@
+#+TITLE: Config
+#+PROPERTY: header-args :tangle config.el
+
+* Info
+#+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
-
+#+end_src
+* Display
+** fonts
+#+begin_src emacs-lisp
 (if (equal (display-pixel-width) 3840)
     (setq doom-font (font-spec :family "Inconsolata" :size 48)
           doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
   (setq doom-font (font-spec :family "Inconsolata")
         doom-variable-pitch-font (font-spec :family "Inconsolata")))
-
+#+end_src
+** Themes
+#+begin_src emacs-lisp
 (setq doom-theme 'doom-snazzy)
-
+#+end_src
+** Line
+#+begin_src emacs-lisp
 (setq display-line-numbers-type 'relative)
-
+#+end_src
+* Editing
+** About Parenthese
+#+begin_src emacs-lisp
 (setq show-paren-style 'expression)
 (electric-pair-mode 1)
-
+#+end_src
+* Org
+#+begin_src emacs-lisp
 (after! org
   (setq org-directory "~/org/")
   (setq org-agenda-files '("~/org/gtd/inbox.org"
@@ -31,7 +48,10 @@
   ;;                          (sequence "[ ](T)" "[-](S)" "[?](W@)" "|" "[x](D)")))
   ;;(setq org-modules '(org-habit))
   )
-
+#+end_src
+* Plugins
+** doom-modeline
+#+begin_src emacs-lisp
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config
@@ -40,5 +60,9 @@
   (set-face-attribute 'mode-line nil :height 130)
   (set-face-attribute 'mode-line-inactive nil :height 130)
   )
-
+#+end_src
+* Others
+** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
+#+begin_src emacs-lisp
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+#+end_src
