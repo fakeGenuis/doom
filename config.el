@@ -1,14 +1,20 @@
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
-(if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "Inconsolata" :size 48)
-          doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
-  (setq doom-font (font-spec :family "Inconsolata")
-        doom-variable-pitch-font (font-spec :family "Inconsolata")))
+
+
+(add-to-list 'default-frame-alist '(font .  "JetBrains Mono-14" ))
+(set-face-attribute 'default t :font  "JetBrains Mono-14" )
+
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
 
 (setq doom-theme 'doom-snazzy)
+
+(use-package all-the-icons
+  :config
+  (setq all-the-icons-scale-factor 0.75))
 
 (setq display-line-numbers-type 'relative)
 
@@ -33,12 +39,21 @@
   )
 
 (use-package doom-modeline
+  :ensure t
   :hook (after-init . doom-modeline-mode)
   :config
-  ;; (setq doom-modeline-height 55)
-  (setq doom-modeline-height 1.2)
-  (set-face-attribute 'mode-line nil :height 130)
-  (set-face-attribute 'mode-line-inactive nil :height 130)
+  (set-face-attribute 'mode-line nil :family "JetBrains Mono" :height 135)
+  (set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono" :height 135)
+  (setq inhibit-compacting-font-caches t
+        doom-modeline-height 1
+        doom-modeline-buffer-file-name-style 'auto
+        doom-modeline-buffer-encoding nil))
+
+(use-package treemacs
+  :config
+  (progn
+    (setq treemacs-width 17))
+  ;;(treemacs-resize-icons 11)
   )
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
