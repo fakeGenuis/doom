@@ -1,11 +1,21 @@
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
 
 
-(add-to-list 'default-frame-alist '(font .  "JetBrains Mono-14" ))
-(set-face-attribute 'default t :font  "JetBrains Mono-14" )
+(if (equal (display-pixel-width) 3840)
+    ((add-to-list 'default-frame-alist '(font . "JetBrains Mono-14"))
+     (set-face-attribute 'default t :font "JetBrains Mono-14"))
+  ((add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
+   (set-face-attribute 'default t :font "JetBrains Mono"))
+  )
 
+;;(if (equal (display-pixel-width) 3840)
+;;    (setq doom-font (font-spec :family "Inconsolata" :size 48)
+;;          doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
+;;  (setq doom-font (font-spec :family "Inconsolata")
+;;        doom-variable-pitch-font (font-spec :family "Inconsolata")))
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))

@@ -3,24 +3,33 @@
 
 * Info
 #+begin_src emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 #+end_src
 * Display
 ** Custom face
 #+begin_src emacs-lisp
-
 #+end_src
 ** Hidpi
-#+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(font .  "JetBrains Mono-14" ))
-(set-face-attribute 'default t :font  "JetBrains Mono-14" )
-#+end_src
-** fonts
-*bold* and /italic/ are enabled
 for hidpi monitor, doom-font setting are bugy
 https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
 #+begin_src emacs-lisp
+(if (equal (display-pixel-width) 3840)
+    ((add-to-list 'default-frame-alist '(font . "JetBrains Mono-14"))
+     (set-face-attribute 'default t :font "JetBrains Mono-14"))
+  ((add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
+   (set-face-attribute 'default t :font "JetBrains Mono"))
+  )
+#+end_src
+** fonts
+*bold* and /italic/ are enabled
+#+begin_src emacs-lisp
+;;(if (equal (display-pixel-width) 3840)
+;;    (setq doom-font (font-spec :family "Inconsolata" :size 48)
+;;          doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
+;;  (setq doom-font (font-spec :family "Inconsolata")
+;;        doom-variable-pitch-font (font-spec :family "Inconsolata")))
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
@@ -78,9 +87,6 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
         doom-modeline-buffer-file-name-style 'auto
         doom-modeline-buffer-encoding nil))
 #+end_src
-
-#+RESULTS:
-| doom-modeline-mode | doom-init-fonts-h | doom-init-leader-keys-h | x-wm-set-size-hint | tramp-register-archive-file-name-handler | magit-maybe-define-global-key-bindings |
 
 ** treemacs
 #+begin_src emacs-lisp
