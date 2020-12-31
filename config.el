@@ -5,10 +5,12 @@
 
 
 (if (equal (display-pixel-width) 3840)
-    ((add-to-list 'default-frame-alist '(font . "JetBrains Mono-14"))
-     (set-face-attribute 'default t :font "JetBrains Mono-14"))
-  ((add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
-   (set-face-attribute 'default t :font "JetBrains Mono"))
+    (progn
+      (add-to-list 'default-frame-alist '(font . "JetBrains Mono-14"))
+      (set-face-attribute 'default t :font "JetBrains Mono-14"))
+  (progn
+    (add-to-list 'default-frame-alist '(font . "JetBrains Mono"))
+    (set-face-attribute 'default t :font "JetBrains Mono"))
   )
 
 ;;(if (equal (display-pixel-width) 3840)
