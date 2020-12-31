@@ -51,7 +51,6 @@
   )
 
 (use-package doom-modeline
-  :ensure t
   :hook (after-init . doom-modeline-mode)
   :config
   (set-face-attribute 'mode-line nil :family "JetBrains Mono" :height 135)
@@ -67,5 +66,13 @@
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
+
+(after! ivy
+  ;; Causes open buffers and recentf to be combined in ivy-switch-buffer
+  (setq ivy-posframe-display-functions-alist
+      '((complete-symbol . ivy-posframe-display-at-point)
+        (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+        (t               . ivy-posframe-display-at-window-center)))
+)
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))

@@ -78,8 +78,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 * Plugins
 ** doom-modeline
 #+begin_src emacs-lisp
-(use-package doom-modeline
-  :ensure t
+(use-package! doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config
   (set-face-attribute 'mode-line nil :family "JetBrains Mono" :height 135)
@@ -99,6 +98,17 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
   ;;(treemacs-resize-icons 11)
   )
 #+end_src
+** ivy-posframe
+#+begin_src emacs-lisp
+(after! ivy
+  ;; Causes open buffers and recentf to be combined in ivy-switch-buffer
+  (setq ivy-posframe-display-functions-alist
+      '((complete-symbol . ivy-posframe-display-at-point)
+        (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+        (t               . ivy-posframe-display-at-window-center)))
+)
+#+end_src
+
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp
