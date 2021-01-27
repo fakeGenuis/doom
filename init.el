@@ -184,4 +184,4 @@
        :config
        ;;literate
        (default +bindings +smartparens))
-(add-hook! 'doom-reload-hook #'posframe-delete-all)
+;;(add-hook! 'doom-reload-hook #'posframe-delete-all)

@@ -14,24 +14,27 @@
 ** Hidpi
 for hidpi monitor, doom-font setting are bugy
 https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (if (equal (display-pixel-width) 3840)
     (progn
-      (add-to-list 'default-frame-alist '(font . "JetBrains Mono-14"))
-      (set-face-attribute 'default t :font "JetBrains Mono-14"))
+      (add-to-list 'default-frame-alist '(font . "JetBrains Mono-12"))
+      (set-face-attribute 'default t :font "Fira Code-8"))
   (progn
     (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
-    (set-face-attribute 'default t :font "JetBrains Mono-10"))
+    (set-face-attribute 'default t :font "JetBrains Mono-8"))
   )
 #+end_src
+
+#+RESULTS:
+
 ** fonts
 *bold* and /italic/ are enabled
-#+begin_src emacs-lisp
-;;(if (equal (display-pixel-width) 3840)
-;;    (setq doom-font (font-spec :family "Inconsolata" :size 48)
-;;          doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 40))
-;;  (setq doom-font (font-spec :family "Inconsolata")
-;;        doom-variable-pitch-font (font-spec :family "Inconsolata")))
+#+begin_src emacs-lisp :tangle no
+(if (equal (display-pixel-width) 3840)
+    (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
+          doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 12))
+  (setq doom-font (font-spec :family "Inconsolata")
+        doom-variable-pitch-font (font-spec :family "Inconsolata")))
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
@@ -41,7 +44,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 (setq doom-theme 'doom-snazzy)
 #+end_src
 ** Icons
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package all-the-icons
   :config
   (setq all-the-icons-scale-factor 0.75))
@@ -52,13 +55,13 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 * Editing
 ** About Parenthese
-#+begin_src emacs-lisp
-;;(setq show-paren-style 'expression)
-;;(electric-pair-mode 1)
+#+begin_src emacs-lisp :tangle no
+(setq show-paren-style 'expression)
+(electric-pair-mode 1)
 #+end_src
 ** 中文输入法
-这是中文，看起来还行？
-#+begin_src emacs-lisp
+https://emacs-china.org/t/topic/1271
+#+begin_src emacs-lisp :tangle no
 (use-package pyim
   :ensure nil
   :demand t
@@ -125,7 +128,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 * Plugins
 ** doom-modeline
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config
@@ -150,13 +153,22 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+begin_src emacs-lisp
 (after! ivy
   ;; Causes open buffers and recentf to be combined in ivy-switch-buffer
-  (setq ivy-posframe-display-functions-alist
-      '((complete-symbol . ivy-posframe-display-at-point)
-        (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-        (t               . ivy-posframe-display-at-window-center)))
+  (progn
+    (setq ivy-posframe-display-functions-alist
+        '((complete-symbol . ivy-posframe-display-at-point)
+          (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+          (t               . ivy-posframe-display-at-window-center)))
+    (ivy-posframe-mode 1)
+    )
 )
 #+end_src
 
+** leetcode
+#+begin_src emacs-lisp
+(setq leetcode-prefer-language "cpp")
+(setq leetcode-save-solutions t)
+(setq leetcode-directory "~/Coding/leetcode")
+#+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp
