@@ -171,7 +171,7 @@
        ;;yaml              ; JSON, but readable
 
        :email
-       ;;(mu4e +***REMOVED***)
+       (mu4e +***REMOVED***)
        ;;notmuch
        ;;(wanderlust +***REMOVED***)
 
