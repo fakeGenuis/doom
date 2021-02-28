@@ -37,24 +37,22 @@
   ;;(setq org-modules '(org-habit))
   )
 
+(use-package! doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (set-face-attribute 'mode-line nil :family "JetBrains Mono" :height 135)
+  (set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono" :height 135)
+  (setq inhibit-compacting-font-caches t
+        doom-modeline-height 1
+        doom-modeline-buffer-file-name-style 'auto
+        doom-modeline-buffer-encoding nil))
+
 (use-package treemacs
   :config
   (progn
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
-
-;;(after! ivy
-;;  ;; Causes open buffers and recentf to be combined in ivy-switch-buffer
-;;  (progn
-;;    (setq ivy-posframe-display-functions-alist
-;;        '((complete-symbol . ivy-posframe-display-at-point)
-;;          (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-;;          (t               . ivy-posframe-display-at-window-center))
-;;        ivy-posframe-width (frame-width))
-;;    (ivy-posframe-mode 1)
-;;    )
-;;)
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
@@ -85,11 +83,3 @@
 (setq mu4e-view-show-images t)
 ;; every new email composition gets its own frame!
 (setq mu4e-compose-in-new-frame t)
-
-(use-package mu4e-alert
-    :after mu4e
-    :hook ((after-init . mu4e-alert-enable-mode-line-display)
-           (after-init . mu4e-alert-enable-notifications))
-    :config (mu4e-alert-set-default-style 'libnotify))
-
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
