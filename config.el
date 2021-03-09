@@ -17,6 +17,9 @@
 
 (setq display-line-numbers-type 'relative)
 
+(setq show-paren-style 'expression)
+(electric-pair-mode 1)
+
 (after! org
   (setq org-directory "~/org/")
   (setq org-agenda-files '("~/org/gtd/inbox.org"
@@ -83,3 +86,12 @@
 (setq mu4e-view-show-images t)
 ;; every new email composition gets its own frame!
 (setq mu4e-compose-in-new-frame t)
+
+(require 'tramp)
+(add-to-list 'tramp-methods
+'("yadm"
+  (tramp-login-program "yadm")
+  (tramp-login-args (("enter")))))
+  ;;(tramp-login-env (("SHELL") ("/bin/bash")))
+  ;;(tramp-remote-shell "/bin/bash")
+  ;;(tramp-remote-shell-args ("-c"))))

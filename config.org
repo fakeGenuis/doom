@@ -52,10 +52,11 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 * Editing
 ** About Parenthese
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (setq show-paren-style 'expression)
 (electric-pair-mode 1)
 #+end_src
+
 ** 中文输入法
 https://emacs-china.org/t/topic/1271
 #+begin_src emacs-lisp :tangle no
@@ -206,6 +207,17 @@ https://emacs-china.org/t/topic/1271
   :hook ((after-init . mu4e-alert-enable-mode-line-display)
          (after-init . mu4e-alert-enable-notifications))
   :config (mu4e-alert-set-default-style 'libnotify))
+#+end_src
+** yadm (with magit)
+#+begin_src emacs-lisp
+(require 'tramp)
+(add-to-list 'tramp-methods
+'("yadm"
+  (tramp-login-program "yadm")
+  (tramp-login-args (("enter")))
+  (tramp-login-env (("SHELL") ("/usr/bin/fish")))
+  (tramp-remote-shell "/usr/bin/fish")
+  (tramp-remote-shell-args ("-c"))))
 #+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
