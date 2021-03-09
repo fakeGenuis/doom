@@ -63,40 +63,84 @@
 
 (use-package mu4e
   ;;:ensure nil
+  :defer 20
   :custom
-  (mu4e-update-interval 300)
+  ;;(mu4e-update-interval 300)
   (mu4e-change-filenames-when-moving t)
   (mu4e-maildir "~/.mail")
-  (mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
-  ;;(mu4e-get-mail-command "mbsync -a")
-
-  (mu4e-drafts-folder "/***REMOVED***/Drafts")
-  (mu4e-refile-folder "/***REMOVED***/Archive")
-  (mu4e-sent-folder "/***REMOVED***/Sent Items")
-  (mu4e-trash-folder "/***REMOVED***/Trash")
   (mu4e-attachment-dir "~/Downloads")
+  ;;(mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
 
-  (mu4e-compose-signature-auto-include nil)
-  (mu4e-maildir-shortcuts
-   '(("/***REMOVED***/Inbox" . ?i)
-     ("/***REMOVED***/Drafts" . ?D)
-     ("/***REMOVED***/Sent Items" . ?s)
-     ("/***REMOVED***/Notifications" . ?n)
-     ("/***REMOVED***/Junk E-mail" . ?j)
-     ("/***REMOVED***/Virus Items" . ?v)))
+  ;; enable inline images
+  (mu4e-view-show-images t)
+  ;; every new email composition gets its own frame!
+  (mu4e-compose-in-new-frame t)
+
+  ;;(mu4e-compose-signature-auto-include nil)
+
   (mu4e-use-fancy-chars t)
   (mu4e-view-show-addresses t)
-  (mu4e-view-show-images t))
-;; enable inline images
-(setq mu4e-view-show-images t)
-;; every new email composition gets its own frame!
-(setq mu4e-compose-in-new-frame t)
+  (mu4e-view-show-images t)
+
+  (setq mu4e-context-policy 'pick-first)
+  (setq mu4e-compose-context-policy nil)
+)
+
+(with-eval-after-load 'mu4e
+ (setq mu4e-get-mail-command "all_proxy='127.0.0.1:8889' mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+ (setq mu4e-contexts
+        `(
+         ,(make-mu4e-context
+          :name "private"
+          :enter-func (lambda () (mu4e-message "Entering context private"))
+          :leave-func (lambda () (mu4e-message "Leaving context private"))
+          :match-func (lambda (msg)
+                        (when msg
+                          (mu4e-message-contact-field-matches
+                           msg '(:from :to :cc :bcc) "***REMOVED***")))
+          :vars '((user-mail-address . "***REMOVED***")
+                  (user-full-name . "name")
+                  (mu4e-sent-folder . "/***REMOVED***/[***REMOVED***]/Sent Mail")
+                  (mu4e-trash-folder . "/***REMOVED***/[***REMOVED***]/Bin")
+                  (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
+                  (mu4e-compose-format-flowed . t)
+                  (mu4e-maildir-shortcuts . ( ("/***REMOVED***/INBOX"            . ?i)
+                                             ("/***REMOVED***/[***REMOVED***]/All Mail"  . ?a)
+                                              ("/***REMOVED***/[***REMOVED***]/Sent Mail" . ?s)
+                                              ("/***REMOVED***/[***REMOVED***]/Starred"   . ?r)
+                                              ("/***REMOVED***/[***REMOVED***]/Bin"       . ?t)
+                                              ("/***REMOVED***/[***REMOVED***]/Spam"   . ?v)
+                                              ))))
+         ,(make-mu4e-context
+          :name "work"
+          :enter-func (lambda () (mu4e-message "Entering context work"))
+          :leave-func (lambda () (mu4e-message "Leaving context work"))
+          :match-func (lambda (msg)
+                        (when msg
+                          (mu4e-message-contact-field-matches
+                           msg '(:from :to :cc :bcc) "***REMOVED***")))
+          :vars '((user-mail-address . "***REMOVED***")
+                  (user-full-name . "name")
+                  (mu4e-drafts-folder . "/***REMOVED***/Drafts")
+                  (mu4e-refile-folder . "/***REMOVED***/Archive")
+                  (mu4e-sent-folder . "/***REMOVED***/Sent Items")
+                  (mu4e-trash-folder . "/***REMOVED***/Trash")
+                  (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
+                  (mu4e-compose-format-flowed . t)
+                  (mu4e-maildir-shortcuts . ( ("/***REMOVED***/Inbox"            . ?i)
+                                              ("/***REMOVED***/Drafts" . ?D)
+                                              ("/***REMOVED***/Sent Items" . ?s)
+                                              ("/***REMOVED***/Notifications" . ?n)
+                                              ("/***REMOVED***/Junk E-mail" . ?j)
+                                              ))))
+         ))
+ )
 
 (require 'tramp)
 (add-to-list 'tramp-methods
 '("yadm"
   (tramp-login-program "yadm")
-  (tramp-login-args (("enter")))))
-  ;;(tramp-login-env (("SHELL") ("/bin/bash")))
-  ;;(tramp-remote-shell "/bin/bash")
-  ;;(tramp-remote-shell-args ("-c"))))
+  (tramp-login-args (("enter")))
+  (tramp-login-env (("SHELL") ("/usr/bin/fish")))
+  (tramp-remote-shell "/usr/bin/fish")
+  (tramp-remote-shell-args ("-c"))))
