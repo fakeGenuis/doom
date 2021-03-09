@@ -62,14 +62,21 @@
 (setq leetcode-directory "~/Coding/leetcode")
 
 (use-package mu4e
+  ;;:ensure nil
   :custom
-  (mu4e-attachment-dir "~/Downloads")
-  (mu4e-compose-signature-auto-include nil)
-  (mu4e-drafts-folder "/***REMOVED***/Drafts")
-  (mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+  (mu4e-update-interval 300)
+  (mu4e-change-filenames-when-moving t)
   (mu4e-maildir "~/.mail")
+  (mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+  ;;(mu4e-get-mail-command "mbsync -a")
+
+  (mu4e-drafts-folder "/***REMOVED***/Drafts")
   (mu4e-refile-folder "/***REMOVED***/Archive")
   (mu4e-sent-folder "/***REMOVED***/Sent Items")
+  (mu4e-trash-folder "/***REMOVED***/Trash")
+  (mu4e-attachment-dir "~/Downloads")
+
+  (mu4e-compose-signature-auto-include nil)
   (mu4e-maildir-shortcuts
    '(("/***REMOVED***/Inbox" . ?i)
      ("/***REMOVED***/Drafts" . ?D)
@@ -77,8 +84,6 @@
      ("/***REMOVED***/Notifications" . ?n)
      ("/***REMOVED***/Junk E-mail" . ?j)
      ("/***REMOVED***/Virus Items" . ?v)))
-  (mu4e-trash-folder "/***REMOVED***/Trash")
-  (mu4e-update-interval 300)
   (mu4e-use-fancy-chars t)
   (mu4e-view-show-addresses t)
   (mu4e-view-show-images t))
