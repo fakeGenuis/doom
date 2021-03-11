@@ -17,28 +17,28 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+begin_src emacs-lisp :tangle yes
 (if (equal (display-pixel-width) 3840)
     (progn
-      (add-to-list 'default-frame-alist '(font . "JetBrains Mono-12"))
-      (set-face-attribute 'default t :font "Fira Code-8"))
+      (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
+      (set-face-attribute 'default t :font "Fira Code-10"))
   (progn
-    (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+    (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
     (set-face-attribute 'default t :font "JetBrains Mono-8"))
   )
 #+end_src
 ** fonts
-*bold* and /italic/ are enabled
+*bold* and /italic/ enabled
 #+begin_src emacs-lisp :tangle no
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
+    (setq doom-font (font-spec :family "Inconsolata" :size 16)
           doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 12))
-  (setq doom-font (font-spec :family "JetBrains Mono")
-        doom-variable-pitch-font (font-spec :family "Inconsolata")))
+  (setq doom-font (font-spec :family "Inconsolata")
+        doom-variable-pitch-font (font-spec :family "Source Code Pro")))
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
 #+end_src
 ** Themes
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-snazzy)
+(setq doom-theme 'doom-dracula)
 #+end_src
 ** Icons
 #+begin_src emacs-lisp :tangle no
@@ -133,8 +133,8 @@ https://emacs-china.org/t/topic/1271
 (use-package! doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config
-  (set-face-attribute 'mode-line nil :family "JetBrains Mono" :height 135)
-  (set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono" :height 135)
+  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
+  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
   (setq inhibit-compacting-font-caches t
         doom-modeline-height 1
         doom-modeline-buffer-file-name-style 'auto
@@ -151,16 +151,16 @@ https://emacs-china.org/t/topic/1271
   )
 #+end_src
 ** ivy-posframe
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (after! ivy
-  ;; Causes open buffers and recentf to be combined in ivy-switch-buffer
+  ;; Causes open buffers and recentf to combined in ivy-switch-buffer
   (progn
     (setq ivy-posframe-display-functions-alist
         '((complete-symbol . ivy-posframe-display-at-point)
           (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
           (t               . ivy-posframe-display-at-window-center))
         ivy-posframe-width (frame-width))
-    (ivy-posframe-mode 1)
+      (ivy-posframe-mode 1)
     )
 )
 #+end_src

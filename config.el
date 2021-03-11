@@ -6,14 +6,14 @@
 
 (if (equal (display-pixel-width) 3840)
     (progn
-      (add-to-list 'default-frame-alist '(font . "JetBrains Mono-12"))
-      (set-face-attribute 'default t :font "Fira Code-8"))
+      (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
+      (set-face-attribute 'default t :font "Fira Code-10"))
   (progn
-    (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+    (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
     (set-face-attribute 'default t :font "JetBrains Mono-8"))
   )
 
-(setq doom-theme 'doom-snazzy)
+(setq doom-theme 'doom-dracula)
 
 (setq display-line-numbers-type 'relative)
 
@@ -43,8 +43,8 @@
 (use-package! doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config
-  (set-face-attribute 'mode-line nil :family "JetBrains Mono" :height 135)
-  (set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono" :height 135)
+  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
+  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
   (setq inhibit-compacting-font-caches t
         doom-modeline-height 1
         doom-modeline-buffer-file-name-style 'auto
@@ -56,6 +56,18 @@
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
+
+(after! ivy
+  ;; Causes open buffers and recentf to combined in ivy-switch-buffer
+  (progn
+    (setq ivy-posframe-display-functions-alist
+        '((complete-symbol . ivy-posframe-display-at-point)
+          (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+          (t               . ivy-posframe-display-at-window-center))
+        ivy-posframe-width (frame-width))
+      (ivy-posframe-mode 1)
+    )
+)
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
