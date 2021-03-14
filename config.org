@@ -20,8 +20,8 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
       (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
       (set-face-attribute 'default t :font "Fira Code-10"))
   (progn
-    (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
-    (set-face-attribute 'default t :font "JetBrains Mono-8"))
+    (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
+    (set-face-attribute 'default t :font "Fira Code-10"))
   )
 #+end_src
 ** fonts
@@ -151,7 +151,7 @@ https://emacs-china.org/t/topic/1271
   )
 #+end_src
 ** ivy-posframe
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (after! ivy
   ;; Causes open buffers and recentf to combined in ivy-switch-buffer
   (progn
