@@ -52,7 +52,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 * Editing
 ** About Parenthese
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (setq show-paren-style 'expression)
 (electric-pair-mode 1)
 #+end_src

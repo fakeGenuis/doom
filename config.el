@@ -17,9 +17,6 @@
 
 (setq display-line-numbers-type 'relative)
 
-(setq show-paren-style 'expression)
-(electric-pair-mode 1)
-
 (after! org
   (setq org-directory "~/org/")
   (setq org-agenda-files '("~/org/gtd/inbox.org"
