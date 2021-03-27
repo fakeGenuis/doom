@@ -34,8 +34,8 @@
       (add-to-list 'default-frame-alist '(font . "Inconsolata Nerd Font Mono-14"))
       (set-face-attribute 'default t :font "FiraCode Nerd Font Mono-10"))
   (progn
-    (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
-    (set-face-attribute 'default t :font "JetBrains Mono-8"))
+    (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
+    (set-face-attribute 'default t :font "Fira Code-10"))
   )
 
 (setq doom-theme 'doom-dracula)
@@ -44,9 +44,6 @@
         doom-themes-enable-italic t))
 
 (setq display-line-numbers-type 'relative)
-
-(setq show-paren-style 'expression)
-(electric-pair-mode 1)
 
 (after! org
   (setq org-directory "~/org/")
@@ -74,18 +71,6 @@
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
-
-(after! ivy
-  ;; Causes open buffers and recentf to combined in ivy-switch-buffer
-  (progn
-    (setq ivy-posframe-display-functions-alist
-        '((complete-symbol . ivy-posframe-display-at-point)
-          (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-          (t               . ivy-posframe-display-at-window-center))
-        ivy-posframe-width (frame-width))
-      (ivy-posframe-mode 1)
-    )
-)
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)

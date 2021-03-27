@@ -58,8 +58,8 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
       (add-to-list 'default-frame-alist '(font . "Inconsolata Nerd Font Mono-14"))
       (set-face-attribute 'default t :font "FiraCode Nerd Font Mono-10"))
   (progn
-    (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
-    (set-face-attribute 'default t :font "JetBrains Mono-8"))
+    (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
+    (set-face-attribute 'default t :font "Fira Code-10"))
   )
 #+end_src
 ** Themes
@@ -81,7 +81,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 * Editing
 ** About Parenthese
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (setq show-paren-style 'expression)
 (electric-pair-mode 1)
 #+end_src
@@ -167,7 +167,7 @@ https://emacs-china.org/t/topic/1271
   )
 #+end_src
 ** ivy-posframe
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (after! ivy
   ;; Causes open buffers and recentf to combined in ivy-switch-buffer
   (progn
