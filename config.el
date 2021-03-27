@@ -4,16 +4,44 @@
 
 
 
+(use-package! doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
+  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
+  (setq inhibit-compacting-font-caches t
+        doom-modeline-height 40
+        doom-modeline-buffer-file-name-style 'auto
+        doom-modeline-buffer-encoding nil))
+
+(set-frame-parameter (selected-frame) 'alpha '(80 . 50))
+(add-to-list 'default-frame-alist '(alpha . (80 . 50)))
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
+
 (if (equal (display-pixel-width) 3840)
     (progn
-      (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
-      (set-face-attribute 'default t :font "Fira Code-10"))
+      (add-to-list 'default-frame-alist '(font . "Inconsolata Nerd Font Mono-14"))
+      (set-face-attribute 'default t :font "FiraCode Nerd Font Mono-10"))
   (progn
     (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
     (set-face-attribute 'default t :font "JetBrains Mono-8"))
   )
 
 (setq doom-theme 'doom-dracula)
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
 
 (setq display-line-numbers-type 'relative)
 
@@ -39,16 +67,6 @@
   ;;                          (sequence "[ ](T)" "[-](S)" "[?](W@)" "|" "[x](D)")))
   ;;(setq org-modules '(org-habit))
   )
-
-(use-package! doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :config
-  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
-  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
-  (setq inhibit-compacting-font-caches t
-        doom-modeline-height 1
-        doom-modeline-buffer-file-name-style 'auto
-        doom-modeline-buffer-encoding nil))
 
 (use-package treemacs
   :config
@@ -81,7 +99,6 @@
   (mu4e-change-filenames-when-moving t)
   (mu4e-maildir "~/.mail")
   (mu4e-attachment-dir "~/Downloads")
-  ;;(mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
 
   ;; enable inline images
   (mu4e-view-show-images t)
@@ -92,14 +109,14 @@
 
   (mu4e-use-fancy-chars t)
   (mu4e-view-show-addresses t)
-  (mu4e-view-show-images t)
+  (mu4e-view-prefer-html t)
 
-  (setq mu4e-context-policy 'pick-first)
-  (setq mu4e-compose-context-policy nil)
+  ;;(setq mu4e-context-policy 'pick-first)
+  ;;(setq mu4e-compose-context-policy nil)
 )
 
 (with-eval-after-load 'mu4e
- (setq mu4e-get-mail-command "all_proxy='127.0.0.1:8889' mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+ (setq mu4e-get-mail-command "all_proxy='socks5://127.0.0.1:1089' mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
  (setq mu4e-contexts
         `(
          ,(make-mu4e-context
@@ -149,10 +166,14 @@
  )
 
 (require 'tramp)
-(add-to-list 'tramp-methods
-'("yadm"
-  (tramp-login-program "yadm")
-  (tramp-login-args (("enter")))
-  (tramp-login-env (("SHELL") ("/usr/bin/fish")))
-  (tramp-remote-shell "/usr/bin/fish")
-  (tramp-remote-shell-args ("-c"))))
+(use-package! tramp
+  :config
+  (setenv "SHELL" "/bin/bash")
+  (add-to-list 'tramp-methods
+               '("yadm"
+                 (tramp-login-program "yadm")
+                 (tramp-login-args (("enter")))
+                 (tramp-login-env (("SHELL") ("/bin/bash")))
+                 (tramp-remote-shell "/bin/bash")
+                 (tramp-remote-shell-args ("-c"))))
+  )

@@ -11,34 +11,63 @@
 ** Custom face
 #+begin_src emacs-lisp
 #+end_src
-** Hidpi
-for hidpi monitor, doom-font setting are bugy
-https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
+** doom-modeline
 #+begin_src emacs-lisp :tangle yes
-(if (equal (display-pixel-width) 3840)
-    (progn
-      (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
-      (set-face-attribute 'default t :font "Fira Code-10"))
-  (progn
-    (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
-    (set-face-attribute 'default t :font "JetBrains Mono-8"))
-  )
+(use-package! doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
+  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
+  (setq inhibit-compacting-font-caches t
+        doom-modeline-height 40
+        doom-modeline-buffer-file-name-style 'auto
+        doom-modeline-buffer-encoding nil))
+#+end_src
+** transparency
+#+begin_src emacs-lisp :tangle yes
+(set-frame-parameter (selected-frame) 'alpha '(80 . 50))
+(add-to-list 'default-frame-alist '(alpha . (80 . 50)))
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
 #+end_src
 ** fonts
 *bold* and /italic/ enabled
 #+begin_src emacs-lisp :tangle no
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "Inconsolata" :size 16)
-          doom-variable-pitch-font (font-spec :family "Source Code Pro" :size 12))
+    (setq doom-font (font-spec :family "Inconsolata Nerd Font Mono" :size 32)
+          doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 27))
   (setq doom-font (font-spec :family "Inconsolata")
         doom-variable-pitch-font (font-spec :family "Source Code Pro")))
-(after! doom-themes
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
+#+end_src
+** Hidpi-fonts
+for hidpi monitor, doom-font setting are bugy
+https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
+#+begin_src emacs-lisp :tangle yes
+(if (equal (display-pixel-width) 3840)
+    (progn
+      (add-to-list 'default-frame-alist '(font . "Inconsolata Nerd Font Mono-14"))
+      (set-face-attribute 'default t :font "FiraCode Nerd Font Mono-10"))
+  (progn
+    (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
+    (set-face-attribute 'default t :font "JetBrains Mono-8"))
+  )
 #+end_src
 ** Themes
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-dracula)
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
 #+end_src
 ** Icons
 #+begin_src emacs-lisp :tangle no
@@ -128,19 +157,6 @@ https://emacs-china.org/t/topic/1271
   )
 #+end_src
 * Plugins
-** doom-modeline
-#+begin_src emacs-lisp :tangle yes
-(use-package! doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :config
-  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
-  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
-  (setq inhibit-compacting-font-caches t
-        doom-modeline-height 1
-        doom-modeline-buffer-file-name-style 'auto
-        doom-modeline-buffer-encoding nil))
-#+end_src
-
 ** treemacs
 #+begin_src emacs-lisp
 (use-package treemacs
@@ -181,7 +197,6 @@ https://emacs-china.org/t/topic/1271
   (mu4e-change-filenames-when-moving t)
   (mu4e-maildir "~/.mail")
   (mu4e-attachment-dir "~/Downloads")
-  ;;(mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
 
   ;; enable inline images
   (mu4e-view-show-images t)
@@ -192,14 +207,14 @@ https://emacs-china.org/t/topic/1271
 
   (mu4e-use-fancy-chars t)
   (mu4e-view-show-addresses t)
-  (mu4e-view-show-images t)
+  (mu4e-view-prefer-html t)
 
-  (setq mu4e-context-policy 'pick-first)
-  (setq mu4e-compose-context-policy nil)
+  ;;(setq mu4e-context-policy 'pick-first)
+  ;;(setq mu4e-compose-context-policy nil)
 )
 
 (with-eval-after-load 'mu4e
- (setq mu4e-get-mail-command "all_proxy='127.0.0.1:8889' mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+ (setq mu4e-get-mail-command "all_proxy='socks5://127.0.0.1:1089' mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
  (setq mu4e-contexts
         `(
          ,(make-mu4e-context
@@ -248,7 +263,6 @@ https://emacs-china.org/t/topic/1271
          ))
  )
 #+end_src
-
 *** alert
 #+begin_src emacs-lisp :tangle no
 (use-package mu4e-alert
@@ -258,15 +272,22 @@ https://emacs-china.org/t/topic/1271
   :config (mu4e-alert-set-default-style 'libnotify))
 #+end_src
 ** yadm (with magit)
-#+begin_src emacs-lisp
+[[https://github.com/TheLocehiliosan/yadm/blob/dd86c8a691deed7fb438b7ef07179040b0f05026/yadm.md#configuration][yadm man page]]
+[[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
+~tramp~ from ~Melpa~ bugy, install it from ~aur~.
+#+begin_src emacs-lisp :tangle yes
 (require 'tramp)
-(add-to-list 'tramp-methods
-'("yadm"
-  (tramp-login-program "yadm")
-  (tramp-login-args (("enter")))
-  (tramp-login-env (("SHELL") ("/usr/bin/fish")))
-  (tramp-remote-shell "/usr/bin/fish")
-  (tramp-remote-shell-args ("-c"))))
+(use-package! tramp
+  :config
+  (setenv "SHELL" "/bin/bash")
+  (add-to-list 'tramp-methods
+               '("yadm"
+                 (tramp-login-program "yadm")
+                 (tramp-login-args (("enter")))
+                 (tramp-login-env (("SHELL") ("/bin/bash")))
+                 (tramp-remote-shell "/bin/bash")
+                 (tramp-remote-shell-args ("-c"))))
+  )
 #+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
