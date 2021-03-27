@@ -81,7 +81,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 * Editing
 ** About Parenthese
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (setq show-paren-style 'expression)
 (electric-pair-mode 1)
 #+end_src
@@ -167,9 +167,10 @@ https://emacs-china.org/t/topic/1271
   )
 #+end_src
 ** ivy-posframe
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (after! ivy
   ;; Causes open buffers and recentf to combined in ivy-switch-buffer
+  :config
   (progn
     (setq ivy-posframe-display-functions-alist
         '((complete-symbol . ivy-posframe-display-at-point)
@@ -180,7 +181,6 @@ https://emacs-china.org/t/topic/1271
     )
 )
 #+end_src
-
 ** leetcode
 #+begin_src emacs-lisp
 (setq leetcode-prefer-language "cpp")
@@ -291,6 +291,6 @@ https://emacs-china.org/t/topic/1271
 #+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src

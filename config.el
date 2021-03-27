@@ -45,6 +45,9 @@
 
 (setq display-line-numbers-type 'relative)
 
+(setq show-paren-style 'expression)
+(electric-pair-mode 1)
+
 (after! org
   (setq org-directory "~/org/")
   (setq org-agenda-files '("~/org/gtd/inbox.org"
@@ -71,6 +74,19 @@
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
+
+(after! ivy
+  ;; Causes open buffers and recentf to combined in ivy-switch-buffer
+  :config
+  (progn
+    (setq ivy-posframe-display-functions-alist
+        '((complete-symbol . ivy-posframe-display-at-point)
+          (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+          (t               . ivy-posframe-display-at-window-center))
+        ivy-posframe-width (frame-width))
+      (ivy-posframe-mode 1)
+    )
+)
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
@@ -162,3 +178,5 @@
                  (tramp-remote-shell "/bin/bash")
                  (tramp-remote-shell-args ("-c"))))
   )
+
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
