@@ -9,22 +9,31 @@
 #+end_src
 * Display
 ** Custom face
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 #+end_src
 ** doom-modeline
 #+begin_src emacs-lisp :tangle yes
 (use-package! doom-modeline
+  :ensure t
   :hook (after-init . doom-modeline-mode)
-  :config
-  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
-  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
-  (setq inhibit-compacting-font-caches t
-        doom-modeline-height 40
-        doom-modeline-buffer-file-name-style 'auto
-        doom-modeline-buffer-encoding nil))
+
+  ;; The limit of the window width.
+  ;; If `window-width' is smaller than the limit, some information won't be displayed.
+  (setq doom-modeline-window-width-limit fill-column
+        doom-modeline-enable-word-count t
+        )
+
+  :custom-face
+  (mode-line ((t (:family "Comic Shanns" :height 160))))
+  (mode-line-inactive ((t (:family "Comic Shanns" :height 160))))
+  )
+(defun my-doom-modeline--font-height ()
+  "Calculate the actual char height of the mode-line."
+  28)
+(advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 #+end_src
 ** transparency
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (set-frame-parameter (selected-frame) 'alpha '(80 . 50))
 (add-to-list 'default-frame-alist '(alpha . (80 . 50)))
 (defun toggle-transparency ()
@@ -55,8 +64,8 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+begin_src emacs-lisp :tangle yes
 (if (equal (display-pixel-width) 3840)
     (progn
-      (add-to-list 'default-frame-alist '(font . "Inconsolata Nerd Font Mono-14"))
-      (set-face-attribute 'default t :font "FiraCode Nerd Font Mono-10"))
+      (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
+      (set-face-attribute 'default t :font "FiraCode Nerd Font-10"))
   (progn
     (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
     (set-face-attribute 'default t :font "Fira Code-10"))
@@ -70,10 +79,10 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
         doom-themes-enable-italic t))
 #+end_src
 ** Icons
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package all-the-icons
   :config
-  (setq all-the-icons-scale-factor 0.75))
+  (setq all-the-icons-scale-factor 0.9))
 #+end_src
 ** Line
 #+begin_src emacs-lisp
@@ -167,7 +176,7 @@ https://emacs-china.org/t/topic/1271
   )
 #+end_src
 ** ivy-posframe
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (after! ivy
   ;; Causes open buffers and recentf to combined in ivy-switch-buffer
   :config
@@ -291,6 +300,6 @@ https://emacs-china.org/t/topic/1271
 #+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src

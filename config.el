@@ -2,37 +2,29 @@
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
-
-
 (use-package! doom-modeline
+  :ensure t
   :hook (after-init . doom-modeline-mode)
-  :config
-  ;(set-face-attribute 'mode-line nil :family "Inconsolata" :height 140)
-  ;(set-face-attribute 'mode-line-inactive nil :family "Inconsolata" :height 140)
-  (setq inhibit-compacting-font-caches t
-        doom-modeline-height 40
-        doom-modeline-buffer-file-name-style 'auto
-        doom-modeline-buffer-encoding nil))
 
-(set-frame-parameter (selected-frame) 'alpha '(80 . 50))
-(add-to-list 'default-frame-alist '(alpha . (80 . 50)))
-(defun toggle-transparency ()
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-                    ((numberp (cdr alpha)) (cdr alpha))
-                    ;; Also handle undocumented (<active> <inactive>) form.
-                    ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         '(85 . 50) '(100 . 100)))))
-(global-set-key (kbd "C-c t") 'toggle-transparency)
+  ;; The limit of the window width.
+  ;; If `window-width' is smaller than the limit, some information won't be displayed.
+  (setq doom-modeline-window-width-limit fill-column
+        doom-modeline-enable-word-count t
+        )
+
+  :custom-face
+  (mode-line ((t (:family "Comic Shanns" :height 160))))
+  (mode-line-inactive ((t (:family "Comic Shanns" :height 160))))
+  )
+(defun my-doom-modeline--font-height ()
+  "Calculate the actual char height of the mode-line."
+  28)
+(advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
 (if (equal (display-pixel-width) 3840)
     (progn
-      (add-to-list 'default-frame-alist '(font . "Inconsolata Nerd Font Mono-14"))
-      (set-face-attribute 'default t :font "FiraCode Nerd Font Mono-10"))
+      (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
+      (set-face-attribute 'default t :font "FiraCode Nerd Font-10"))
   (progn
     (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
     (set-face-attribute 'default t :font "Fira Code-10"))
@@ -42,6 +34,10 @@
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
+
+(use-package all-the-icons
+  :config
+  (setq all-the-icons-scale-factor 0.9))
 
 (setq display-line-numbers-type 'relative)
 
@@ -74,19 +70,6 @@
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
-
-(after! ivy
-  ;; Causes open buffers and recentf to combined in ivy-switch-buffer
-  :config
-  (progn
-    (setq ivy-posframe-display-functions-alist
-        '((complete-symbol . ivy-posframe-display-at-point)
-          (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-          (t               . ivy-posframe-display-at-window-center))
-        ivy-posframe-width (frame-width))
-      (ivy-posframe-mode 1)
-    )
-)
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
@@ -178,5 +161,3 @@
                  (tramp-remote-shell "/bin/bash")
                  (tramp-remote-shell-args ("-c"))))
   )
-
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
