@@ -3,7 +3,7 @@
       user-mail-address "***REMOVED***")
 
 (use-package! doom-modeline
-  :ensure t
+  ;;:ensure t
   :hook (after-init . doom-modeline-mode)
 
   ;; The limit of the window width.
@@ -13,12 +13,21 @@
         )
 
   :custom-face
-  (mode-line ((t (:family "Comic Shanns" :height 160))))
-  (mode-line-inactive ((t (:family "Comic Shanns" :height 160))))
+  (if (equal (display-pixel-width) 3840)
+      (progn
+        (mode-line ((t (:family "Comic Shanns" :height 160))))
+        (mode-line-inactive ((t (:family "Comic Shanns" :height 160))))
+        )
+    (progn
+      (mode-line ((t (:family "Comic Shanns" :height 140))))
+      (mode-line-inactive ((t (:family "Comic Shanns" :height 140))))
+      )
+    )
   )
 (defun my-doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
-  28)
+  (if (equal (display-pixel-width) 3840)
+      28 24))
 (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
 (if (equal (display-pixel-width) 3840)
@@ -26,7 +35,7 @@
       (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
       (set-face-attribute 'default t :font "FiraCode Nerd Font-10"))
   (progn
-    (add-to-list 'default-frame-alist '(font . "Inconsolata-14"))
+    (add-to-list 'default-frame-alist '(font . "Ubuntu Mono-13"))
     (set-face-attribute 'default t :font "Fira Code-10"))
   )
 
@@ -59,6 +68,8 @@
                                (file+headline "~/org/gtd/inbox.org" "Readings")
                                "* PROJ %i%? \n %U")))
   (setq org-log-done 'time)
+  :custom
+  ;;(org-src-window-setup 'split-window-right)
   ;;(setq org-todo-keywords '((sequence "TODO(t)" "STRT(s)" "WAIT(w@)" "HOLD(h)" "|" "DONE(d!)" "KILL(k@)")
   ;;                          (sequence "[ ](T)" "[-](S)" "[?](W@)" "|" "[x](D)")))
   ;;(setq org-modules '(org-habit))
