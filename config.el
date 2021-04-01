@@ -68,7 +68,11 @@
   ;;(setq org-todo-keywords '((sequence "TODO(t)" "STRT(s)" "WAIT(w@)" "HOLD(h)" "|" "DONE(d!)" "KILL(k@)")
   ;;                          (sequence "[ ](T)" "[-](S)" "[?](W@)" "|" "[x](D)")))
   ;;(setq org-modules '(org-habit))
+  (setq org-display-inline-images t
+        org-image-actual-width 400
+        org-startup-with-inline-images t
   )
+)
 
 (use-package! treemacs
   :config
