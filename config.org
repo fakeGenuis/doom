@@ -23,18 +23,15 @@
         doom-modeline-enable-word-count t
         )
 
-  :custom-face
-  (if (equal (display-pixel-width) 3840)
-      (progn
-        (mode-line ((t (:family "Comic Shanns" :height 160))))
-        (mode-line-inactive ((t (:family "Comic Shanns" :height 160))))
-        )
-    (progn
-      (mode-line ((t (:family "Comic Shanns" :height 140))))
-      (mode-line-inactive ((t (:family "Comic Shanns" :height 140))))
-      )
-    )
   )
+(if (equal (display-pixel-width) 3840)
+    (custom-set-faces
+     '(mode-line ((t (:family "Comic Shanns" :height 160))))
+     '(mode-line-inactive ((t (:family "Comic Shanns" :height 160)))))
+  (custom-set-faces
+   '(mode-line ((t (:family "Comic Shanns" :height 140))))
+   '(mode-line-inactive ((t (:family "Comic Shanns" :height 140)))))
+)
 (defun my-doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
   (if (equal (display-pixel-width) 3840)
@@ -61,17 +58,18 @@
 #+end_src
 ** fonts
 *bold* and /italic/ enabled
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "Inconsolata Nerd Font Mono" :size 32)
-          doom-variable-pitch-font (font-spec :family "Hack Nerd Font" :size 27))
-  (setq doom-font (font-spec :family "Inconsolata")
-        doom-variable-pitch-font (font-spec :family "Source Code Pro")))
+    (setq doom-font (font-spec :family "UbuntuMono Nerd Font Mono" :size 44)
+          doom-big-font (font-spec :family "Inconsolata" :size 56)
+          doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 32))
+  (setq doom-font (font-spec :family "Ubuntu Mono")
+        doom-variable-pitch-font (font-spec :family "Fira Code")))
 #+end_src
 ** Hidpi-fonts
 for hidpi monitor, doom-font setting are bugy
 https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (if (equal (display-pixel-width) 3840)
     (progn
       (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
@@ -180,12 +178,18 @@ https://emacs-china.org/t/topic/1271
 * Plugins
 ** treemacs
 #+begin_src emacs-lisp
-(use-package treemacs
+(use-package! treemacs
   :config
   (progn
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
+(dolist (face '(treemacs-root-face
+                treemacs-directory-face
+                treemacs-directory-collapsed-face
+                treemacs-file-face
+                treemacs-tags-face))
+  (set-face-attribute face nil :family "Comic Mono" :height 140))
 #+end_src
 ** ivy-posframe
 #+begin_src emacs-lisp :tangle no

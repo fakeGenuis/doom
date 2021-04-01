@@ -12,18 +12,15 @@
         doom-modeline-enable-word-count t
         )
 
-  :custom-face
-  (if (equal (display-pixel-width) 3840)
-      (progn
-        (mode-line ((t (:family "Comic Shanns" :height 160))))
-        (mode-line-inactive ((t (:family "Comic Shanns" :height 160))))
-        )
-    (progn
-      (mode-line ((t (:family "Comic Shanns" :height 140))))
-      (mode-line-inactive ((t (:family "Comic Shanns" :height 140))))
-      )
-    )
   )
+(if (equal (display-pixel-width) 3840)
+    (custom-set-faces
+     '(mode-line ((t (:family "Comic Shanns" :height 160))))
+     '(mode-line-inactive ((t (:family "Comic Shanns" :height 160)))))
+  (custom-set-faces
+   '(mode-line ((t (:family "Comic Shanns" :height 140))))
+   '(mode-line-inactive ((t (:family "Comic Shanns" :height 140)))))
+)
 (defun my-doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
   (if (equal (display-pixel-width) 3840)
@@ -31,13 +28,11 @@
 (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
 (if (equal (display-pixel-width) 3840)
-    (progn
-      (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
-      (set-face-attribute 'default t :font "FiraCode Nerd Font-10"))
-  (progn
-    (add-to-list 'default-frame-alist '(font . "Ubuntu Mono-13"))
-    (set-face-attribute 'default t :font "Fira Code-10"))
-  )
+    (setq doom-font (font-spec :family "UbuntuMono Nerd Font Mono" :size 44)
+          doom-big-font (font-spec :family "Inconsolata" :size 56)
+          doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 32))
+  (setq doom-font (font-spec :family "Ubuntu Mono")
+        doom-variable-pitch-font (font-spec :family "Fira Code")))
 
 (setq doom-theme 'doom-dracula)
 (after! doom-themes
@@ -75,12 +70,18 @@
   ;;(setq org-modules '(org-habit))
   )
 
-(use-package treemacs
+(use-package! treemacs
   :config
   (progn
     (setq treemacs-width 17))
   ;;(treemacs-resize-icons 11)
   )
+(dolist (face '(treemacs-root-face
+                treemacs-directory-face
+                treemacs-directory-collapsed-face
+                treemacs-file-face
+                treemacs-tags-face))
+  (set-face-attribute face nil :family "Comic Mono" :height 140))
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
