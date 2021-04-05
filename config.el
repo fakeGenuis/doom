@@ -24,12 +24,12 @@
 (defun my-doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
   (if (equal (display-pixel-width) 3840)
-      28 24))
+      26 24))
 (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "UbuntuMono Nerd Font Mono" :size 44)
-          doom-big-font (font-spec :family "Inconsolata" :size 56)
+    (setq doom-font (font-spec :family "Fira Code Nerd Font Mono" :size 38)
+          doom-big-font (font-spec :family "Inconsolata Go Nerd Font Mono" :size 50)
           doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 32))
   (setq doom-font (font-spec :family "Ubuntu Mono")
         doom-variable-pitch-font (font-spec :family "Fira Code")))
@@ -43,7 +43,7 @@
   :config
   (setq all-the-icons-scale-factor 0.9))
 
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type nil)
 
 (setq show-paren-style 'expression)
 (electric-pair-mode 1)
@@ -177,3 +177,14 @@
                  (tramp-remote-shell "/bin/bash")
                  (tramp-remote-shell-args ("-c"))))
   )
+
+(after! keycast
+  (define-minor-mode keycast-mode
+    ;; https://github.com/tarsius/keycast/issues/7#issuecomment-627604064
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (add-hook 'pre-command-hook 'keycast--update t)
+      (remove-hook 'pre-command-hook 'keycast--update))))
+(add-to-list 'global-mode-string '("" mode-line-keycast))
+(keycast-mode) ;; or run keycast-mode by demand

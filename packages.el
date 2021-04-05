@@ -8,8 +8,10 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 
 (package! ivy-posframe
-  :disable t)
+  :disable t
+  )
 (package! leetcode)
+(package! keycast)
 (package! treemacs-evil)
 (package! tramp
   ;:recipe (:local-repo "/usr/share/emacs/site-lisp/")
