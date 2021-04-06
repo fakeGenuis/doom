@@ -377,6 +377,13 @@ https://emacs-china.org/t/topic/1271
 (add-to-list 'global-mode-string '("" mode-line-keycast))
 (keycast-mode) ;; or run keycast-mode by demand
 #+end_src
+* Terminal
+#+begin_src emacs-lisp
+(use-package! vterm
+  :config
+  (setq vterm-shell "/usr/bin/fish")
+  )
+#+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp :tangle no

@@ -208,3 +208,8 @@
       (remove-hook 'pre-command-hook 'keycast--update))))
 (add-to-list 'global-mode-string '("" mode-line-keycast))
 (keycast-mode) ;; or run keycast-mode by demand
+
+(use-package! vterm
+  :config
+  (setq vterm-shell "/usr/bin/fish")
+  )
