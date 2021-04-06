@@ -74,6 +74,26 @@
   )
 )
 
+(eval-after-load 'latex
+  '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
+         LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
+         Tex-clean-confirm nil))
+(use-package! math-preview
+  :custom
+  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
+                        ("\\begin{equation*}" . "\\end{equation*}")
+                        ("\\[" . "\\]")
+                        ("\\(" . "\\)")
+                        ("$$" . "$$")
+                        ("$" . "$")))
+  (math-preview-preprocess-functions '((lambda (s)
+                                         (concat "{\\color{white}" s "}"))))
+  )
+(autoload 'latex-math-preview-expression "latex-math-preview" nil t)
+(autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
+(autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
+(autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
+
 (use-package! treemacs
   :config
   (progn
