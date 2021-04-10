@@ -46,7 +46,6 @@
 (setq display-line-numbers-type nil)
 
 (setq show-paren-style 'expression)
-(electric-pair-mode 1)
 
 (after! org
   (setq org-directory "~/org/")
