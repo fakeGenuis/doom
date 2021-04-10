@@ -28,7 +28,7 @@
 (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "Fira Code Nerd Font Mono" :size 38)
+    (setq doom-font (font-spec :family "Fura Code Nerd Font Mono" :size 38)
           doom-big-font (font-spec :family "Inconsolata Go Nerd Font Mono" :size 50)
           doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 32))
   (setq doom-font (font-spec :family "Fira Code" :size 24)
@@ -209,7 +209,60 @@
 (add-to-list 'global-mode-string '("" mode-line-keycast))
 (keycast-mode) ;; or run keycast-mode by demand
 
-(use-package! vterm
+(use-package elfeed
   :config
-  (setq vterm-shell "/usr/bin/fish")
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+  :bind (:map elfeed-search-mode-map
+              ("A" . bjm/elfeed-show-all)
+              ;("E" . bjm/elfeed-show-emacs)
+              ("m" . elfeed-toggle-star)
+              ;("D" . bjm/elfeed-show-daily)
+              ("q" . bjm/elfeed-save-db-and-bury))
   )
+
+(use-package elfeed-org
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list "~/org/elfeed.org"))
+  )
+(use-package elfeed-goodies
+  :config
+  (elfeed-goodies/setup)
+  (setq elfeed-goodies/entry-pane-size 0.5)
+  )
+
+(defun bjm/elfeed-show-all ()
+  (interactive)
+  (bookmark-maybe-load-default-file)
+  (bookmark-jump "elfeed-all"))
+
+(defun elfeed-mark-all-as-read ()
+  (interactive)
+  (mark-whole-buffer)
+  (elfeed-search-untag-all-unread))
+
+(defalias 'elfeed-toggle-star
+  (elfeed-expose #'elfeed-search-toggle-all 'star))
+
+;;functions to support syncing .elfeed between machines
+;;makes sure elfeed reads index from disk before launching
+(defun bjm/elfeed-load-db-and-open ()
+  "Wrapper to load the elfeed db from disk before opening"
+  (interactive)
+  (elfeed-db-load)
+  (elfeed)
+  (elfeed-search-update--force))
+
+;;write to disk when quiting
+(defun bjm/elfeed-save-db-and-bury ()
+  "Wrapper to save the elfeed db to disk before burying buffer"
+  (interactive)
+  (elfeed-db-save)
+  (quit-window))
+
+(evil-define-key 'normal elfeed-show-mode-map
+  (kbd "J") 'elfeed-goodies/split-show-next
+  (kbd "K") 'elfeed-goodies/split-show-prev)
+(evil-define-key 'normal elfeed-search-mode-map
+  (kbd "J") 'elfeed-goodies/split-show-next
+  (kbd "K") 'elfeed-goodies/split-show-prev)
