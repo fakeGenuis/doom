@@ -26,8 +26,8 @@
   )
 (if (equal (display-pixel-width) 3840)
     (custom-set-faces
-     '(mode-line ((t (:family "Comic Shanns" :height 160))))
-     '(mode-line-inactive ((t (:family "Comic Shanns" :height 160)))))
+     '(mode-line ((t (:family "Comic Shanns" :height 140))))
+     '(mode-line-inactive ((t (:family "Comic Shanns" :height 140)))))
   (custom-set-faces
    '(mode-line ((t (:family "Comic Shanns" :height 120))))
    '(mode-line-inactive ((t (:family "Comic Shanns" :height 120)))))
