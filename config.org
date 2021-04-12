@@ -438,7 +438,7 @@ https://emacs-china.org/t/topic/1271
 #+end_src
 
 * Terminal
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package! vterm
   :config
   (setq vterm-shell "/usr/bin/fish")

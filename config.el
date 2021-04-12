@@ -265,3 +265,8 @@
 (evil-define-key 'normal elfeed-search-mode-map
   (kbd "J") 'elfeed-goodies/split-show-next
   (kbd "K") 'elfeed-goodies/split-show-prev)
+
+(use-package! vterm
+  :config
+  (setq vterm-shell "/usr/bin/fish")
+  )
