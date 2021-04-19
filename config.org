@@ -466,6 +466,11 @@ https://emacs-china.org/t/topic/1271
   ;:ensure t
   )
 #+end_src
+** Colored output issues
+https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
+#+begin_src emacs-lisp
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+#+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp :tangle no
