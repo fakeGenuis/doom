@@ -47,20 +47,33 @@
 
 (setq show-paren-style 'expression)
 
-(after! org
+(defun transform-square-brackets-to-round-ones(string-to-transform)
+  "Transforms [ into ( and ] into ), other chars left unchanged."
+  (concat
+  (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform))
+  )
+
+(use-package org
+  :init
   (setq org-directory "~/org/")
   (setq org-agenda-files '("~/org/gtd/inbox.org"
                            ;;"~/org/gtd/todo.org"
                            "~/org/gtd/projects.org"))
+  :config
   (setq org-capture-templates '(("t" "Todo [inbox]" entry
-                               (file+headline "~/org/gtd/inbox.org" "Inbox")
+                               (file+headliner "~/org/gtd/inbox.org" "Inbox")
                                "* TODO %i%?")
                               ("s" "Someday" entry
                                (file+headline "~/org/gtd/inbox.org" "Someday")
                                "* HOLD %i%? \n %U")
                               ("r" "Readings" entry
                                (file+headline "~/org/gtd/inbox.org" "Readings")
-                               "* PROJ %i%? \n %U")))
+                               "* PROJ %i%? \n %U")
+	                      ("p" "Protocol" entry (file+headline "~/org/notes.org" "Inbox")
+                               "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+	                      ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+                               "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
+                              ))
   (setq org-log-done 'time)
   :custom
   ;;(org-src-window-setup 'split-window-right)
@@ -72,6 +85,7 @@
         org-startup-with-inline-images t
   )
 )
+(require 'org-protocol)
 
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
@@ -269,4 +283,7 @@
 (use-package! vterm
   :config
   (setq vterm-shell "/usr/bin/fish")
+  )
+(use-package multi-vterm
+  ;:ensure t
   )
