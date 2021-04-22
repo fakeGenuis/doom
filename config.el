@@ -28,9 +28,9 @@
 (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "Fura Code Nerd Font Mono" :size 38)
-          doom-big-font (font-spec :family "Inconsolata Go Nerd Font Mono" :size 50)
-          doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font" :size 32))
+    (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
+          doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
+          doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
   (setq doom-font (font-spec :family "Fira Code" :size 24)
         doom-variable-pitch-font (font-spec :family "Ubuntu Mono")))
 
