@@ -201,14 +201,15 @@
 (require 'tramp)
 (use-package! tramp
   :config
-  (setenv "SHELL" "/bin/bash")
+  ;(setenv "SHELL" "/bin/bash")
   (add-to-list 'tramp-methods
                '("yadm"
+                 ;(tramp-remote-shell "/bin/bash")
+                 ;(tramp-remote-shell-args ("-c"))
                  (tramp-login-program "yadm")
                  (tramp-login-args (("enter")))
-                 (tramp-login-env (("SHELL") ("/bin/bash")))
-                 (tramp-remote-shell "/bin/bash")
-                 (tramp-remote-shell-args ("-c"))))
+                 ;(tramp-login-env (("SHELL") ("/bin/bash")))
+                 ))
   )
 
 (after! keycast
