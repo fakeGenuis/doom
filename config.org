@@ -89,7 +89,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 ** Themes
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-ephemeral)
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))

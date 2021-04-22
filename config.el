@@ -34,7 +34,7 @@
   (setq doom-font (font-spec :family "Fira Code" :size 24)
         doom-variable-pitch-font (font-spec :family "Ubuntu Mono")))
 
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-ephemeral)
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
