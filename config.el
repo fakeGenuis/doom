@@ -2,6 +2,33 @@
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
+(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
+
+(if (equal (display-pixel-width) 3840)
+    (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
+          doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
+          doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
+  (setq doom-font (font-spec :family "mononoki Nerd Font" :size 24)
+        doom-variable-pitch-font (font-spec :family "Ubuntu Mono")))
+
+(setq doom-theme 'doom-ephemeral)
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+
 (use-package! doom-modeline
   ;;:ensure t
   :hook (after-init . doom-modeline-mode)
@@ -26,18 +53,6 @@
   (if (equal (display-pixel-width) 3840)
       26 24))
 (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
-
-(if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
-          doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
-          doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
-  (setq doom-font (font-spec :family "Fira Code" :size 24)
-        doom-variable-pitch-font (font-spec :family "Ubuntu Mono")))
-
-(setq doom-theme 'doom-ephemeral)
-(after! doom-themes
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
 
 (use-package all-the-icons
   :config
@@ -204,8 +219,8 @@
   ;(setenv "SHELL" "/bin/bash")
   (add-to-list 'tramp-methods
                '("yadm"
-                 ;(tramp-remote-shell "/bin/bash")
-                 ;(tramp-remote-shell-args ("-c"))
+                 (tramp-remote-shell "/bin/bash")
+                 (tramp-remote-shell-args ("-c"))
                  (tramp-login-program "yadm")
                  (tramp-login-args (("enter")))
                  ;(tramp-login-env (("SHELL") ("/bin/bash")))

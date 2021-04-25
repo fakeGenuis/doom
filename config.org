@@ -8,9 +8,57 @@
       user-mail-address "***REMOVED***")
 #+end_src
 * Display
-** Custom face
-#+begin_src emacs-lisp :tangle no
+** transparency
+#+begin_src emacs-lisp :tangle yes
+(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
 #+end_src
+
+** fonts
+*bold* and /italic/ enabled
+#+begin_src emacs-lisp :tangle yes
+(if (equal (display-pixel-width) 3840)
+    (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
+          doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
+          doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
+  (setq doom-font (font-spec :family "mononoki Nerd Font" :size 24)
+        doom-variable-pitch-font (font-spec :family "Ubuntu Mono")))
+#+end_src
+
+** Hidpi-fonts
+for hidpi monitor, doom-font setting are bugy
+https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
+#+begin_src emacs-lisp :tangle no
+(if (equal (display-pixel-width) 3840)
+    (progn
+      (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
+      (set-face-attribute 'default t :font "FiraCode Nerd Font-10"))
+  (progn
+    (add-to-list 'default-frame-alist '(font . "Ubuntu Mono-13"))
+    (set-face-attribute 'default t :font "Fira Code-10"))
+  )
+#+end_src
+
+** Themes
+#+begin_src emacs-lisp :tangle yes
+(setq doom-theme 'doom-ephemeral)
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+#+end_src
+
 ** doom-modeline
 #+begin_src emacs-lisp :tangle yes
 (use-package! doom-modeline
@@ -47,59 +95,14 @@
                     :underline t
                     :background (face-background 'default))
 #+end_src
-** transparency
-#+begin_src emacs-lisp :tangle no
-(set-frame-parameter (selected-frame) 'alpha '(80 . 50))
-(add-to-list 'default-frame-alist '(alpha . (80 . 50)))
-(defun toggle-transparency ()
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-                    ((numberp (cdr alpha)) (cdr alpha))
-                    ;; Also handle undocumented (<active> <inactive>) form.
-                    ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         '(85 . 50) '(100 . 100)))))
-(global-set-key (kbd "C-c t") 'toggle-transparency)
-#+end_src
-** fonts
-*bold* and /italic/ enabled
-#+begin_src emacs-lisp :tangle yes
-(if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
-          doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
-          doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
-  (setq doom-font (font-spec :family "Fira Code" :size 24)
-        doom-variable-pitch-font (font-spec :family "Ubuntu Mono")))
-#+end_src
-** Hidpi-fonts
-for hidpi monitor, doom-font setting are bugy
-https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
-#+begin_src emacs-lisp :tangle no
-(if (equal (display-pixel-width) 3840)
-    (progn
-      (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
-      (set-face-attribute 'default t :font "FiraCode Nerd Font-10"))
-  (progn
-    (add-to-list 'default-frame-alist '(font . "Ubuntu Mono-13"))
-    (set-face-attribute 'default t :font "Fira Code-10"))
-  )
-#+end_src
-** Themes
-#+begin_src emacs-lisp
-(setq doom-theme 'doom-ephemeral)
-(after! doom-themes
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
-#+end_src
+
 ** Icons
 #+begin_src emacs-lisp :tangle yes
 (use-package all-the-icons
   :config
   (setq all-the-icons-scale-factor 0.9))
 #+end_src
+
 ** Line
 #+begin_src emacs-lisp
 (setq display-line-numbers-type nil)
@@ -375,8 +378,8 @@ https://emacs-china.org/t/topic/1271
   ;(setenv "SHELL" "/bin/bash")
   (add-to-list 'tramp-methods
                '("yadm"
-                 ;(tramp-remote-shell "/bin/bash")
-                 ;(tramp-remote-shell-args ("-c"))
+                 (tramp-remote-shell "/bin/bash")
+                 (tramp-remote-shell-args ("-c"))
                  (tramp-login-program "yadm")
                  (tramp-login-args (("enter")))
                  ;(tramp-login-env (("SHELL") ("/bin/bash")))
