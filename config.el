@@ -317,7 +317,6 @@
   (setq vterm-shell "/usr/bin/fish")
   )
 (use-package multi-vterm
-  ;:ensure t
   )
 
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)

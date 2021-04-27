@@ -162,6 +162,27 @@ https://emacs-china.org/t/topic/1271
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+end_src
 * Org
+** Color ~shell~ block output
+[[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package cl-lib
+  :config
+  (defun org-redisplay-ansi-source-blocks ()
+    "Refresh the display of ANSI text source blocks."
+    (interactive)
+    (org-element-map (org-element-parse-buffer) 'src-block
+      (lambda (src)
+        (when (equalp "ansi" (org-element-property :language src))
+          (let ((begin (org-element-property :begin src))
+                (end (org-element-property :end src)))
+            (ansi-color-apply-on-region begin end))))))
+  )
+(with-eval-after-load 'org
+  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
+  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
+  )
+#+END_SRC
 
 ** org-capture-extension and org-protocol
 #+begin_src emacs-lisp
@@ -488,7 +509,6 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (setq vterm-shell "/usr/bin/fish")
   )
 (use-package multi-vterm
-  ;:ensure t
   )
 #+end_src
 ** Colored output issues
