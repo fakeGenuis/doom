@@ -126,6 +126,7 @@
   :config
   (progn
     (setq treemacs-width 17))
+  (require 'treemacs-all-the-icons)
   ;;(treemacs-resize-icons 11)
   )
 (dolist (face '(treemacs-root-face
@@ -295,6 +296,13 @@
 (evil-define-key 'normal elfeed-search-mode-map
   (kbd "J") 'elfeed-goodies/split-show-next
   (kbd "K") 'elfeed-goodies/split-show-prev)
+
+(use-package ranger
+  :config
+  (ranger-override-dired-mode t)
+  (setq ranger-cleanup-eagerly t)
+  (setq ranger-modify-header t)
+)
 
 (use-package! vterm
   :config

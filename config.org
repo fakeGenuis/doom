@@ -237,6 +237,7 @@ https://emacs-china.org/t/topic/1271
   :config
   (progn
     (setq treemacs-width 17))
+  (require 'treemacs-all-the-icons)
   ;;(treemacs-resize-icons 11)
   )
 (dolist (face '(treemacs-root-face
@@ -463,6 +464,15 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (kbd "K") 'elfeed-goodies/split-show-prev)
 #+end_src
 
+** dired-ranger
+#+begin_src emacs-lisp
+(use-package ranger
+  :config
+  (ranger-override-dired-mode t)
+  (setq ranger-cleanup-eagerly t)
+  (setq ranger-modify-header t)
+)
+#+end_src
 * Terminal
 #+begin_src emacs-lisp :tangle yes
 (use-package! vterm
