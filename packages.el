@@ -13,6 +13,9 @@
 (package! leetcode)
 (package! keycast)
 (package! treemacs-evil)
+(package! treemacs-magit)
+(package! treemacs-all-the-icons)
+(package! treemacs-icons-dired)
 (package! tramp
   ;:recipe (:local-repo "/usr/share/emacs/site-lisp/")
   )

@@ -126,15 +126,23 @@
   :config
   (progn
     (setq treemacs-width 17))
-  (require 'treemacs-all-the-icons)
-  ;;(treemacs-resize-icons 11)
+  (treemacs-follow-mode t)
   )
-(dolist (face '(treemacs-root-face
-                treemacs-directory-face
-                treemacs-directory-collapsed-face
-                treemacs-file-face
-                treemacs-tags-face))
-  (set-face-attribute face nil :family "Comic Mono" :height 140))
+
+(use-package treemacs-all-the-icons)
+(use-package treemacs-icons-dired
+  :after (treemacs dired)
+  :config (treemacs-icons-dired-mode))
+(use-package treemacs-evil
+  :after (treemacs evil))
+(use-package treemacs-magit
+  :after (treemacs magit))
+;(dolist (face '(treemacs-root-face
+;                treemacs-directory-face
+;                treemacs-directory-collapsed-face
+;                treemacs-file-face
+;                treemacs-tags-face))
+;  (set-face-attribute face nil :family "Comic Mono" :height 140))
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
