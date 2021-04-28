@@ -165,9 +165,10 @@ https://emacs-china.org/t/topic/1271
 ** Color ~shell~ block output
 [[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp :tangle yes
 (use-package cl-lib
-  :config
+  :defer 20
+  :custom
   (defun org-redisplay-ansi-source-blocks ()
     "Refresh the display of ANSI text source blocks."
     (interactive)
@@ -177,11 +178,9 @@ https://emacs-china.org/t/topic/1271
           (let ((begin (org-element-property :begin src))
                 (end (org-element-property :end src)))
             (ansi-color-apply-on-region begin end))))))
-  )
-(with-eval-after-load 'org
   (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
   (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
-  )
+)
 #+END_SRC
 
 ** org-capture-extension and org-protocol
@@ -256,25 +255,14 @@ https://emacs-china.org/t/topic/1271
 #+begin_src emacs-lisp
 (use-package! treemacs
   :config
-  (progn
-    (setq treemacs-width 17))
-  (treemacs-follow-mode t)
+  (setq treemacs-width 17)
   )
-
-(use-package treemacs-all-the-icons)
 (use-package treemacs-icons-dired
   :after (treemacs dired)
   :config (treemacs-icons-dired-mode))
-(use-package treemacs-evil
-  :after (treemacs evil))
-(use-package treemacs-magit
-  :after (treemacs magit))
-;(dolist (face '(treemacs-root-face
-;                treemacs-directory-face
-;                treemacs-directory-collapsed-face
-;                treemacs-file-face
-;                treemacs-tags-face))
-;  (set-face-attribute face nil :family "Comic Mono" :height 140))
+(treemacs-git-mode 'extended)
+(with-eval-after-load 'treemacs
+  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 #+end_src
 ** ivy-posframe
 #+begin_src emacs-lisp :tangle no

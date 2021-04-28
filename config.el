@@ -62,6 +62,22 @@
 
 (setq show-paren-style 'expression)
 
+(use-package cl-lib
+  :defer 20
+  :custom
+  (defun org-redisplay-ansi-source-blocks ()
+    "Refresh the display of ANSI text source blocks."
+    (interactive)
+    (org-element-map (org-element-parse-buffer) 'src-block
+      (lambda (src)
+        (when (equalp "ansi" (org-element-property :language src))
+          (let ((begin (org-element-property :begin src))
+                (end (org-element-property :end src)))
+            (ansi-color-apply-on-region begin end))))))
+  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
+  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
+)
+
 (defun transform-square-brackets-to-round-ones(string-to-transform)
   "Transforms [ into ( and ] into ), other chars left unchanged."
   (concat
@@ -124,25 +140,14 @@
 
 (use-package! treemacs
   :config
-  (progn
-    (setq treemacs-width 17))
-  (treemacs-follow-mode t)
+  (setq treemacs-width 17)
   )
-
-(use-package treemacs-all-the-icons)
 (use-package treemacs-icons-dired
   :after (treemacs dired)
   :config (treemacs-icons-dired-mode))
-(use-package treemacs-evil
-  :after (treemacs evil))
-(use-package treemacs-magit
-  :after (treemacs magit))
-;(dolist (face '(treemacs-root-face
-;                treemacs-directory-face
-;                treemacs-directory-collapsed-face
-;                treemacs-file-face
-;                treemacs-tags-face))
-;  (set-face-attribute face nil :family "Comic Mono" :height 140))
+(treemacs-git-mode 'extended)
+(with-eval-after-load 'treemacs
+  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
