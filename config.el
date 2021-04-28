@@ -142,9 +142,7 @@
   :config
   (setq treemacs-width 17)
   )
-(use-package treemacs-icons-dired
-  :after (treemacs dired)
-  :config (treemacs-icons-dired-mode))
+(require 'treemacs-all-the-icons)
 (treemacs-git-mode 'extended)
 (with-eval-after-load 'treemacs
   (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
@@ -319,9 +317,17 @@
 
 (use-package! vterm
   :config
-  (setq vterm-shell "/usr/bin/fish")
+  (setq vterm-shell "/usr/bin/fish"
+        vterm-buff-name-string "vterm %s"
+        vterm-kill-buffer-on-exit t)
   )
-(use-package multi-vterm
-  )
+(use-package multi-vterm)
+(use-package vterm-toggle
+  :config
+
+  ;; you can cd to the directory where your previous buffer file exists
+  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
+  (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+)
 
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)

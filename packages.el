@@ -12,8 +12,6 @@
   )
 (package! leetcode)
 (package! keycast)
-(package! treemacs-all-the-icons)
-(package! treemacs-icons-dired)
 (package! tramp
   ;:recipe (:local-repo "/usr/share/emacs/site-lisp/")
   )
@@ -21,7 +19,11 @@
   :disable t)
 (package! latex-math-preview)
 (package! elfeed-goodies)
+
+(package! treemacs-all-the-icons)
+(package! all-the-icons-dired)
 (package! multi-vterm)
+(package! vterm-toggle)
 (package! ranger)
 
 ;; To install a package directly from a remote git repo, you must specify a
