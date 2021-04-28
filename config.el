@@ -62,28 +62,6 @@
 
 (setq show-paren-style 'expression)
 
-(use-package cl-lib
-  :defer 20
-  :custom
-  (defun org-redisplay-ansi-source-blocks ()
-    "Refresh the display of ANSI text source blocks."
-    (interactive)
-    (org-element-map (org-element-parse-buffer) 'src-block
-      (lambda (src)
-        (when (equalp "ansi" (org-element-property :language src))
-          (let ((begin (org-element-property :begin src))
-                (end (org-element-property :end src)))
-            (ansi-color-apply-on-region begin end))))))
-  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
-  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
-)
-
-(defun transform-square-brackets-to-round-ones(string-to-transform)
-  "Transforms [ into ( and ] into ), other chars left unchanged."
-  (concat
-  (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform))
-  )
-
 (use-package org
   :init
   (setq org-directory "~/org/")
@@ -100,10 +78,6 @@
                               ("r" "Readings" entry
                                (file+headline "~/org/gtd/inbox.org" "Readings")
                                "* PROJ %i%? \n %U")
-	                      ("p" "Protocol" entry (file+headline "~/org/notes.org" "Inbox")
-                               "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-	                      ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-                               "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
                               ))
   (setq org-log-done 'time)
   :custom
@@ -116,7 +90,25 @@
         org-startup-with-inline-images t
   )
 )
-(require 'org-protocol)
+
+(use-package cl-lib
+  ;:defer 20
+  :custom
+  (defun org-redisplay-ansi-source-blocks ()
+    "Refresh the display of ANSI text source blocks."
+    (interactive)
+    (org-element-map (org-element-parse-buffer) 'src-block
+      (lambda (src)
+        (when (equalp "ansi" (org-element-property :language src))
+          (let ((begin (org-element-property :begin src))
+                (end (org-element-property :end src)))
+            (ansi-color-apply-on-region begin end))))))
+  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
+  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
+)
+(setq org-babel-default-header-args:shell
+      '((:results . "output verbatim drawer")
+        (:wrap . "src ansi")))
 
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
@@ -331,3 +323,7 @@
 )
 
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(when (and (executable-find "fish")
+           (require 'fish-completion nil t))
+  (global-fish-completion-mode))
