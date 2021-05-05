@@ -162,41 +162,63 @@ https://emacs-china.org/t/topic/1271
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+end_src
 * Org
-** TODO org capture template
-#+begin_src emacs-lisp :tangle no
-(use-package doct)
-#+end_src
-
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 (use-package org
   :init
   (setq org-directory "~/org/")
-  (setq org-agenda-files '("~/org/gtd/inbox.org"
-                           ;;"~/org/gtd/todo.org"
-                           "~/org/gtd/projects.org"))
+  (defvar co/org-agenda-directory (expand-file-name "agenda" org-directory))
+  (defun co/org-agenda-file-paths (path)
+    (if (listp path)
+        (mapcar (lambda (x) (expand-file-name (concat x ".org") co/org-agenda-directory)) path)
+      (expand-file-name (concat path ".org") co/org-agenda-directory)))
+
+  (setq org-agenda-files (co/org-agenda-file-paths '("todo" "habits" "journal")))
+
   :config
-  (setq org-capture-templates '(("t" "Todo [inbox]" entry
-                               (file+headliner "~/org/gtd/inbox.org" "Inbox")
-                               "* TODO %i%?")
-                              ("s" "Someday" entry
-                               (file+headline "~/org/gtd/inbox.org" "Someday")
-                               "* HOLD %i%? \n %U")
-                              ("r" "Readings" entry
-                               (file+headline "~/org/gtd/inbox.org" "Readings")
-                               "* PROJ %i%? \n %U")
-                              ))
-  (setq org-log-done 'time)
-  :custom
-  ;;(org-src-window-setup 'split-window-right)
-  ;;(setq org-todo-keywords '((sequence "TODO(t)" "STRT(s)" "WAIT(w@)" "HOLD(h)" "|" "DONE(d!)" "KILL(k@)")
-  ;;                          (sequence "[ ](T)" "[-](S)" "[?](W@)" "|" "[x](D)")))
-  ;;(setq org-modules '(org-habit))
-  (setq org-display-inline-images t
+  (setq org-ellipsis " ▾"
+        org-agenda-start-with-log-mode t
+        org-log-done 'time
+        org-log-into-drawer t
+        org-display-inline-images t
         org-image-actual-width 400
         org-startup-with-inline-images t
-  )
+        org-refile-targets '(("archive.org" :maxlevel . 1)))
+  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+  (setq org-tag-alist
+    '((:startgroup)
+       ; Put mutually exclusive tags here
+       (:endgroup)
+       ("@home" . ?H)
+       ("@work" . ?W)
+       ("agenda" . ?a)
+       ("publish" . ?P)
+       ("batch" . ?b)
+       ("idea" . ?i)))
+  ;https://stackoverflow.com/a/50875921
+  (setq org-capture-templates
+    `(("t" "Tasks / Projects")
+      ("tt" "Task" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
+           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+      ("ts" "Someday" entry (file+olp ,(co/org-agenda-file-paths "todos") "Someday")
+           "* HOLD %?\n  %U\n  %a\n  %i" :empty-lines 1)
+      ("tt" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
+           "* PROJ %?\n  %U\n  %a\n  %i" :empty-lines 1)
+
+      ("j" "Journal Entries")
+      ("jj" "Journal" entry
+           (file+olp+datetree ,(co/org-agenda-file-paths "journal"))
+           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+           :clock-in :clock-resume
+           :empty-lines 1)
+
+      ("m" "Metrics Capture")
+      ("mw" "Weight" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Weight")
+       "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 )
 #+end_src
+
 ** Color ~shell~ block output
 [[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
 
@@ -398,6 +420,9 @@ https://emacs-china.org/t/topic/1271
                  ))
   )
 #+end_src
+
+#+RESULTS:
+: t
 
 can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/omf/init.fish]]
 
