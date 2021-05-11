@@ -222,10 +222,9 @@ https://emacs-china.org/t/topic/1271
 ** Color ~shell~ block output
 [[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package cl-lib
-  ;:defer 20
-  :custom
+  :init
   (defun org-redisplay-ansi-source-blocks ()
     "Refresh the display of ANSI text source blocks."
     (interactive)
@@ -235,17 +234,24 @@ https://emacs-china.org/t/topic/1271
           (let ((begin (org-element-property :begin src))
                 (end (org-element-property :end src)))
             (ansi-color-apply-on-region begin end))))))
+  :custom
   (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
-  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
+  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)
+                                                           (fish . t)
+                                                           (bash . t)))
+  (setq org-babel-default-header-args:bash
+        '((:results . "output verbatim drawer")
+          (:wrap . "src ansi")))
 )
-(setq org-babel-default-header-args:shell
-      '((:results . "output verbatim drawer")
-        (:wrap . "src ansi")))
 #+END_SRC
 
 #+RESULTS:
-: ((:results . output verbatim drawer) (:wrap . src ansi))
+: cl-lib
 
+** org-ref
+#+begin_src emacs-lisp
+(use-package org-ref)
+#+end_src
 * latex
 #+begin_src emacs-lisp
 (eval-after-load 'latex
@@ -406,7 +412,7 @@ https://emacs-china.org/t/topic/1271
 [[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
 ~tramp~ from ~Melpa~ bugy, install it from ~aur~.
 #+begin_src emacs-lisp :tangle yes
-(require 'tramp)
+;(require 'tramp)
 (use-package! tramp
   :config
   ;(setenv "SHELL" "/bin/bash")
@@ -418,11 +424,15 @@ https://emacs-china.org/t/topic/1271
                  (tramp-login-args (("enter")))
                  ;(tramp-login-env (("SHELL") ("/bin/bash")))
                  ))
+  (defun yadm-status ()
+    (interactive)
+    (magit-status "/yadm::"))
+  (map! :leader
+        (:prefix "g"
+         :desc "yadm-status" "a" #'yadm-status)
+        )
   )
 #+end_src
-
-#+RESULTS:
-: t
 
 can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/omf/init.fish]]
 
@@ -515,7 +525,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 (use-package! vterm
   :config
   (setq vterm-shell "/usr/bin/fish"
-        vterm-buff-name-string "vterm %s"
+        vterm-buffer-name-string "vterm %s"
         vterm-kill-buffer-on-exit t)
   )
 (use-package multi-vterm)
@@ -524,12 +534,13 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 
   ;; you can cd to the directory where your previous buffer file exists
   ;; after you have toggle to the vterm buffer with `vterm-toggle'.
-  (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+  (setq vterm-toggle-cd-auto-create-buffer nil)
 )
 #+end_src
 ** Colored output issues
 https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+end_src
 ** fish shell
@@ -542,4 +553,27 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp :tangle no
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+#+end_src
+
+** tab bar
+#+begin_src emacs-lisp
+(use-package centaur-tabs
+  :config
+  (centaur-tabs-mode t)
+  (setq centaur-tabs-style "bar"
+        centaur-tabs-set-icons t
+        centaur-tabs-plain-icons t
+        centaur-tabs-gray-out-icons 'buffer
+        centaur-tabs-set-bar 'under
+        centaur-tabs-set-modified-marker t)
+  :bind
+  (:map evil-normal-state-map
+	  ("g t" . centaur-tabs-forward)
+	  ("g T" . centaur-tabs-backward))
+  )
+;(map! :leader
+;      (:prefix-map ("a" . "tabs")
+;       :desc "next-tabs" "j" #'centaur-tabs-forward
+;       :desc "previous-tab" "k" #'centaur-tabs-backward
+;       ))
 #+end_src

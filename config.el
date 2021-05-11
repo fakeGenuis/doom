@@ -117,24 +117,7 @@
        "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 )
 
-(use-package cl-lib
-  ;:defer 20
-  :custom
-  (defun org-redisplay-ansi-source-blocks ()
-    "Refresh the display of ANSI text source blocks."
-    (interactive)
-    (org-element-map (org-element-parse-buffer) 'src-block
-      (lambda (src)
-        (when (equalp "ansi" (org-element-property :language src))
-          (let ((begin (org-element-property :begin src))
-                (end (org-element-property :end src)))
-            (ansi-color-apply-on-region begin end))))))
-  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
-  (org-babel-do-load-languages 'org-babel-load-languages '((shell . t)))
-)
-(setq org-babel-default-header-args:shell
-      '((:results . "output verbatim drawer")
-        (:wrap . "src ansi")))
+(use-package org-ref)
 
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
@@ -243,7 +226,7 @@
          ))
  )
 
-(require 'tramp)
+;(require 'tramp)
 (use-package! tramp
   :config
   ;(setenv "SHELL" "/bin/bash")
@@ -255,6 +238,13 @@
                  (tramp-login-args (("enter")))
                  ;(tramp-login-env (("SHELL") ("/bin/bash")))
                  ))
+  (defun yadm-status ()
+    (interactive)
+    (magit-status "/yadm::"))
+  (map! :leader
+        (:prefix "g"
+         :desc "yadm-status" "a" #'yadm-status)
+        )
   )
 
 (after! keycast
@@ -336,7 +326,7 @@
 (use-package! vterm
   :config
   (setq vterm-shell "/usr/bin/fish"
-        vterm-buff-name-string "vterm %s"
+        vterm-buffer-name-string "vterm %s"
         vterm-kill-buffer-on-exit t)
   )
 (use-package multi-vterm)
@@ -345,11 +335,30 @@
 
   ;; you can cd to the directory where your previous buffer file exists
   ;; after you have toggle to the vterm buffer with `vterm-toggle'.
-  (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+  (setq vterm-toggle-cd-auto-create-buffer nil)
 )
-
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 (when (and (executable-find "fish")
            (require 'fish-completion nil t))
   (global-fish-completion-mode))
+
+(use-package centaur-tabs
+  :config
+  (centaur-tabs-mode t)
+  (setq centaur-tabs-style "bar"
+        centaur-tabs-set-icons t
+        centaur-tabs-plain-icons t
+        centaur-tabs-gray-out-icons 'buffer
+        centaur-tabs-set-bar 'under
+        centaur-tabs-set-modified-marker t)
+  :bind
+  (:map evil-normal-state-map
+	  ("g t" . centaur-tabs-forward)
+	  ("g T" . centaur-tabs-backward))
+  )
+;(map! :leader
+;      (:prefix-map ("a" . "tabs")
+;       :desc "next-tabs" "j" #'centaur-tabs-forward
+;       :desc "previous-tab" "k" #'centaur-tabs-backward
+;       ))
