@@ -20,14 +20,15 @@
 (package! latex-math-preview)
 (package! elfeed-goodies)
 
-(package! treemacs-all-the-icons)
-(package! all-the-icons-dired)
 (package! multi-vterm)
 (package! vterm-toggle)
 (package! ranger)
-
 (package! fish-mode)
-(package! fish-completion)
+
+;(package! ctable)
+;(package! deferred)
+;(package! epc)
+;(package! s)
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format

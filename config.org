@@ -245,11 +245,8 @@ https://emacs-china.org/t/topic/1271
 )
 #+END_SRC
 
-#+RESULTS:
-: cl-lib
-
 ** org-ref
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package org-ref)
 #+end_src
 * latex
@@ -280,9 +277,8 @@ https://emacs-china.org/t/topic/1271
 (use-package! treemacs
   :config
   (setq treemacs-width 17)
+  (treemacs-git-mode 'extended)
   )
-(require 'treemacs-all-the-icons)
-(treemacs-git-mode 'extended)
 (with-eval-after-load 'treemacs
   (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 #+end_src
@@ -515,8 +511,9 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 (use-package ranger
   :config
   (ranger-override-dired-mode t)
-  (setq ranger-cleanup-eagerly t)
-  (setq ranger-modify-header t)
+  (setq ranger-cleanup-eagerly t
+        ranger-modify-header t
+        ranger-return-to-ranger t)
 )
 #+end_src
 * Terminal
@@ -559,13 +556,20 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 #+begin_src emacs-lisp
 (use-package centaur-tabs
   :config
+  (centaur-tabs-headline-match)
   (centaur-tabs-mode t)
-  (setq centaur-tabs-style "bar"
+  (setq centaur-tabs-style "box"
+        centaur-tabs-height 26
         centaur-tabs-set-icons t
-        centaur-tabs-plain-icons t
+        ;centaur-tabs-plain-icons t
         centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'under
+        centaur-tabs-set-bar 'left
         centaur-tabs-set-modified-marker t)
+  :hook
+  (+doom-dashboard-mode . centaur-tabs-local-mode)
+  (ranger-mode-hook . centaur-tabs-local-mode)
+  (calendar-mode . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
   :bind
   (:map evil-normal-state-map
 	  ("g t" . centaur-tabs-forward)
@@ -576,4 +580,25 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 ;       :desc "next-tabs" "j" #'centaur-tabs-forward
 ;       :desc "previous-tab" "k" #'centaur-tabs-backward
 ;       ))
+#+end_src
+
+** EAF
+#+begin_src emacs-lisp :tangle no
+(use-package eaf
+  :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
+  ;:load-path "/usr/share/emacs/site-lisp/eaf" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
+  :init
+  (use-package epc :defer t :ensure t)
+  (use-package ctable :defer t :ensure t)
+  (use-package deferred :defer t :ensure t)
+  (use-package s :defer t :ensure t)
+  :custom
+  (eaf-browser-continue-where-left-off t)
+  :config
+  (eaf-setq eaf-browser-enable-adblocker "true")
+  ;(eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  ;(eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  ;(eaf-bind-key take_photo "p" eaf-camera-keybinding)
+  ;(eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+)
 #+end_src

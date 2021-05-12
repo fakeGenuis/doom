@@ -117,8 +117,6 @@
        "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 )
 
-(use-package org-ref)
-
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
          LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
@@ -142,9 +140,8 @@
 (use-package! treemacs
   :config
   (setq treemacs-width 17)
+  (treemacs-git-mode 'extended)
   )
-(require 'treemacs-all-the-icons)
-(treemacs-git-mode 'extended)
 (with-eval-after-load 'treemacs
   (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 
@@ -319,8 +316,9 @@
 (use-package ranger
   :config
   (ranger-override-dired-mode t)
-  (setq ranger-cleanup-eagerly t)
-  (setq ranger-modify-header t)
+  (setq ranger-cleanup-eagerly t
+        ranger-modify-header t
+        ranger-return-to-ranger t)
 )
 
 (use-package! vterm
@@ -345,13 +343,20 @@
 
 (use-package centaur-tabs
   :config
+  (centaur-tabs-headline-match)
   (centaur-tabs-mode t)
-  (setq centaur-tabs-style "bar"
+  (setq centaur-tabs-style "box"
+        centaur-tabs-height 26
         centaur-tabs-set-icons t
-        centaur-tabs-plain-icons t
+        ;centaur-tabs-plain-icons t
         centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'under
+        centaur-tabs-set-bar 'left
         centaur-tabs-set-modified-marker t)
+  :hook
+  (+doom-dashboard-mode . centaur-tabs-local-mode)
+  (ranger-mode-hook . centaur-tabs-local-mode)
+  (calendar-mode . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
   :bind
   (:map evil-normal-state-map
 	  ("g t" . centaur-tabs-forward)
