@@ -12,9 +12,9 @@
   )
 (package! leetcode)
 (package! keycast)
-(package! tramp
-  ;:recipe (:local-repo "/usr/share/emacs/site-lisp/")
-  )
+;(package! tramp
+;  :recipe (:local-repo "/usr/share/emacs/site-lisp/")
+;  )
 (package! math-preview
   :disable t)
 (package! latex-math-preview)
