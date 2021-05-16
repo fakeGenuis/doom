@@ -2,8 +2,8 @@
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
-(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
-(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+;(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+;(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
 (defun toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
@@ -22,9 +22,9 @@
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
           doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
   (setq doom-font (font-spec :family "mononoki Nerd Font" :size 24)
-        doom-variable-pitch-font (font-spec :family "Ubuntu Mono")))
+        doom-variable-pitch-font (font-spec :family "mononoki Nerd Font")))
 
-(setq doom-theme 'doom-ephemeral)
+(setq doom-theme 'doom-one)
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
@@ -48,11 +48,11 @@
    '(mode-line ((t (:family "Comic Shanns" :height 120))))
    '(mode-line-inactive ((t (:family "Comic Shanns" :height 120)))))
 )
-(defun my-doom-modeline--font-height ()
+(defun my/doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
   (if (equal (display-pixel-width) 3840)
       26 24))
-(advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
+(advice-add #'doom-modeline--font-height :override #'my/doom-modeline--font-height)
 
 (use-package all-the-icons
   :config
@@ -82,6 +82,7 @@
         org-image-actual-width 400
         org-startup-with-inline-images t
         org-refile-targets '(("archive.org" :maxlevel . 1)))
+
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
   (setq org-tag-alist
@@ -327,7 +328,7 @@
         vterm-buffer-name-string "vterm %s"
         vterm-kill-buffer-on-exit t)
   )
-(use-package multi-vterm)
+;(use-package multi-vterm)
 (use-package vterm-toggle
   :config
 

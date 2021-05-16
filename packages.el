@@ -20,9 +20,9 @@
 (package! latex-math-preview)
 (package! elfeed-goodies)
 
-(package! multi-vterm)
+;; shell and shell utils
+;(package! multi-vterm)
 (package! vterm-toggle)
-(package! ranger)
 (package! fish-mode)
 
 ;(package! ctable)

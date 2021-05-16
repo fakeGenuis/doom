@@ -66,7 +66,9 @@
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       ;;dired             ; making dired pretty [functional]
+       (dired             ; making dired pretty [functional]
+        +ranger
+        +icons)
        ;;electric          ; smarter, keyword-based electric-indent
        ;;ibuffer         ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
@@ -137,7 +139,8 @@
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
-       latex             ; writing papers in Emacs has never been so fun
+       (latex             ; writing papers in Emacs has never been so fun
+        +lsp)
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
@@ -150,9 +153,12 @@
         +hugo
         +dragndrop
         +gnuplot
+        +noter
         +present
+        +pandoc
         +pretty
         +python
+        +journal
         +jupyter
         )
        ;;php               ; perl's insecure younger brother
