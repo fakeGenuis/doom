@@ -516,13 +516,16 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+end_src
 ** mathematica
 #+begin_src emacs-lisp :tangle no
-(use-package wolfram-mode
+(use-package! lsp-mode
   :config
-  (autoload 'wolfram-mode "wolfram-mode" nil t)
-  (autoload 'run-wolfram "wolfram-mode" nil t)
-  (setq wolfram-program "/usr/local/bin/wolfram")
-  (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
-  (setq wolfram-path "~/.Mathematica/Applications")
+  (use-package! wolfram-mode
+    :config
+    (autoload 'wolfram-mode "wolfram-mode" nil t)
+    (autoload 'run-wolfram "wolfram-mode" nil t)
+    (setq wolfram-program "/usr/local/bin/wolfram")
+    (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
+    (setq wolfram-path "~/.Mathematica/Applications")
+    )
 
   (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
 
@@ -541,7 +544,6 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
                     :server-id 'lsp-wl
                     ))
   )
-
 #+end_src
 * Terminal
 ** vterm and plugins

@@ -25,6 +25,9 @@
 (package! vterm-toggle)
 (package! fish-mode)
 
+;; wolfram
+;(package! wolfram-mode)
+
 ;(package! ctable)
 ;(package! deferred)
 ;(package! epc)
