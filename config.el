@@ -82,6 +82,8 @@
         org-image-actual-width 400
         org-startup-with-inline-images t
         org-refile-targets '(("archive.org" :maxlevel . 1)))
+  (org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
