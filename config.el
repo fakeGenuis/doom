@@ -62,6 +62,14 @@
 
 (setq show-paren-style 'expression)
 
+(use-package! yasnippet
+  :config
+  ;(setq +file-templates-dir "~/.config/doom/templates/")
+  (set-file-template! "/leetcode/.+\\.cpp$"
+    ;:when +file-templates-in-emacs-dirs-p
+    :trigger "__leetcode.cpp" :mode 'c++-mode)
+  )
+
 (use-package org
   :init
   (setq org-directory "~/org/")
@@ -82,7 +90,7 @@
         org-image-actual-width 400
         org-startup-with-inline-images t
         org-refile-targets '(("archive.org" :maxlevel . 1)))
-  (org-clock-persist 'history)
+  ;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
 
   ;; Save Org buffers after refiling!

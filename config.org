@@ -161,6 +161,16 @@ https://emacs-china.org/t/topic/1271
   (("M-j" . pyim-convert-string-at-point) ;与 pyim-probe-dynamic-english 配合
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+end_src
+** File Templates
+#+begin_src emacs-lisp
+(use-package! yasnippet
+  :config
+  ;(setq +file-templates-dir "~/.config/doom/templates/")
+  (set-file-template! "/leetcode/.+\\.cpp$"
+    ;:when +file-templates-in-emacs-dirs-p
+    :trigger "__leetcode.cpp" :mode 'c++-mode)
+  )
+#+end_src
 * Org
 #+begin_src emacs-lisp :results none
 (use-package org
@@ -183,7 +193,7 @@ https://emacs-china.org/t/topic/1271
         org-image-actual-width 400
         org-startup-with-inline-images t
         org-refile-targets '(("archive.org" :maxlevel . 1)))
-  (org-clock-persist 'history)
+  ;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
 
   ;; Save Org buffers after refiling!
