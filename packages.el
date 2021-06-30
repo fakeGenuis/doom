@@ -25,6 +25,7 @@
 (package! vterm-toggle)
 (package! fish-mode)
 
+(package! lua-mode)
 ;; wolfram
 ;(package! wolfram-mode)
 
