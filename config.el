@@ -21,7 +21,7 @@
     (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
           doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
-  (if (< (display-mm-width) 400)
+  (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
             doom-unicode-font (font-spec :family "Material Design Icons" :size 24)
@@ -191,7 +191,7 @@
 )
 
 (with-eval-after-load 'mu4e
- (setq mu4e-get-mail-command "all_proxy='socks5://127.0.0.1:1089' mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+ (setq mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
  (setq mu4e-contexts
         `(
          ,(make-mu4e-context
