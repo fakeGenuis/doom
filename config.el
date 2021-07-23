@@ -21,10 +21,16 @@
     (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
           doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
-  (setq doom-font (font-spec :family "mononoki Nerd Font" :size 24)
-        doom-variable-pitch-font (font-spec :family "mononoki Nerd Font")))
+  (if (< (display-mm-width) 400)
+      (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
+            doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
+            doom-unicode-font (font-spec :family "Material Design Icons" :size 24)
+            doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei"))
+    (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 24)
+        doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font")))
+    )
 
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-palenight)
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
