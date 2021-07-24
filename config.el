@@ -24,7 +24,7 @@
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
-            doom-unicode-font (font-spec :family "Material Design Icons" :size 24)
+            doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
             doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei"))
     (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 24)
         doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font")))
@@ -133,6 +133,9 @@
       ("mw" "Weight" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Weight")
        "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 )
+
+(setq deft-directory "~/org")
+(setq deft-default-extension "org")
 
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
@@ -323,12 +326,12 @@
   (elfeed-db-save)
   (quit-window))
 
-(evil-define-key 'normal elfeed-show-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
-(evil-define-key 'normal elfeed-search-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
+;(evil-define-key 'normal elfeed-show-mode-map
+;  (kbd "J") 'elfeed-goodies/split-show-next
+;  (kbd "K") 'elfeed-goodies/split-show-prev)
+;(evil-define-key 'normal elfeed-search-mode-map
+;  (kbd "J") 'elfeed-goodies/split-show-next
+;  (kbd "K") 'elfeed-goodies/split-show-prev)
 
 (use-package ranger
   :config
@@ -357,30 +360,3 @@
 (when (and (executable-find "fish")
            (require 'fish-completion nil t))
   (global-fish-completion-mode))
-
-(use-package centaur-tabs
-  :config
-  (centaur-tabs-headline-match)
-  (centaur-tabs-mode t)
-  (setq centaur-tabs-style "box"
-        centaur-tabs-height 26
-        centaur-tabs-set-icons t
-        ;centaur-tabs-plain-icons t
-        centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'left
-        centaur-tabs-set-modified-marker t)
-  :hook
-  (+doom-dashboard-mode . centaur-tabs-local-mode)
-  (ranger-mode-hook . centaur-tabs-local-mode)
-  (calendar-mode . centaur-tabs-local-mode)
-  (org-agenda-mode . centaur-tabs-local-mode)
-  :bind
-  (:map evil-normal-state-map
-	  ("g t" . centaur-tabs-forward)
-	  ("g T" . centaur-tabs-backward))
-  )
-;(map! :leader
-;      (:prefix-map ("a" . "tabs")
-;       :desc "next-tabs" "j" #'centaur-tabs-forward
-;       :desc "previous-tab" "k" #'centaur-tabs-backward
-;       ))

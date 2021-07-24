@@ -36,11 +36,38 @@
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
-            doom-unicode-font (font-spec :family "Material Design Icons" :size 24)
+            doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
             doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei"))
     (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 24)
         doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font")))
     )
+#+end_src
+
+Chinese font setting
++ [2021-07-24 Sat 15:27] doom emacs 下中文字体的设置 - Emacs-general - Emacs China :grasp:
+https://emacs-china.org/t/doom-emacs/9628/9
+#+begin_src emacs-lisp :tangle no
+(defun +my/better-font()
+  (interactive)
+  ;; english font
+  (if (display-graphic-p)
+      (progn
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 36)) ;; 11 13 17 19 23
+        ;; chinese font
+        (dolist (charset '(kana han symbol cjk-misc bopomofo))
+          (set-fontset-font (frame-parameter nil 'font)
+                            charset
+                            (font-spec :family "WenQuanYi Zen Hei" :size 24)))) ;; 14 16 20 22 28
+    ))
+
+(defun +my|init-font(frame)
+  (with-selected-frame frame
+    (if (display-graphic-p)
+        (+my/better-font))))
+
+(if (and (fboundp 'daemonp) (daemonp))
+    (add-hook 'after-make-frame-functions #'+my|init-font)
+  (+my/better-font))
 #+end_src
 
 ** Hidpi-fonts
@@ -264,6 +291,11 @@ https://emacs-china.org/t/topic/1271
 ** org-ref
 #+begin_src emacs-lisp :tangle no
 (use-package org-ref)
+#+end_src
+** deft
+#+begin_src emacs-lisp
+(setq deft-directory "~/org")
+(setq deft-default-extension "org")
 #+end_src
 * latex
 #+begin_src emacs-lisp
@@ -521,12 +553,12 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (elfeed-db-save)
   (quit-window))
 
-(evil-define-key 'normal elfeed-show-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
-(evil-define-key 'normal elfeed-search-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
+;(evil-define-key 'normal elfeed-show-mode-map
+;  (kbd "J") 'elfeed-goodies/split-show-next
+;  (kbd "K") 'elfeed-goodies/split-show-prev)
+;(evil-define-key 'normal elfeed-search-mode-map
+;  (kbd "J") 'elfeed-goodies/split-show-next
+;  (kbd "K") 'elfeed-goodies/split-show-prev)
 #+end_src
 
 ** dired-ranger
@@ -607,7 +639,7 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 #+end_src
 
 ** tab bar
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package centaur-tabs
   :config
   (centaur-tabs-headline-match)

@@ -24,6 +24,7 @@
 ;(package! multi-vterm)
 (package! vterm-toggle)
 (package! fish-mode)
+;(package! tmux-pane)
 
 (package! lua-mode)
 ;; wolfram
