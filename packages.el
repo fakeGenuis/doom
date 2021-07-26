@@ -7,9 +7,6 @@
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 
-(package! ivy-posframe
-  :disable t
-  )
 (package! leetcode)
 (package! keycast)
 ;(package! tramp
@@ -20,16 +17,11 @@
 (package! latex-math-preview)
 (package! elfeed-goodies)
 
-;; shell and shell utils
-;(package! multi-vterm)
-(package! vterm-toggle)
-(package! fish-mode)
-;(package! tmux-pane)
-
-(package! lua-mode)
+(package! treemacs-all-the-icons)
 ;; wolfram
 ;(package! wolfram-mode)
 
+(package! edit-server)
 ;(package! ctable)
 ;(package! deferred)
 ;(package! epc)
