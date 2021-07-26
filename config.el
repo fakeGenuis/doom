@@ -30,13 +30,20 @@
         doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font")))
     )
 
-(setq doom-theme 'doom-palenight)
-(after! doom-themes
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
+;(setq doom-theme 'doom-palenight)
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t  ; if nil, italics is universally disabled
+        )
+  (load-theme 'doom-palenight t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
 
 (use-package! doom-modeline
-  ;;:ensure t
   :hook (after-init . doom-modeline-mode)
 
   ;; The limit of the window width.
@@ -68,7 +75,7 @@
 
 (setq show-paren-style 'expression)
 
-(use-package! yasnippet
+(after! yasnippet
   :config
   ;(setq +file-templates-dir "~/.config/doom/templates/")
   (set-file-template! "/leetcode/.+\\.cpp$"
@@ -159,11 +166,30 @@
 
 (use-package! treemacs
   :config
-  (setq treemacs-width 17)
+  (setq treemacs-width 17
+        ;https://github.com/hlissner/doom-emacs/issues/1551
+        doom-themes-treemacs-enable-variable-pitch nil
+        )
+  ;https://github.com/Alexander-Miller/treemacs/issues/486
+  (dolist (face '(treemacs-root-face
+                treemacs-git-unmodified-face
+                treemacs-git-modified-face
+                treemacs-git-renamed-face
+                treemacs-git-ignored-face
+                treemacs-git-untracked-face
+                treemacs-git-added-face
+                treemacs-git-conflict-face
+                treemacs-directory-face
+                treemacs-directory-collapsed-face
+                treemacs-file-face
+                treemacs-tags-face))
+  (set-face-attribute face nil :family "mononoki nerd font" :height 100))
   (treemacs-git-mode 'extended)
+  ;(require 'treemacs-all-the-icons)
+  (treemacs-load-all-the-icons-with-workaround-font "Inconsolata nerd font")
   )
-(with-eval-after-load 'treemacs
-  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
+;(with-eval-after-load 'treemacs
+;  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
@@ -340,6 +366,14 @@
         ranger-modify-header t
         ranger-return-to-ranger t)
 )
+(use-package dired
+  :config
+  ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
+  (setq all-the-icons-dired-monochrome nil)
+  )
+
+;https://docs.projectile.mx/projectile/configuration.html
+(setq projectile-file-exists-remote-cache-expire (* 10 60))
 
 (use-package! vterm
   :config
@@ -348,15 +382,31 @@
         vterm-kill-buffer-on-exit t)
   )
 ;(use-package multi-vterm)
-(use-package vterm-toggle
-  :config
-
-  ;; you can cd to the directory where your previous buffer file exists
-  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
-  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-  (setq vterm-toggle-cd-auto-create-buffer nil)
-)
+;(use-package vterm-toggle
+;  :config
+;
+;  ;; you can cd to the directory where your previous buffer file exists
+;  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
+;  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+;  (setq vterm-toggle-cd-auto-create-buffer nil)
+;)
 
 (when (and (executable-find "fish")
            (require 'fish-completion nil t))
   (global-fish-completion-mode))
+
+(use-package edit-server
+  :commands edit-server-start
+  :init (if after-init-time
+              (edit-server-start)
+            (add-hook 'after-init-hook
+                      #'(lambda() (edit-server-start))))
+  :config (setq edit-server-new-frame-alist
+                '((name . "Edit with Emacs FRAME")
+                  (top . 200)
+                  (left . 200)
+                  (width . 80)
+                  (height . 25)
+                  (minibuffer . t)
+                  (menu-bar-lines . t)
+                  (window-system . x))))

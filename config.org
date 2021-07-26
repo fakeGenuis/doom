@@ -86,16 +86,23 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 
 ** Themes
 #+begin_src emacs-lisp :tangle yes
-(setq doom-theme 'doom-palenight)
-(after! doom-themes
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
+;(setq doom-theme 'doom-palenight)
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t  ; if nil, italics is universally disabled
+        )
+  (load-theme 'doom-palenight t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
 #+end_src
 
 ** doom-modeline
 #+begin_src emacs-lisp :tangle yes
 (use-package! doom-modeline
-  ;;:ensure t
   :hook (after-init . doom-modeline-mode)
 
   ;; The limit of the window width.
@@ -150,12 +157,10 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 https://emacs-china.org/t/topic/1271
 #+begin_src emacs-lisp :tangle no
 (use-package pyim
-  :ensure nil
   :demand t
   :config
   ;; 激活 basedict 拼音词库，五笔用户请继续阅读 README
   (use-package pyim-basedict
-    :ensure nil
     :config (pyim-basedict-enable))
 
   (setq default-input-method "pyim")
@@ -195,8 +200,11 @@ https://emacs-china.org/t/topic/1271
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+end_src
 ** File Templates
-#+begin_src emacs-lisp
-(use-package! yasnippet
++ [2021-07-26 Mon 10:11] How to create files using the file-templates module? · Issue #2134 · hlissner/doom-emacs · GitHub :grasp:
+https://github.com/hlissner/doom-emacs/issues/2134
+
+#+begin_src emacs-lisp :tangle yes
+(after! yasnippet
   :config
   ;(setq +file-templates-dir "~/.config/doom/templates/")
   (set-file-template! "/leetcode/.+\\.cpp$"
@@ -324,42 +332,46 @@ https://emacs-china.org/t/topic/1271
 #+begin_src emacs-lisp
 (use-package! treemacs
   :config
-  (setq treemacs-width 17)
+  (setq treemacs-width 17
+        ;https://github.com/hlissner/doom-emacs/issues/1551
+        doom-themes-treemacs-enable-variable-pitch nil
+        )
+  ;https://github.com/Alexander-Miller/treemacs/issues/486
+  (dolist (face '(treemacs-root-face
+                treemacs-git-unmodified-face
+                treemacs-git-modified-face
+                treemacs-git-renamed-face
+                treemacs-git-ignored-face
+                treemacs-git-untracked-face
+                treemacs-git-added-face
+                treemacs-git-conflict-face
+                treemacs-directory-face
+                treemacs-directory-collapsed-face
+                treemacs-file-face
+                treemacs-tags-face))
+  (set-face-attribute face nil :family "mononoki nerd font" :height 100))
   (treemacs-git-mode 'extended)
+  ;(require 'treemacs-all-the-icons)
+  (treemacs-load-all-the-icons-with-workaround-font "Inconsolata nerd font")
   )
-(with-eval-after-load 'treemacs
-  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
+;(with-eval-after-load 'treemacs
+;  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 #+end_src
 ** ivy-posframe
 #+begin_src emacs-lisp :tangle no
 (use-package ivy-posframe
   :custom
-  (ivy-posframe-width      80)
-  (ivy-posframe-min-width  80)
-  ;(ivy-posframe-height     10)
-  ;(ivy-posframe-min-height 10)
-  (setq ivy-posframe-display-functions-alist '(
-                                               (t . ivy-posframe-display-at-frame-center)))
-  (setq ivy-posframe-parameters
+(setq ivy-posframe-display-functions-alist
+      '((swiper          . ivy-display-function-fallback)
+        (complete-symbol . ivy-posframe-display-at-point)
+        (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+        (t               . ivy-posframe-display)))
+(setq ivy-posframe-parameters
         '((left-fringe . 8)
           (right-fringe . 8)))
   :config
-  (ivy-posframe-mode 1))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(after! ivy
-  ;; Causes open buffers and recentf to combined in ivy-switch-buffer
-  :config
-  (progn
-    (setq ivy-posframe-display-functions-alist
-        '((complete-symbol . ivy-posframe-display-at-point)
-          (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-          (t               . ivy-posframe-display-at-window-center))
-        ivy-posframe-width (frame-width))
-      (ivy-posframe-mode 1)
-    )
-)
+  (ivy-posframe-mode 1)
+  )
 #+end_src
 ** leetcode
 #+begin_src emacs-lisp
@@ -570,7 +582,13 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
         ranger-modify-header t
         ranger-return-to-ranger t)
 )
+(use-package dired
+  :config
+  ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
+  (setq all-the-icons-dired-monochrome nil)
+  )
 #+end_src
+
 ** mathematica
 #+begin_src emacs-lisp :tangle no
 (use-package! lsp-mode
@@ -602,6 +620,11 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
                     ))
   )
 #+end_src
+** projectile
+#+begin_src emacs-lisp
+;https://docs.projectile.mx/projectile/configuration.html
+(setq projectile-file-exists-remote-cache-expire (* 10 60))
+#+end_src
 * Terminal
 ** vterm and plugins
 #+begin_src emacs-lisp :tangle yes
@@ -612,14 +635,14 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
         vterm-kill-buffer-on-exit t)
   )
 ;(use-package multi-vterm)
-(use-package vterm-toggle
-  :config
-
-  ;; you can cd to the directory where your previous buffer file exists
-  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
-  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-  (setq vterm-toggle-cd-auto-create-buffer nil)
-)
+;(use-package vterm-toggle
+;  :config
+;
+;  ;; you can cd to the directory where your previous buffer file exists
+;  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
+;  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+;  (setq vterm-toggle-cd-auto-create-buffer nil)
+;)
 #+end_src
 ** Colored output issues
 https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
@@ -687,4 +710,22 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
   ;(eaf-bind-key take_photo "p" eaf-camera-keybinding)
   ;(eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
 )
+#+end_src
+** edit-server
+#+begin_src emacs-lisp
+(use-package edit-server
+  :commands edit-server-start
+  :init (if after-init-time
+              (edit-server-start)
+            (add-hook 'after-init-hook
+                      #'(lambda() (edit-server-start))))
+  :config (setq edit-server-new-frame-alist
+                '((name . "Edit with Emacs FRAME")
+                  (top . 200)
+                  (left . 200)
+                  (width . 80)
+                  (height . 25)
+                  (minibuffer . t)
+                  (menu-bar-lines . t)
+                  (window-system . x))))
 #+end_src
