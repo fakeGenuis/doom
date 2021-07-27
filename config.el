@@ -144,6 +144,12 @@
 (setq deft-directory "~/org")
 (setq deft-default-extension "org")
 
+;(use-package org-roam
+;      :custom
+;      (org-roam-directory (file-truename "~/org/"))
+;      :config
+;      (org-roam-setup))
+
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
          LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
@@ -184,10 +190,17 @@
                 treemacs-file-face
                 treemacs-tags-face))
   (set-face-attribute face nil :family "mononoki nerd font" :height 100))
+      (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
   (treemacs-git-mode 'extended)
   ;(require 'treemacs-all-the-icons)
   (treemacs-load-all-the-icons-with-workaround-font "Inconsolata nerd font")
   )
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :config (treemacs-set-scope-type 'Perspectives)
+)
 ;(with-eval-after-load 'treemacs
 ;  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 
@@ -373,7 +386,12 @@
   )
 
 ;https://docs.projectile.mx/projectile/configuration.html
-(setq projectile-file-exists-remote-cache-expire (* 10 60))
+(use-package! projectile
+  :config
+  (setq projectile-file-exists-remote-cache-expire (* 10 60)
+        projectile-track-known-projects-automatically nil
+        projectile-auto-discover nil)
+  )
 
 (use-package! vterm
   :config

@@ -213,6 +213,7 @@ https://github.com/hlissner/doom-emacs/issues/2134
   )
 #+end_src
 * Org
+** org
 #+begin_src emacs-lisp :results none
 (use-package org
   :init
@@ -305,6 +306,14 @@ https://github.com/hlissner/doom-emacs/issues/2134
 (setq deft-directory "~/org")
 (setq deft-default-extension "org")
 #+end_src
+** org-roam
+#+begin_src emacs-lisp
+;(use-package org-roam
+;      :custom
+;      (org-roam-directory (file-truename "~/org/"))
+;      :config
+;      (org-roam-setup))
+#+end_src
 * latex
 #+begin_src emacs-lisp
 (eval-after-load 'latex
@@ -350,10 +359,17 @@ https://github.com/hlissner/doom-emacs/issues/2134
                 treemacs-file-face
                 treemacs-tags-face))
   (set-face-attribute face nil :family "mononoki nerd font" :height 100))
+      (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
   (treemacs-git-mode 'extended)
   ;(require 'treemacs-all-the-icons)
   (treemacs-load-all-the-icons-with-workaround-font "Inconsolata nerd font")
   )
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :config (treemacs-set-scope-type 'Perspectives)
+)
 ;(with-eval-after-load 'treemacs
 ;  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 #+end_src
@@ -623,7 +639,12 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 ** projectile
 #+begin_src emacs-lisp
 ;https://docs.projectile.mx/projectile/configuration.html
-(setq projectile-file-exists-remote-cache-expire (* 10 60))
+(use-package! projectile
+  :config
+  (setq projectile-file-exists-remote-cache-expire (* 10 60)
+        projectile-track-known-projects-automatically nil
+        projectile-auto-discover nil)
+  )
 #+end_src
 * Terminal
 ** vterm and plugins
