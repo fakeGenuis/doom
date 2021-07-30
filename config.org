@@ -30,9 +30,10 @@
 *bold* and /italic/ enabled
 #+begin_src emacs-lisp :tangle yes
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "mononoki Nerd Font" :size 38)
+    (setq doom-font (font-spec :family "agave Nerd Font" :size 38)
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
-          doom-variable-pitch-font (font-spec :family "mononoki Nerd Font" :size 32))
+          doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 26)
+          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei" :size 32))
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
