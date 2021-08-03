@@ -39,8 +39,11 @@
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
             doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
             doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei"))
-    (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 24)
-        doom-variable-pitch-font (font-spec :family "FiraCode Nerd Font")))
+      (setq doom-font (font-spec :family "agave Nerd Font" :size 32)
+            doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
+            doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
+            doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei" :size 26))
+      )
     )
 #+end_src
 
