@@ -27,7 +27,6 @@
 #+end_src
 
 ** fonts
-*bold* and /italic/ enabled
 #+begin_src emacs-lisp :tangle yes
 (if (equal (display-pixel-width) 3840)
     (setq doom-font (font-spec :family "agave Nerd Font" :size 38)
@@ -89,6 +88,7 @@ https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-un
 #+end_src
 
 ** Themes
+*bold* and /italic/ enabled
 #+begin_src emacs-lisp :tangle yes
 ;(setq doom-theme 'doom-palenight)
 (use-package doom-themes
