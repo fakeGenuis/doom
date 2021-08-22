@@ -20,8 +20,8 @@
 (if (equal (display-pixel-width) 3840)
     (setq doom-font (font-spec :family "agave Nerd Font" :size 38)
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
-          doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 26)
-          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei" :size 32))
+          doom-unicode-font (font-spec :family "FiraCode Nerd Font" :size 26)
+          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei Mono" :size 32))
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
@@ -144,9 +144,6 @@
       ("mw" "Weight" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Weight")
        "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 )
-
-(setq deft-directory "~/org")
-(setq deft-default-extension "org")
 
 ;(use-package org-roam
 ;      :custom

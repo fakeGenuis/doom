@@ -12,9 +12,7 @@
 ;(package! tramp
 ;  :recipe (:local-repo "/usr/share/emacs/site-lisp/")
 ;  )
-(package! math-preview
-  :disable t)
-(package! latex-math-preview)
+(package! math-preview)
 (package! elfeed-goodies)
 
 (package! treemacs-all-the-icons)
