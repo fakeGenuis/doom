@@ -27,12 +27,27 @@
 #+end_src
 
 ** fonts
+cnfonts package
+#+begin_src emacs-lisp :tangle no
+(use-package cnfonts
+  ;; 让 cnfonts 随着 Emacs 自动生效。
+  :config
+  (cnfonts-enable)
+  (setq cnfonts--custom-set-fontnames
+        '(("PragmataPro" "Ubuntu Mono" "DejaVu Sans Mono")
+          ("文泉驿等宽微米黑" "Ubuntu Mono" "隶书" "新宋体")
+          ("HanaMinB" "SimSun-ExtB" "MingLiU-ExtB")))
+  ;; 让 spacemacs mode-line 中的 Unicode 图标正确显示。
+  (cnfonts-set-spacemacs-fallback-fonts)
+  )
+#+end_src
+
 #+begin_src emacs-lisp :tangle yes
 (if (equal (display-pixel-width) 3840)
     (setq doom-font (font-spec :family "agave Nerd Font" :size 38)
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
           doom-unicode-font (font-spec :family "FiraCode Nerd Font" :size 26)
-          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei Mono" :size 32))
+          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei Mono" :size 24))
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
@@ -47,6 +62,13 @@
 #+end_src
 
 Chinese font setting
+#+begin_src emacs-lisp
+(dolist (charset '(kana han symbol cjk-misc bopomofo))
+  (set-fontset-font (frame-parameter nil 'font)
+                    charset
+                    (font-spec :family "WenQuanYi Micro Hei Mono" :size 31))) ;; 14 16 20 22 28
+#+end_src
+
 + [2021-07-24 Sat 15:27] doom emacs 下中文字体的设置 - Emacs-general - Emacs China :grasp:
 https://emacs-china.org/t/doom-emacs/9628/9
 #+begin_src emacs-lisp :tangle no
@@ -311,12 +333,18 @@ https://github.com/hlissner/doom-emacs/issues/2134
 (setq deft-default-extension "org")
 #+end_src
 ** org-roam
-#+begin_src emacs-lisp
-;(use-package org-roam
-;      :custom
-;      (org-roam-directory (file-truename "~/org/"))
-;      :config
-;      (org-roam-setup))
+
+
+#+begin_src emacs-lisp :tangle yes
+(use-package org-roam
+  ;:custom
+  ;(org-roam-directory (file-truename "~/org/roam"))
+  :custom
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
+      :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  (require 'org-roam-dailies)
+  )
 #+end_src
 * latex
 #+begin_src emacs-lisp

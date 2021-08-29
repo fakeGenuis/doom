@@ -20,6 +20,7 @@
 ;(package! wolfram-mode)
 
 (package! edit-server)
+(package! cnfonts)
 ;(package! ctable)
 ;(package! deferred)
 ;(package! epc)

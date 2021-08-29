@@ -21,7 +21,7 @@
     (setq doom-font (font-spec :family "agave Nerd Font" :size 38)
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
           doom-unicode-font (font-spec :family "FiraCode Nerd Font" :size 26)
-          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei Mono" :size 32))
+          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei Mono" :size 24))
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
@@ -33,6 +33,11 @@
             doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei" :size 26))
       )
     )
+
+(dolist (charset '(kana han symbol cjk-misc bopomofo))
+  (set-fontset-font (frame-parameter nil 'font)
+                    charset
+                    (font-spec :family "WenQuanYi Micro Hei Mono" :size 31))) ;; 14 16 20 22 28
 
 ;(setq doom-theme 'doom-palenight)
 (use-package doom-themes
@@ -145,11 +150,15 @@
        "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 )
 
-;(use-package org-roam
-;      :custom
-;      (org-roam-directory (file-truename "~/org/"))
-;      :config
-;      (org-roam-setup))
+(use-package org-roam
+  ;:custom
+  ;(org-roam-directory (file-truename "~/org/roam"))
+  :custom
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
+      :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  (require 'org-roam-dailies)
+  )
 
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)

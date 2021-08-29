@@ -159,6 +159,7 @@
         +gnuplot
         +noter
         +present
+        +pomodoro
         +pandoc
         +pretty
         +python
