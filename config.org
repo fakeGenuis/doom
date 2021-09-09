@@ -367,6 +367,8 @@ https://github.com/hlissner/doom-emacs/issues/2134
 (autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
 (autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
 (autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
+(setq-default enable-local-variables t)
+;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
 #+end_src
 * Plugins
 ** treemacs
