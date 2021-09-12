@@ -34,10 +34,27 @@
       )
     )
 
-(dolist (charset '(kana han symbol cjk-misc bopomofo))
-  (set-fontset-font (frame-parameter nil 'font)
-                    charset
-                    (font-spec :family "WenQuanYi Micro Hei Mono" :size 31))) ;; 14 16 20 22 28
+(defun +my/better-font()
+  (interactive)
+  ;; english font
+  (if (display-graphic-p)
+      (progn
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 38)) ;; 11 13 17 19 23
+        ;; chinese font
+        (dolist (charset '(kana han symbol cjk-misc bopomofo))
+          (set-fontset-font (frame-parameter nil 'font)
+                            charset
+                            (font-spec :family "WenQuanYi Micro Hei" :size 31)))) ;; 14 16 20 22 28
+    ))
+
+(defun +my|init-font(frame)
+  (with-selected-frame frame
+    (if (display-graphic-p)
+        (+my/better-font))))
+
+(if (and (fboundp 'daemonp) (daemonp))
+    (add-hook 'after-make-frame-functions #'+my|init-font)
+  (+my/better-font))
 
 ;(setq doom-theme 'doom-palenight)
 (use-package doom-themes
@@ -132,9 +149,11 @@
     `(("t" "Tasks / Projects")
       ("tt" "Task" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
            "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+      ("tc" "Task from note" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
+           "* TODO [%a] %?\n  %U\n  %i" :empty-lines 1)
       ("ts" "Someday" entry (file+olp ,(co/org-agenda-file-paths "todos") "Someday")
            "* HOLD %?\n  %U\n  %a\n  %i" :empty-lines 1)
-      ("tt" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
+      ("tr" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
            "* PROJ %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
       ("j" "Journal Entries")

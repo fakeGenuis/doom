@@ -61,28 +61,20 @@ cnfonts package
     )
 #+end_src
 
-Chinese font setting
-#+begin_src emacs-lisp
-(dolist (charset '(kana han symbol cjk-misc bopomofo))
-  (set-fontset-font (frame-parameter nil 'font)
-                    charset
-                    (font-spec :family "WenQuanYi Micro Hei Mono" :size 31))) ;; 14 16 20 22 28
-#+end_src
-
 + [2021-07-24 Sat 15:27] doom emacs 下中文字体的设置 - Emacs-general - Emacs China :grasp:
 https://emacs-china.org/t/doom-emacs/9628/9
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (defun +my/better-font()
   (interactive)
   ;; english font
   (if (display-graphic-p)
       (progn
-        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 36)) ;; 11 13 17 19 23
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 38)) ;; 11 13 17 19 23
         ;; chinese font
         (dolist (charset '(kana han symbol cjk-misc bopomofo))
           (set-fontset-font (frame-parameter nil 'font)
                             charset
-                            (font-spec :family "WenQuanYi Zen Hei" :size 24)))) ;; 14 16 20 22 28
+                            (font-spec :family "WenQuanYi Micro Hei" :size 31)))) ;; 14 16 20 22 28
     ))
 
 (defun +my|init-font(frame)
@@ -215,8 +207,9 @@ https://emacs-china.org/t/topic/1271
   ;; 使用 popup-el 来绘制选词框, 如果用 emacs26, 建议设置
   ;; 为 'posframe, 速度很快并且菜单不会变形，不过需要用户
   ;; 手动安装 posframe 包。
-  (setq pyim-page-tooltip 'posframe)
-  ;; (setq pyim-page-tooltip 'popup)
+  ;;(setq eim-use-tooltip nil)
+  ;;(setq pyim-page-tooltip 'posframe)
+  (setq pyim-page-tooltip 'popup)
 
   ;; 选词框显示5个候选词
   (setq pyim-page-length 5)
@@ -281,9 +274,11 @@ https://github.com/hlissner/doom-emacs/issues/2134
     `(("t" "Tasks / Projects")
       ("tt" "Task" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
            "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+      ("tc" "Task from note" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
+           "* TODO [%a] %?\n  %U\n  %i" :empty-lines 1)
       ("ts" "Someday" entry (file+olp ,(co/org-agenda-file-paths "todos") "Someday")
            "* HOLD %?\n  %U\n  %a\n  %i" :empty-lines 1)
-      ("tt" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
+      ("tr" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
            "* PROJ %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
       ("j" "Journal Entries")
