@@ -15,11 +15,11 @@
 (package! math-preview)
 (package! elfeed-goodies)
 
-(package! treemacs-all-the-icons)
+;(package! treemacs-all-the-icons)
 ;; wolfram
 ;(package! wolfram-mode)
 
-(package! edit-server)
+(package! vterm-toggle)
 ;(package! cnfonts)
 ;(package! ctable)
 ;(package! deferred)

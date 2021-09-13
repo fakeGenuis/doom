@@ -125,12 +125,13 @@
         org-agenda-start-with-log-mode t
         org-log-done 'time
         org-log-into-drawer t
-        org-display-inline-images t
         org-image-actual-width 400
         org-startup-with-inline-images t
         org-refile-targets '(("archive.org" :maxlevel . 1)))
   ;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
+  ; display inline images
+  (org-display-inline-images)
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -200,40 +201,6 @@
 (autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
 (setq-default enable-local-variables t)
 ;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
-
-(use-package! treemacs
-  :config
-  (setq treemacs-width 17
-        ;https://github.com/hlissner/doom-emacs/issues/1551
-        doom-themes-treemacs-enable-variable-pitch nil
-        )
-  ;https://github.com/Alexander-Miller/treemacs/issues/486
-  (dolist (face '(treemacs-root-face
-                treemacs-git-unmodified-face
-                treemacs-git-modified-face
-                treemacs-git-renamed-face
-                treemacs-git-ignored-face
-                treemacs-git-untracked-face
-                treemacs-git-added-face
-                treemacs-git-conflict-face
-                treemacs-directory-face
-                treemacs-directory-collapsed-face
-                treemacs-file-face
-                treemacs-tags-face))
-  (set-face-attribute face nil :family "mononoki nerd font" :height 100))
-      (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
-  (treemacs-git-mode 'extended)
-  ;(require 'treemacs-all-the-icons)
-  (treemacs-load-all-the-icons-with-workaround-font "Inconsolata nerd font")
-  )
-(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-  :config (treemacs-set-scope-type 'Perspectives)
-)
-;(with-eval-after-load 'treemacs
-;  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
@@ -431,31 +398,24 @@
         vterm-kill-buffer-on-exit t)
   )
 ;(use-package multi-vterm)
-;(use-package vterm-toggle
-;  :config
-;
-;  ;; you can cd to the directory where your previous buffer file exists
-;  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
-;  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-;  (setq vterm-toggle-cd-auto-create-buffer nil)
-;)
+(use-package vterm-toggle
+  :config
+
+  ;; you can cd to the directory where your previous buffer file exists
+  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
+  (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+  (setq vterm-toggle-cd-auto-create-buffer nil)
+  (define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
+  ;Switch to previous vterm buffer
+  (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
+)
+(map! :leader
+      (:prefix-map ("o" . "open")
+       (:when (featurep! :term vterm)
+        :desc "Toggle vterm popup here"    "." #'vterm-toggle-cd
+        )
+       ))
 
 (when (and (executable-find "fish")
            (require 'fish-completion nil t))
   (global-fish-completion-mode))
-
-(use-package edit-server
-  :commands edit-server-start
-  :init (if after-init-time
-              (edit-server-start)
-            (add-hook 'after-init-hook
-                      #'(lambda() (edit-server-start))))
-  :config (setq edit-server-new-frame-alist
-                '((name . "Edit with Emacs FRAME")
-                  (top . 200)
-                  (left . 200)
-                  (width . 80)
-                  (height . 25)
-                  (minibuffer . t)
-                  (menu-bar-lines . t)
-                  (window-system . x))))

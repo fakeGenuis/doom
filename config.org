@@ -233,7 +233,7 @@ https://github.com/hlissner/doom-emacs/issues/2134
 #+end_src
 * Org
 ** org
-#+begin_src emacs-lisp :results none
+#+begin_src emacs-lisp
 (use-package org
   :init
   (setq org-directory "~/org/")
@@ -250,12 +250,13 @@ https://github.com/hlissner/doom-emacs/issues/2134
         org-agenda-start-with-log-mode t
         org-log-done 'time
         org-log-into-drawer t
-        org-display-inline-images t
         org-image-actual-width 400
         org-startup-with-inline-images t
         org-refile-targets '(("archive.org" :maxlevel . 1)))
   ;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
+  ; display inline images
+  (org-display-inline-images)
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -367,7 +368,7 @@ https://github.com/hlissner/doom-emacs/issues/2134
 #+end_src
 * Plugins
 ** treemacs
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! treemacs
   :config
   (setq treemacs-width 17
@@ -685,14 +686,23 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
         vterm-kill-buffer-on-exit t)
   )
 ;(use-package multi-vterm)
-;(use-package vterm-toggle
-;  :config
-;
-;  ;; you can cd to the directory where your previous buffer file exists
-;  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
-;  ;(define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-;  (setq vterm-toggle-cd-auto-create-buffer nil)
-;)
+(use-package vterm-toggle
+  :config
+
+  ;; you can cd to the directory where your previous buffer file exists
+  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
+  (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+  (setq vterm-toggle-cd-auto-create-buffer nil)
+  (define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
+  ;Switch to previous vterm buffer
+  (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
+)
+(map! :leader
+      (:prefix-map ("o" . "open")
+       (:when (featurep! :term vterm)
+        :desc "Toggle vterm popup here"    "." #'vterm-toggle-cd
+        )
+       ))
 #+end_src
 ** Colored output issues
 https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
@@ -762,7 +772,7 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 )
 #+end_src
 ** edit-server
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package edit-server
   :commands edit-server-start
   :init (if after-init-time
