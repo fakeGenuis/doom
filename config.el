@@ -202,6 +202,12 @@
 (setq-default enable-local-variables t)
 ;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
 
+(use-package! evil-tex
+  :when (featurep! :editor evil +everywhere)
+  (setq evil-tex-include-newlines-in-envs nil
+        evil-tex-select-newlines-with-envs nil)
+  )
+
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
 (setq leetcode-directory "~/Coding/leetcode")

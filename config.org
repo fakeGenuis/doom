@@ -366,6 +366,24 @@ https://github.com/hlissner/doom-emacs/issues/2134
 (setq-default enable-local-variables t)
 ;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
 #+end_src
+
++ add surround
+  =V S [e|m|.] .=
+  select all line with =V=
++ change surround
+  =c s [e|m|.] [e|m|.] .=
++ select surround and add another surround
+  =v a [e|m|.] V S [e|m|.] .=
+#+begin_src emacs-lisp
+(use-package! evil-tex
+  :when (featurep! :editor evil +everywhere)
+  (setq evil-tex-include-newlines-in-envs nil
+        evil-tex-select-newlines-with-envs nil)
+  )
+#+end_src
+
+#+RESULTS:
+
 * Plugins
 ** treemacs
 #+begin_src emacs-lisp :tangle no
