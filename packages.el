@@ -9,6 +9,7 @@
 
 (package! leetcode)
 (package! keycast)
+(package! tldr)
 ;(package! tramp
 ;  :recipe (:local-repo "/usr/share/emacs/site-lisp/")
 ;  )

@@ -377,6 +377,7 @@ https://github.com/hlissner/doom-emacs/issues/2134
 #+begin_src emacs-lisp
 (use-package! evil-tex
   :when (featurep! :editor evil +everywhere)
+  :config
   (setq evil-tex-include-newlines-in-envs nil
         evil-tex-select-newlines-with-envs nil)
   )
@@ -701,6 +702,13 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (setq projectile-file-exists-remote-cache-expire (* 10 60)
         projectile-track-known-projects-automatically nil
         projectile-auto-discover nil)
+  )
+#+end_src
+** tldr
+#+begin_src emacs-lisp
+(use-package! tldr
+  :config
+  (setq tldr-enabled-categories '("common" "linux" "osx" "sunos"))
   )
 #+end_src
 * Terminal

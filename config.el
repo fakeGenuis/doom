@@ -204,6 +204,7 @@
 
 (use-package! evil-tex
   :when (featurep! :editor evil +everywhere)
+  :config
   (setq evil-tex-include-newlines-in-envs nil
         evil-tex-select-newlines-with-envs nil)
   )
@@ -404,6 +405,11 @@
   (setq projectile-file-exists-remote-cache-expire (* 10 60)
         projectile-track-known-projects-automatically nil
         projectile-auto-discover nil)
+  )
+
+(use-package! tldr
+  :config
+  (setq tldr-enabled-categories '("common" "linux" "osx" "sunos"))
   )
 
 (use-package! vterm
