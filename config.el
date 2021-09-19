@@ -15,13 +15,16 @@
                     ((numberp (cadr alpha)) (cadr alpha)))
               100)
          '(85 . 50) '(100 . 100)))))
-(global-set-key (kbd "C-c t") 'toggle-transparency)
+(map! :leader
+      (:prefix-map ("t" . "toggle")
+       :desc "Toggle transparency"    "T" #'toggle-transparency
+       ))
 
 (if (equal (display-pixel-width) 3840)
-    (setq doom-font (font-spec :family "agave Nerd Font" :size 38)
+    (setq doom-font (font-spec :family "agave Nerd Font" :size 43)
           doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
-          doom-unicode-font (font-spec :family "FiraCode Nerd Font" :size 26)
-          doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei Mono" :size 24))
+          doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size 29)
+          doom-variable-pitch-font (font-spec :family "Sarasa Mono SC" :size 34))
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
@@ -39,12 +42,12 @@
   ;; english font
   (if (display-graphic-p)
       (progn
-        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 38)) ;; 11 13 17 19 23
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 43)) ;; 11 13 17 19 23
         ;; chinese font
         (dolist (charset '(kana han symbol cjk-misc bopomofo))
           (set-fontset-font (frame-parameter nil 'font)
                             charset
-                            (font-spec :family "WenQuanYi Micro Hei" :size 31)))) ;; 14 16 20 22 28
+                            (font-spec :family "Sarasa Gothic SC" :size 34)))) ;; 14 16 20 22 28
     ))
 
 (defun +my|init-font(frame)
@@ -63,7 +66,7 @@
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t  ; if nil, italics is universally disabled
         )
-  (load-theme 'doom-palenight t)
+  (load-theme 'doom-dracula t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -107,6 +110,35 @@
   (set-file-template! "/leetcode/.+\\.cpp$"
     ;:when +file-templates-in-emacs-dirs-p
     :trigger "__leetcode.cpp" :mode 'c++-mode)
+  )
+
+(eval-after-load 'latex
+  '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
+         LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
+         Tex-clean-confirm nil))
+(use-package! math-preview
+  :custom
+  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
+                        ("\\begin{equation*}" . "\\end{equation*}")
+                        ("\\[" . "\\]")
+                        ("\\(" . "\\)")
+                        ("$$" . "$$")
+                        ("$" . "$")))
+  (math-preview-preprocess-functions '((lambda (s)
+                                         (concat "{\\color{white}" s "}"))))
+  )
+(autoload 'latex-math-preview-expression "latex-math-preview" nil t)
+(autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
+(autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
+(autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
+(setq-default enable-local-variables t)
+;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
+
+(use-package! evil-tex
+  :when (featurep! :editor evil +everywhere)
+  :config
+  (setq evil-tex-include-newlines-in-envs nil
+        evil-tex-select-newlines-with-envs nil)
   )
 
 (use-package org
@@ -178,35 +210,6 @@
    '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (require 'org-roam-dailies)
-  )
-
-(eval-after-load 'latex
-  '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
-         LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
-         Tex-clean-confirm nil))
-(use-package! math-preview
-  :custom
-  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
-                        ("\\begin{equation*}" . "\\end{equation*}")
-                        ("\\[" . "\\]")
-                        ("\\(" . "\\)")
-                        ("$$" . "$$")
-                        ("$" . "$")))
-  (math-preview-preprocess-functions '((lambda (s)
-                                         (concat "{\\color{white}" s "}"))))
-  )
-(autoload 'latex-math-preview-expression "latex-math-preview" nil t)
-(autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
-(autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
-(autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
-(setq-default enable-local-variables t)
-;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
-
-(use-package! evil-tex
-  :when (featurep! :editor evil +everywhere)
-  :config
-  (setq evil-tex-include-newlines-in-envs nil
-        evil-tex-select-newlines-with-envs nil)
   )
 
 (setq leetcode-prefer-language "cpp")
