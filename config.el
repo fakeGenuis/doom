@@ -90,6 +90,7 @@
    '(mode-line ((t (:family "Comic Shanns" :height 120))))
    '(mode-line-inactive ((t (:family "Comic Shanns" :height 120)))))
 )
+;https://github.com/seagle0128/doom-modeline/issues/187
 (defun my/doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
   (if (equal (display-pixel-width) 3840)
@@ -241,7 +242,7 @@
 )
 
 (with-eval-after-load 'mu4e
- (setq mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+ (setq mu4e-get-mail-command "proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a && proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
  (setq mu4e-contexts
         `(
          ,(make-mu4e-context
