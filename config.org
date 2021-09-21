@@ -459,7 +459,7 @@ mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED**
   ;;:ensure nil
   :defer 20
   :custom
-  ;;(mu4e-update-interval 300)
+  (mu4e-update-interval 300)
   (mu4e-change-filenames-when-moving t)
   (mu4e-maildir "~/.mail")
   (mu4e-attachment-dir "~/Downloads")
@@ -477,57 +477,78 @@ mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED**
 
   ;;(setq mu4e-context-policy 'pick-first)
   ;;(setq mu4e-compose-context-policy nil)
-)
+  )
 
 (with-eval-after-load 'mu4e
- (setq mu4e-get-mail-command "proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a && proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
- (setq mu4e-contexts
+  (setq mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a && mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a && proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+  (setq mu4e-contexts
         `(
-         ,(make-mu4e-context
-          :name "private"
-          :enter-func (lambda () (mu4e-message "Entering context private"))
-          :leave-func (lambda () (mu4e-message "Leaving context private"))
-          :match-func (lambda (msg)
-                        (when msg
-                          (mu4e-message-contact-field-matches
-                           msg '(:from :to :cc :bcc) "***REMOVED***")))
-          :vars '((user-mail-address . "***REMOVED***")
-                  (user-full-name . "name")
-                  (mu4e-sent-folder . "/***REMOVED***/[***REMOVED***]/Sent Mail")
-                  (mu4e-trash-folder . "/***REMOVED***/[***REMOVED***]/Bin")
-                  (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
-                  (mu4e-compose-format-flowed . t)
-                  (mu4e-maildir-shortcuts . ( ("/***REMOVED***/INBOX"            . ?i)
-                                             ("/***REMOVED***/[***REMOVED***]/All Mail"  . ?a)
-                                              ("/***REMOVED***/[***REMOVED***]/Sent Mail" . ?s)
-                                              ("/***REMOVED***/[***REMOVED***]/Starred"   . ?r)
-                                              ("/***REMOVED***/[***REMOVED***]/Bin"       . ?t)
-                                              ("/***REMOVED***/[***REMOVED***]/Spam"   . ?v)
-                                              ))))
-         ,(make-mu4e-context
-          :name "work"
-          :enter-func (lambda () (mu4e-message "Entering context work"))
-          :leave-func (lambda () (mu4e-message "Leaving context work"))
-          :match-func (lambda (msg)
-                        (when msg
-                          (mu4e-message-contact-field-matches
-                           msg '(:from :to :cc :bcc) "***REMOVED***")))
-          :vars '((user-mail-address . "***REMOVED***")
-                  (user-full-name . "name")
-                  (mu4e-drafts-folder . "/***REMOVED***/Drafts")
-                  (mu4e-refile-folder . "/***REMOVED***/Archive")
-                  (mu4e-sent-folder . "/***REMOVED***/Sent Items")
-                  (mu4e-trash-folder . "/***REMOVED***/Trash")
-                  (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
-                  (mu4e-compose-format-flowed . t)
-                  (mu4e-maildir-shortcuts . ( ("/***REMOVED***/Inbox"            . ?i)
-                                              ("/***REMOVED***/Drafts" . ?D)
-                                              ("/***REMOVED***/Sent Items" . ?s)
-                                              ("/***REMOVED***/Notifications" . ?n)
-                                              ("/***REMOVED***/Junk E-mail" . ?j)
-                                              ))))
-         ))
- )
+          ,(make-mu4e-context
+            :name "private"
+            :enter-func (lambda () (mu4e-message "Entering context private"))
+            :leave-func (lambda () (mu4e-message "Leaving context private"))
+            :match-func (lambda (msg)
+                          (when msg
+                            (mu4e-message-contact-field-matches
+                             msg '(:from :to :cc :bcc) "***REMOVED***")))
+            :vars '((user-mail-address . "***REMOVED***")
+                    (user-full-name . "name")
+                    (mu4e-sent-folder . "/***REMOVED***/[***REMOVED***]/Sent Mail")
+                    (mu4e-trash-folder . "/***REMOVED***/[***REMOVED***]/Bin")
+                    (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
+                    (mu4e-compose-format-flowed . t)
+                    (mu4e-maildir-shortcuts . ( ("/***REMOVED***/INBOX"            . ?i)
+                                                ("/***REMOVED***/[***REMOVED***]/All Mail"  . ?a)
+                                                ("/***REMOVED***/[***REMOVED***]/Sent Mail" . ?s)
+                                                ("/***REMOVED***/[***REMOVED***]/Starred"   . ?r)
+                                                ("/***REMOVED***/[***REMOVED***]/Bin"       . ?t)
+                                                ("/***REMOVED***/[***REMOVED***]/Spam"   . ?v)
+                                                ))))
+          ,(make-mu4e-context
+            :name "work"
+            :enter-func (lambda () (mu4e-message "Entering context work"))
+            :leave-func (lambda () (mu4e-message "Leaving context work"))
+            :match-func (lambda (msg)
+                          (when msg
+                            (mu4e-message-contact-field-matches
+                             msg '(:from :to :cc :bcc) "***REMOVED***")))
+            :vars '((user-mail-address . "***REMOVED***")
+                    (user-full-name . "name")
+                    (mu4e-drafts-folder . "/***REMOVED***/Drafts")
+                    (mu4e-refile-folder . "/***REMOVED***/Archive")
+                    (mu4e-sent-folder . "/***REMOVED***/Sent Items")
+                    (mu4e-trash-folder . "/***REMOVED***/Trash")
+                    (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
+                    (mu4e-compose-format-flowed . t)
+                    (mu4e-maildir-shortcuts . ( ("/***REMOVED***/Inbox"            . ?i)
+                                                ("/***REMOVED***/Drafts" . ?D)
+                                                ("/***REMOVED***/Sent Items" . ?s)
+                                                ("/***REMOVED***/Notifications" . ?n)
+                                                ("/***REMOVED***/Junk E-mail" . ?j)
+                                                ))))
+          ,(make-mu4e-context
+            :name "***REMOVED***"
+            :enter-func (lambda () (mu4e-message "Entering context work"))
+            :leave-func (lambda () (mu4e-message "Leaving context work"))
+            :match-func (lambda (msg)
+                          (when msg
+                            (mu4e-message-contact-field-matches
+                             msg '(:from :to :cc :bcc) "***REMOVED***")))
+            :vars '((user-mail-address . "***REMOVED***")
+                    (user-full-name . "name")
+                    (mu4e-drafts-folder . "/***REMOVED***/Drafts")
+                    (mu4e-refile-folder . "/***REMOVED***/Archive")
+                    (mu4e-sent-folder . "/***REMOVED***/Sent Messages")
+                    (mu4e-trash-folder . "/***REMOVED***/Deleted Messages")
+                    (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
+                    (mu4e-compose-format-flowed . t)
+                    (mu4e-maildir-shortcuts . ( ("/***REMOVED***/Inbox"            . ?i)
+                                                ("/***REMOVED***/Drafts" . ?D)
+                                                ("/***REMOVED***/Sent Messages" . ?s)
+                                                ("/***REMOVED***/Junk" . ?j)
+                                                ))))
+          ))
+  )
 #+end_src
 *** alert
 #+begin_src emacs-lisp :tangle no
