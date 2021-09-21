@@ -22,9 +22,9 @@
 
 (if (equal (display-pixel-width) 3840)
     (setq doom-font (font-spec :family "agave Nerd Font" :size 43)
-          doom-big-font (font-spec :family "mononoki Nerd Font" :size 50)
-          doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size 29)
-          doom-variable-pitch-font (font-spec :family "Sarasa Mono SC" :size 34))
+          doom-serif-font (font-spec :family "Source Serif Pro")
+          doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size 31)
+          doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 28))
   (if (equal (display-pixel-height) 1600)
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
@@ -44,7 +44,7 @@
       (progn
         (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 43)) ;; 11 13 17 19 23
         ;; chinese font
-        (dolist (charset '(kana han symbol cjk-misc bopomofo))
+        (dolist (charset '(kana han cjk-misc bopomofo))
           (set-fontset-font (frame-parameter nil 'font)
                             charset
                             (font-spec :family "Sarasa Gothic SC" :size 34)))) ;; 14 16 20 22 28
