@@ -220,22 +220,22 @@
 (use-package mu4e
   ;;:ensure nil
   :defer 20
-  :custom
-  (mu4e-update-interval 300)
-  (mu4e-change-filenames-when-moving t)
-  (mu4e-maildir "~/.mail")
-  (mu4e-attachment-dir "~/Downloads")
+  :config
+  (setq mu4e-update-interval 300)
+  (setq mu4e-change-filenames-when-moving t)
+  (setq mu4e-maildir "~/.mail")
+  (setq mu4e-attachment-dir "~/Downloads")
 
   ;; enable inline images
-  (mu4e-view-show-images t)
+  (setq mu4e-view-show-images t)
   ;; every new email composition gets its own frame!
-  (mu4e-compose-in-new-frame t)
+  (setq mu4e-compose-in-new-frame t)
 
   ;;(mu4e-compose-signature-auto-include nil)
 
-  (mu4e-use-fancy-chars t)
-  (mu4e-view-show-addresses t)
-  (mu4e-view-prefer-html t)
+  (setq mu4e-use-fancy-chars t)
+  (setq mu4e-view-show-addresses t)
+  (setq mu4e-view-prefer-html t)
 
   ;;(setq mu4e-context-policy 'pick-first)
   ;;(setq mu4e-compose-context-policy nil)
