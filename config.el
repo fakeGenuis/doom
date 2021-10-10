@@ -151,16 +151,62 @@
         (mapcar (lambda (x) (expand-file-name (concat x ".org") co/org-agenda-directory)) path)
       (expand-file-name (concat path ".org") co/org-agenda-directory)))
 
-  (setq org-agenda-files (co/org-agenda-file-paths '("todo" "habits" "journal")))
+  :custom
+  (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
+  (org-ellipsis " ▾")
+  (org-agenda-start-with-log-mode t)
+  (org-log-done 'time)
+  (org-log-into-drawer t)
+  (org-image-actual-width 400)
+  (org-startup-with-inline-images t)
+  (org-refile-targets '(("archive.org" :maxlevel . 1)))
+  (org-tag-alist
+   '((:startgroup)
+                                        ; Put mutually exclusive tags here
+     (:endgroup)
+     ("@home" . ?H)
+     ("@work" . ?W)
+     ("agenda" . ?a)
+     ("publish" . ?P)
+     ("batch" . ?b)
+     ("idea" . ?i)))
+  ;https://stackoverflow.com/a/50875921
+  (org-capture-templates
+   `(("t" "Tasks / Projects")
+     ("tt" "Task" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
+      "* TODO %?\n  %U\n  %i" :empty-lines 1)
+     ("tc" "Task from note" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
+      "* TODO [%a] %?\n  %U\n  %i" :empty-lines 1)
+     ("ts" "Someday" entry (file+olp ,(co/org-agenda-file-paths "todos") "Someday")
+      "* HOLD %?\n  %U\n  %a\n  %i" :empty-lines 1)
+     ("tr" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
+      "* PROJ %?\n  %U\n  %a\n  %i" :empty-lines 1)
+
+     ;; btw, i use org-roam to track dailies
+                                        ;("j" "Journal Entries")
+                                        ;("jj" "Journal" entry
+                                        ;     (file+olp+datetree ,(co/org-agenda-file-paths "journal"))
+                                        ;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+                                        ;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+                                        ;     :clock-in :clock-resume
+                                        ;     :empty-lines 1)
+
+     ("m" "Metrics Capture")
+     ("mw" "Weight" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Weight")
+      "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
+     ("mb" "Billiards" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Billiards")
+      "| %U | %^g | %^{minutes} | %^{Notes} |" :kill-buffer t)
+     ))
 
   :config
-  (setq org-ellipsis " ▾"
-        org-agenda-start-with-log-mode t
-        org-log-done 'time
-        org-log-into-drawer t
-        org-image-actual-width 400
-        org-startup-with-inline-images t
-        org-refile-targets '(("archive.org" :maxlevel . 1)))
+  ;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
+  (use-package org-habit
+    :custom
+    (org-habit-graph-column 60)
+    :config
+    (add-to-list 'org-modules 'org-habit)
+    )
+
   ;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
   ; display inline images
@@ -168,39 +214,6 @@
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
-  (setq org-tag-alist
-    '((:startgroup)
-       ; Put mutually exclusive tags here
-       (:endgroup)
-       ("@home" . ?H)
-       ("@work" . ?W)
-       ("agenda" . ?a)
-       ("publish" . ?P)
-       ("batch" . ?b)
-       ("idea" . ?i)))
-  ;https://stackoverflow.com/a/50875921
-  (setq org-capture-templates
-    `(("t" "Tasks / Projects")
-      ("tt" "Task" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
-           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-      ("tc" "Task from note" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
-           "* TODO [%a] %?\n  %U\n  %i" :empty-lines 1)
-      ("ts" "Someday" entry (file+olp ,(co/org-agenda-file-paths "todos") "Someday")
-           "* HOLD %?\n  %U\n  %a\n  %i" :empty-lines 1)
-      ("tr" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
-           "* PROJ %?\n  %U\n  %a\n  %i" :empty-lines 1)
-
-      ("j" "Journal Entries")
-      ("jj" "Journal" entry
-           (file+olp+datetree ,(co/org-agenda-file-paths "journal"))
-           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-           :clock-in :clock-resume
-           :empty-lines 1)
-
-      ("m" "Metrics Capture")
-      ("mw" "Weight" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Weight")
-       "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 )
 
 (use-package org-roam
@@ -242,7 +255,7 @@
   )
 
 (with-eval-after-load 'mu4e
-  (setq mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a && mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a && proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
+  (setq mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a && proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
   (setq mu4e-contexts
         `(
           ,(make-mu4e-context
@@ -354,6 +367,13 @@
               ;("D" . bjm/elfeed-show-daily)
               ("q" . bjm/elfeed-save-db-and-bury))
   )
+
+(map! :leader
+      (:prefix-map ("o" . "open")
+       (:when (featurep! :app rss)
+        :desc "elfeed"    "e" #'elfeed
+        )
+       ))
 
 (use-package elfeed-org
   :config
