@@ -2,8 +2,9 @@
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
-;(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
-;(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+
 (defun toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
@@ -15,6 +16,7 @@
                     ((numberp (cadr alpha)) (cadr alpha)))
               100)
          '(85 . 50) '(100 . 100)))))
+
 (map! :leader
       (:prefix-map ("t" . "toggle")
        :desc "Toggle transparency"    "T" #'toggle-transparency
@@ -215,6 +217,8 @@
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 )
+
+(advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
 
 (use-package org-roam
   ;:custom

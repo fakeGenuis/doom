@@ -18,6 +18,7 @@
   - [[#latex][Latex]]
 - [[#org][Org]]
   - [[#org-1][org]]
+  - [[#org-agenda][org-agenda]]
   - [[#color-shell-block-output][Color ~shell~ block output]]
   - [[#org-ref][org-ref]]
   - [[#deft][deft]]
@@ -54,8 +55,9 @@
 * Display
 ** transparency
 #+begin_src emacs-lisp :tangle yes
-;(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
-;(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+
 (defun toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
@@ -67,6 +69,7 @@
                     ((numberp (cadr alpha)) (cadr alpha)))
               100)
          '(85 . 50) '(100 . 100)))))
+
 (map! :leader
       (:prefix-map ("t" . "toggle")
        :desc "Toggle transparency"    "T" #'toggle-transparency
@@ -396,6 +399,11 @@ https://github.com/hlissner/doom-emacs/issues/2134
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 )
+#+end_src
+** org-agenda
+https://emacs.stackexchange.com/a/7840
+#+begin_src emacs-lisp
+(advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
 #+end_src
 
 ** Color ~shell~ block output
