@@ -354,8 +354,10 @@ https://github.com/hlissner/doom-emacs/issues/2134
      ("publish" . ?P)
      ("batch" . ?b)
      ("idea" . ?i)))
+
+  :config
   ;https://stackoverflow.com/a/50875921
-  (org-capture-templates
+  (setq org-capture-templates
    `(("t" "Tasks / Projects")
      ("tt" "Task" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
       "* TODO %?\n  %U\n  %i" :empty-lines 1)
@@ -381,8 +383,6 @@ https://github.com/hlissner/doom-emacs/issues/2134
      ("mb" "Billiards" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Billiards")
       "| %U | %^g | %^{minutes} | %^{Notes} |" :kill-buffer t)
      ))
-
-  :config
   ;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
   (use-package org-habit
     :custom
