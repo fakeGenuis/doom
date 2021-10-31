@@ -120,14 +120,14 @@
          LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
          Tex-clean-confirm nil))
 (use-package! math-preview
-  :custom
-  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
+  :config
+  (setq math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
                         ("\\begin{equation*}" . "\\end{equation*}")
                         ("\\[" . "\\]")
                         ("\\(" . "\\)")
                         ("$$" . "$$")
                         ("$" . "$")))
-  (math-preview-preprocess-functions '((lambda (s)
+  (setq math-preview-preprocess-functions '((lambda (s)
                                          (concat "{\\color{white}" s "}"))))
   )
 (autoload 'latex-math-preview-expression "latex-math-preview" nil t)
@@ -427,24 +427,25 @@
 ;  (kbd "K") 'elfeed-goodies/split-show-prev)
 
 (use-package ranger
+  :custom
+  (ranger-cleanup-eagerly t)
+  (ranger-modify-header t)
+                                        ;ranger-cleanup-eagerly t
+  (ranger-cleanup-on-disable t)
+  (ranger-return-to-ranger nil)
+  (ranger-excluded-extensions '("mkv" "iso" "mp4" "ipynb"))
+  (ranger-max-preview-size 3)
+  (ranger-dont-show-binary t)
+  (ranger-footer-delay 0.2)
+  (ranger-preview-delay 0.040)
   :config
   (ranger-override-dired-mode t)
-  (setq ranger-modify-header t
-        ;ranger-cleanup-eagerly t
-        ranger-cleanup-on-disable t
-        ranger-return-to-ranger t
-        ranger-excluded-extensions '("mkv" "iso" "mp4" "ipynb")
-        ranger-max-preview-size 3
-        ranger-dont-show-binary t
-        ranger-footer-delay 0.2
-        ranger-preview-delay 0.040
-        )
-  ;TODO change =ranger-pop-eshell= to vterm
-;(setq helm-descbinds-window-style 'same-window)
-)
+                                        ;TODO change =ranger-pop-eshell= to vterm
+                                        ;(setq helm-descbinds-window-style 'same-window)
+  )
 (use-package dired
   :config
-  ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
+                                        ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
   (setq all-the-icons-dired-monochrome nil)
   )
 
