@@ -31,25 +31,32 @@
       (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
             doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
-            doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei"))
-      (setq doom-font (font-spec :family "agave Nerd Font" :size 32)
+            doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC"))
+      (setq doom-font (font-spec :family "agave Nerd Font" :size 30)
             doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
             doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
-            doom-variable-pitch-font (font-spec :family "WenQuanYi Micro Hei" :size 26))
+            doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 23))
       )
     )
+
+(setq +my/font-size
+      (if (equal (display-pixel-width) 3840)
+          '(43 34)
+        '(30 23)))
+(nth 0 +my/font-size)
+(car +my/font-size)
 
 (defun +my/better-font()
   (interactive)
   ;; english font
   (if (display-graphic-p)
       (progn
-        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" 43)) ;; 11 13 17 19 23
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (nth 0 +my/font-size))) ;; 11 13 17 19 23
         ;; chinese font
         (dolist (charset '(kana han cjk-misc bopomofo))
           (set-fontset-font (frame-parameter nil 'font)
                             charset
-                            (font-spec :family "Sarasa Gothic SC" :size 34)))) ;; 14 16 20 22 28
+                            (font-spec :family "Sarasa Gothic SC" :size (nth 1 +my/font-size))))) ;; 14 16 20 22 28
     ))
 
 (defun +my|init-font(frame)
@@ -57,7 +64,7 @@
     (if (display-graphic-p)
         (+my/better-font))))
 
-(if (and (fboundp 'daemonp) (daemonp) (equal (display-pixel-width) 3840))
+(if (and (fboundp 'daemonp) (daemonp))
     (add-hook 'after-make-frame-functions #'+my|init-font)
   (+my/better-font))
 
