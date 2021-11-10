@@ -22,7 +22,7 @@
        :desc "Toggle transparency"    "T" #'toggle-transparency
        ))
 
-(if (equal (display-pixel-width) 3840)
+(if (equal (display-pixel-height) 2160)
     (setq doom-font (font-spec :family "agave Nerd Font" :size 43)
           doom-serif-font (font-spec :family "Source Serif Pro")
           doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size 31)
@@ -40,11 +40,10 @@
     )
 
 (setq +my/font-size
-      (if (equal (display-pixel-width) 3840)
-          '(43 34)
-        '(30 23)))
-(nth 0 +my/font-size)
-(car +my/font-size)
+      (cond ((equal (display-pixel-height) 2160) '(43 34))
+            ( (equal (display-pixel-height) 1600) '(34 27) )
+            ( t '(30 23) )
+            ))
 
 (defun +my/better-font()
   (interactive)
