@@ -99,11 +99,11 @@
    '(mode-line-inactive ((t (:family "Comic Shanns" :height 120)))))
 )
 ;https://github.com/seagle0128/doom-modeline/issues/187
-(defun my/doom-modeline--font-height ()
+(defun +my/doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
   (if (equal (display-pixel-width) 3840)
       26 24))
-(advice-add #'doom-modeline--font-height :override #'my/doom-modeline--font-height)
+(advice-add #'doom-modeline--font-height :override #'+my/doom-modeline--font-height)
 
 (use-package all-the-icons
   :config
@@ -142,6 +142,23 @@
 (autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
 (setq-default enable-local-variables t)
 ;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
+
+;(defun +my/latex-mode-setup ()
+;  (setq-local company-backends
+;              (append '((company-dabbrev company-yasnippet company-ispell))
+;                      company-backends)))
+;(add-hook 'LaTeX-mode-hook '+my/latex-mode-setup)
+
+;(defun +my/lsp-init-company-backends-h ()
+;  (when (and lsp-completion-mode (not TeX-mode-p))
+;    (set (make-local-variable 'company-backends)
+;         (cons +lsp-company-backends
+;               (remove +lsp-company-backends
+;                       (remq 'company-capf company-backends))))))
+;
+;(advice-add #'+lsp-init-company-backends-h :override #'+my/lsp-init-company-backends-h)
+
+(setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
 
 (use-package! evil-tex
   :when (featurep! :editor evil +everywhere)
