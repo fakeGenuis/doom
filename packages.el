@@ -8,24 +8,17 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 
 (package! leetcode)
-(package! keycast)
-(package! tldr)
-;(package! tramp
-;  :recipe (:local-repo "/usr/share/emacs/site-lisp/")
-;  )
 (package! math-preview)
+
+(package! tldr)
+(package! keycast)
 (package! elfeed-goodies)
-
-;(package! treemacs-all-the-icons)
-;; wolfram
-;(package! wolfram-mode)
-
 (package! vterm-toggle)
-;(package! cnfonts)
-;(package! ctable)
-;(package! deferred)
-;(package! epc)
-;(package! s)
+
+(package! pomm)
+(package! screenshot
+  :recipe (:host github :repo "tecosaur/screenshot"))
+
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format
