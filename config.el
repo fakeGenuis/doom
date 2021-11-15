@@ -253,6 +253,8 @@
   (require 'org-roam-dailies)
   )
 
+(use-package! org-pandoc-import :after org)
+
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
 (setq leetcode-directory "~/Coding/leetcode")

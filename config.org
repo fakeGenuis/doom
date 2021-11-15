@@ -23,6 +23,7 @@
   - [[#org-ref][org-ref]]
   - [[#deft][deft]]
   - [[#org-roam][org-roam]]
+  - [[#org-pandoc-import][org-pandoc-import]]
 - [[#plugins][Plugins]]
   - [[#treemacs][treemacs]]
   - [[#ivy-posframe][ivy-posframe]]
@@ -481,6 +482,10 @@ https://emacs.stackexchange.com/a/7840
       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   (require 'org-roam-dailies)
   )
+#+end_src
+** org-pandoc-import
+#+begin_src emacs-lisp
+(use-package! org-pandoc-import :after org)
 #+end_src
 * Plugins
 ** treemacs
