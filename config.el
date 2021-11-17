@@ -22,40 +22,24 @@
        :desc "Toggle transparency"    "T" #'toggle-transparency
        ))
 
-(if (equal (display-pixel-height) 2160)
-    (setq doom-font (font-spec :family "agave Nerd Font" :size 43)
-          doom-serif-font (font-spec :family "Source Serif Pro")
-          doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size 31)
-          doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 28))
-  (if (equal (display-pixel-height) 1600)
-      (setq doom-font (font-spec :family "agave Nerd Font" :size 36)
-            doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
-            doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
-            doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC"))
-      (setq doom-font (font-spec :family "agave Nerd Font" :size 30)
-            doom-big-font (font-spec :family "mononoki Nerd Font" :size 48)
-            doom-unicode-font (font-spec :family "mononoki Nerd Font" :size 24)
-            doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 23))
-      )
-    )
+;; (display-pixel-height) error in daemon mode
+(setq +my/scale-factor (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720))
 
-(setq +my/font-size
-      (cond ((equal (display-pixel-height) 2160) '(43 34))
-            ( (equal (display-pixel-height) 1600) '(34 27) )
-            ( t '(30 23) )
-            ))
+(setq doom-font (font-spec :family "agave Nerd Font" :size (* 14 +my/scale-factor))
+      doom-serif-font (font-spec :family "Source Serif Pro" :size (* 11 +my/scale-factor))
+      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (* 10 +my/scale-factor))
+      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (* 9 +my/scale-factor)))
 
 (defun +my/better-font()
   (interactive)
   ;; english font
   (if (display-graphic-p)
       (progn
-        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (nth 0 +my/font-size))) ;; 11 13 17 19 23
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (* 14 +my/scale-factor))) ;; 11 13 17 19 23
         ;; chinese font
         (dolist (charset '(kana han cjk-misc bopomofo))
-          (set-fontset-font (frame-parameter nil 'font)
-                            charset
-                            (font-spec :family "Sarasa Gothic SC" :size (nth 1 +my/font-size))))) ;; 14 16 20 22 28
+          (set-fontset-font (frame-parameter nil 'font) charset
+                            (font-spec :family "Sarasa Gothic SC" :size (* 11 +my/scale-factor))))) ;; 14 16 20 22 28
     ))
 
 (defun +my|init-font(frame)
