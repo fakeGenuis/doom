@@ -2,6 +2,9 @@
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
+(add-to-list 'default-frame-alist '(height . 24))
+(add-to-list 'default-frame-alist '(width . 80))
+
 (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
 (add-to-list 'default-frame-alist '(alpha . (85 . 50)))
 
@@ -23,12 +26,23 @@
        ))
 
 ;; (display-pixel-height) error in daemon mode
+;(add-to-list 'face-font-rescale-alist '("agave Nerd Font" . 1.2))
+;(add-to-list 'face-font-rescale-alist '("Sarasa Gothic SC" . 1.2))
+
 (setq +my/scale-factor (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720))
 
 (setq doom-font (font-spec :family "agave Nerd Font" :size (* 14 +my/scale-factor))
+      ;; big font mode resize serif-font and variable-pitch-font also
+      doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (* 17 +my/scale-factor))
       doom-serif-font (font-spec :family "Source Serif Pro" :size (* 11 +my/scale-factor))
       doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (* 10 +my/scale-factor))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (* 9 +my/scale-factor)))
+
+(defun +my/cjk-font(font-size)
+  (dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "Sarasa Gothic SC" :size (* font-size +my/scale-factor))))
+  )
 
 (defun +my/better-font()
   (interactive)
@@ -36,11 +50,8 @@
   (if (display-graphic-p)
       (progn
         (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (* 14 +my/scale-factor))) ;; 11 13 17 19 23
-        ;; chinese font
-        (dolist (charset '(kana han cjk-misc bopomofo))
-          (set-fontset-font (frame-parameter nil 'font) charset
-                            (font-spec :family "Sarasa Gothic SC" :size (* 11 +my/scale-factor))))) ;; 14 16 20 22 28
-    ))
+        (+my/cjk-font 11)
+        )))
 
 (defun +my|init-font(frame)
   (with-selected-frame frame
@@ -50,6 +61,16 @@
 (if (and (fboundp 'daemonp) (daemonp))
     (add-hook 'after-make-frame-functions #'+my|init-font)
   (+my/better-font))
+
+;;https://emacs.stackexchange.com/a/47092
+(add-hook 'doom-big-font-mode-hook
+          (lambda ()
+            (if doom-big-font-mode
+                (add-hook 'doom-big-font-mode-hook #'+my/better-font)
+              (remove-hook 'doom-big-font-mode-hook #'+my/better-font))))
+
+(add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
+(add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
 
 ;(setq doom-theme 'doom-palenight)
 (use-package doom-themes
@@ -238,6 +259,11 @@
   )
 
 (use-package! org-pandoc-import :after org)
+
+(use-package org-noter
+  :custom
+  (org-noter-set-doc-split-fraction 0.65)
+  )
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)

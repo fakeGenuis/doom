@@ -4,9 +4,9 @@
 * Table of Contents :TOC:
 - [[#info][Info]]
 - [[#display][Display]]
+  - [[#frame-size][frame size]]
   - [[#transparency][transparency]]
   - [[#fonts][fonts]]
-  - [[#hidpi-fonts][Hidpi-fonts]]
   - [[#themes][Themes]]
   - [[#doom-modeline][doom-modeline]]
   - [[#icons][Icons]]
@@ -24,6 +24,7 @@
   - [[#deft][deft]]
   - [[#org-roam][org-roam]]
   - [[#org-pandoc-import][org-pandoc-import]]
+  - [[#org-noter][org-noter]]
 - [[#plugins][Plugins]]
   - [[#treemacs][treemacs]]
   - [[#ivy-posframe][ivy-posframe]]
@@ -56,6 +57,11 @@
       user-mail-address "***REMOVED***")
 #+end_src
 * Display
+** frame size
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist '(height . 24))
+(add-to-list 'default-frame-alist '(width . 80))
+#+end_src
 ** transparency
 #+begin_src emacs-lisp :tangle yes
 (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
@@ -82,28 +88,36 @@
 ** fonts
 #+begin_src emacs-lisp :tangle yes
 ;; (display-pixel-height) error in daemon mode
+;(add-to-list 'face-font-rescale-alist '("agave Nerd Font" . 1.2))
+;(add-to-list 'face-font-rescale-alist '("Sarasa Gothic SC" . 1.2))
+
 (setq +my/scale-factor (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720))
 
 (setq doom-font (font-spec :family "agave Nerd Font" :size (* 14 +my/scale-factor))
+      ;; big font mode resize serif-font and variable-pitch-font also
+      doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (* 17 +my/scale-factor))
       doom-serif-font (font-spec :family "Source Serif Pro" :size (* 11 +my/scale-factor))
       doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (* 10 +my/scale-factor))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (* 9 +my/scale-factor)))
 #+end_src
 
-+ doom emacs 下中文字体的设置 - Emacs-general - Emacs China :grasp:
+- doom emacs 下中文字体的设置 - Emacs-general - Emacs China :grasp:
 https://emacs-china.org/t/doom-emacs/9628/9
 #+begin_src emacs-lisp :tangle yes
+(defun +my/cjk-font(font-size)
+  (dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "Sarasa Gothic SC" :size (* font-size +my/scale-factor))))
+  )
+
 (defun +my/better-font()
   (interactive)
   ;; english font
   (if (display-graphic-p)
       (progn
         (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (* 14 +my/scale-factor))) ;; 11 13 17 19 23
-        ;; chinese font
-        (dolist (charset '(kana han cjk-misc bopomofo))
-          (set-fontset-font (frame-parameter nil 'font) charset
-                            (font-spec :family "Sarasa Gothic SC" :size (* 11 +my/scale-factor))))) ;; 14 16 20 22 28
-    ))
+        (+my/cjk-font 11)
+        )))
 
 (defun +my|init-font(frame)
   (with-selected-frame frame
@@ -113,20 +127,16 @@ https://emacs-china.org/t/doom-emacs/9628/9
 (if (and (fboundp 'daemonp) (daemonp))
     (add-hook 'after-make-frame-functions #'+my|init-font)
   (+my/better-font))
-#+end_src
 
-** Hidpi-fonts
-for hidpi monitor, doom-font setting are bugy
-https://unix.stackexchange.com/questions/242067/emacs-on-hidpi-screen-renders-unreadable-fonts-arch-linux
-#+begin_src emacs-lisp :tangle no
-(if (equal (display-pixel-width) 3840)
-    (progn
-      (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono-16"))
-      (set-face-attribute 'default t :font "FiraCode Nerd Font-10"))
-  (progn
-    (add-to-list 'default-frame-alist '(font . "Ubuntu Mono-13"))
-    (set-face-attribute 'default t :font "Fira Code-10"))
-  )
+;;https://emacs.stackexchange.com/a/47092
+(add-hook 'doom-big-font-mode-hook
+          (lambda ()
+            (if doom-big-font-mode
+                (add-hook 'doom-big-font-mode-hook #'+my/better-font)
+              (remove-hook 'doom-big-font-mode-hook #'+my/better-font))))
+
+(add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
+(add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
 #+end_src
 
 ** Themes
@@ -323,6 +333,53 @@ https://github.com/hlissner/doom-emacs/issues/5672
   )
 #+end_src
 
+centering latex preview
+#+begin_src emacs-lisp :tangle no
+(use-package org
+  :defer 20
+  :config
+;; specify the justification you want
+(plist-put org-format-latex-options :justify 'center)
+
+(defun org-justify-fragment-overlay (beg end image imagetype)
+  "Adjust the justification of a LaTeX fragment.
+The justification is set by :justify in
+`org-format-latex-options'. Only equations at the beginning of a
+line are justified."
+  (cond
+   ;; Centered justification
+   ((and (eq 'center (plist-get org-format-latex-options :justify))
+         (= beg (line-beginning-position)))
+    (let* ((img (create-image image 'imagemagick t))
+           (width (car (image-size img)))
+           (offset (floor (- (/ (window-text-width) 2) (/ width 2)))))
+      (overlay-put (ov-at) 'before-string (make-string offset ? ))))
+   ;; Right justification
+   ((and (eq 'right (plist-get org-format-latex-options :justify))
+         (= beg (line-beginning-position)))
+    (let* ((img (create-image image 'imagemagick t))
+           (width (car (image-display-size (overlay-get (ov-at) 'display))))
+           (offset (floor (- (window-text-width) width (- (line-end-position) end)))))
+      (overlay-put (ov-at) 'before-string (make-string offset ? ))))))
+
+(defun org-latex-fragment-tooltip (beg end image imagetype)
+  "Add the fragment tooltip to the overlay and set click function to toggle it."
+  (overlay-put (ov-at) 'help-echo
+               (concat (buffer-substring beg end)
+                       "mouse-1 to toggle."))
+  (overlay-put (ov-at) 'local-map (let ((map (make-sparse-keymap)))
+                                    (define-key map [mouse-1]
+                                      `(lambda ()
+                                         (interactive)
+                                         (org-remove-latex-fragment-image-overlays ,beg ,end)))
+                                    map)))
+
+;; advise the function to a
+(advice-add 'org--format-latex-make-overlay :after 'org-justify-fragment-overlay)
+(advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip)
+  )
+#+end_src
+
 * Org
 ** org
 #+begin_src emacs-lisp
@@ -453,6 +510,13 @@ https://emacs.stackexchange.com/a/7840
 ** org-pandoc-import
 #+begin_src emacs-lisp
 (use-package! org-pandoc-import :after org)
+#+end_src
+** org-noter
+#+begin_src emacs-lisp
+(use-package org-noter
+  :custom
+  (org-noter-set-doc-split-fraction 0.65)
+  )
 #+end_src
 * Plugins
 ** treemacs
