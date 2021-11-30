@@ -29,19 +29,24 @@
 ;(add-to-list 'face-font-rescale-alist '("agave Nerd Font" . 1.2))
 ;(add-to-list 'face-font-rescale-alist '("Sarasa Gothic SC" . 1.2))
 
-(setq +my/scale-factor (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720))
+(setq +my/scale-factor
+      (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0)
+      )
+(defun +my/font-size(size)
+  (ceiling (* size +my/scale-factor))
+  )
 
-(setq doom-font (font-spec :family "agave Nerd Font" :size (* 14 +my/scale-factor))
+(setq doom-font (font-spec :family "agave Nerd Font" :size (+my/font-size 14))
       ;; big font mode resize serif-font and variable-pitch-font also
-      doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (* 17 +my/scale-factor))
-      doom-serif-font (font-spec :family "Source Serif Pro" :size (* 11 +my/scale-factor))
-      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (* 10 +my/scale-factor))
-      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (* 9 +my/scale-factor)))
+      doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (+my/font-size 17))
+      doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 11))
+      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (+my/font-size 11))
+      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 9)))
 
 (defun +my/cjk-font(font-size)
   (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Sarasa Gothic SC" :size (* font-size +my/scale-factor))))
+                      (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size))))
   )
 
 (defun +my/better-font()
@@ -49,7 +54,9 @@
   ;; english font
   (if (display-graphic-p)
       (progn
-        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (* 14 +my/scale-factor))) ;; 11 13 17 19 23
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (+my/font-size 14))) ;; 11 13 17 19 23
+        (set-face-attribute 'mode-line nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
+        (set-face-attribute 'mode-line-inactive nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
         (+my/cjk-font 11)
         )))
 
@@ -92,27 +99,33 @@
   ;; If `window-width' is smaller than the limit, some information won't be displayed.
   (setq doom-modeline-window-width-limit fill-column
         doom-modeline-enable-word-count t
-        )
-
+        doom-modeline-workspace-name t)
   )
-(if (equal (display-pixel-width) 3840)
-    (custom-set-faces
-     '(mode-line ((t (:family "Comic Shanns" :height 140))))
-     '(mode-line-inactive ((t (:family "Comic Shanns" :height 140)))))
-  (custom-set-faces
-   '(mode-line ((t (:family "Comic Shanns" :height 120))))
-   '(mode-line-inactive ((t (:family "Comic Shanns" :height 120)))))
-)
+;(if (equal (display-pixel-width) 3840)
+;    (custom-set-faces
+;     '(mode-line ((t (:family "Comic Shanns" :height 140))))
+;     '(mode-line-inactive ((t (:family "Comic Shanns" :height 140)))))
+;  (custom-set-faces
+;   '(mode-line ((t (:family "Comic Shanns" :height 120))))
+;   '(mode-line-inactive ((t (:family "Comic Shanns" :height 120)))))
+;)
+
+;(setq doom-modeline-height 1)
+;(set-face-attribute 'mode-line nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
+;(set-face-attribute 'mode-line-inactive nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
 ;https://github.com/seagle0128/doom-modeline/issues/187
 (defun +my/doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
-  (if (equal (display-pixel-width) 3840)
-      26 24))
+  (+ 20 (+my/font-size 2))
+  ;(if (equal (display-pixel-width) 3840)
+  ;    26 24)
+)
 (advice-add #'doom-modeline--font-height :override #'+my/doom-modeline--font-height)
 
 (use-package all-the-icons
   :config
-  (setq all-the-icons-scale-factor 0.9))
+  (setq all-the-icons-scale-factor 0.9)
+  )
 
 (setq display-line-numbers-type nil)
 
@@ -248,13 +261,14 @@
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
 
+(setq org-roam-directory (file-truename "~/org/roam"))
 (use-package org-roam
   ;:custom
-  ;(org-roam-directory (file-truename "~/org/roam"))
   :custom
   (org-roam-dailies-capture-templates
    '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  :config
   (require 'org-roam-dailies)
   )
 
