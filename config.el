@@ -196,7 +196,7 @@
 
   :custom
   (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
-  (org-ellipsis " ▾")
+  (org-ellipsis "...")
   (org-agenda-start-with-log-mode t)
   (org-log-done 'time)
   (org-log-into-drawer t)
@@ -378,7 +378,6 @@
           ))
   )
 
-;(require 'tramp)
 (use-package! tramp
   :config
   ;(setenv "SHELL" "/bin/bash")
@@ -475,27 +474,35 @@
 ;  (kbd "J") 'elfeed-goodies/split-show-next
 ;  (kbd "K") 'elfeed-goodies/split-show-prev)
 
-(use-package ranger
+(use-package! dired
+  :config
+  ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
+  (setq all-the-icons-dired-monochrome nil)
+  )
+
+(use-package! ranger
+  :when (featurep! :emacs dired +ranger)
+  :after dired
   :custom
   (ranger-cleanup-eagerly t)
   (ranger-modify-header t)
-                                        ;ranger-cleanup-eagerly t
   (ranger-cleanup-on-disable t)
-  (ranger-return-to-ranger nil)
+  (ranger-return-to-ranger t)
+  ; aviod noisy lsp root request when browsing
+  (ranger-show-literal t)
   (ranger-excluded-extensions '("mkv" "iso" "mp4" "ipynb"))
-  (ranger-max-preview-size 3)
+  (ranger-max-preview-size 10)
   (ranger-dont-show-binary t)
   (ranger-footer-delay 0.2)
-  (ranger-preview-delay 0.040)
+  (ranger-preview-delay 0.04)
   :config
   (ranger-override-dired-mode t)
-                                        ;TODO change =ranger-pop-eshell= to vterm
-                                        ;(setq helm-descbinds-window-style 'same-window)
-  )
-(use-package dired
-  :config
-                                        ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
-  (setq all-the-icons-dired-monochrome nil)
+  ;TODO change =ranger-pop-eshell= to vterm
+  ;(setq helm-descbinds-window-style 'same-window)
+  (map! :leader
+        (:prefix-map ("o" . "open")
+          :desc "ranger"    "r" #'ranger
+          :desc "REPL"    "R" #'+eval/open-repl-other-window))
   )
 
 ;https://docs.projectile.mx/projectile/configuration.html
@@ -504,6 +511,7 @@
   (setq projectile-file-exists-remote-cache-expire (* 10 60)
         projectile-track-known-projects-automatically nil
         projectile-auto-discover nil)
+  ;(setq projectile-file-exists-local-cache-expire (* 5 60))
   )
 
 (use-package! tldr
