@@ -38,7 +38,8 @@
   - [[#projectile][projectile]]
   - [[#tldr][tldr]]
 - [[#terminal][Terminal]]
-  - [[#vterm-and-plugins][vterm and plugins]]
+  - [[#vterm][vterm]]
+  - [[#vterm-toggle][vterm toggle]]
   - [[#colored-output-issues][Colored output issues]]
   - [[#fish-shell][fish shell]]
 - [[#others][Others]]
@@ -437,33 +438,8 @@ line are justified."
      ("idea" . ?i)))
 
   :config
+  (load "~/.config/doom/org-capture-templates.el")
   ;https://stackoverflow.com/a/50875921
-  (setq org-capture-templates
-   `(("t" "Tasks / Projects")
-     ("tt" "Task" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
-      "* TODO %?\n  %U\n  %i" :empty-lines 1)
-     ("tc" "Task from note" entry (file+olp ,(co/org-agenda-file-paths "todos") "Inbox")
-      "* TODO [%a] %?\n  %U\n  %i" :empty-lines 1)
-     ("ts" "Someday" entry (file+olp ,(co/org-agenda-file-paths "todos") "Someday")
-      "* HOLD %?\n  %U\n  %a\n  %i" :empty-lines 1)
-     ("tr" "Readings" entry (file+olp ,(co/org-agenda-file-paths "todos") "Readings")
-      "* PROJ %?\n  %U\n  %a\n  %i" :empty-lines 1)
-
-     ;; btw, i use org-roam to track dailies
-                                        ;("j" "Journal Entries")
-                                        ;("jj" "Journal" entry
-                                        ;     (file+olp+datetree ,(co/org-agenda-file-paths "journal"))
-                                        ;     "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-                                        ;     ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-                                        ;     :clock-in :clock-resume
-                                        ;     :empty-lines 1)
-
-     ("m" "Metrics Capture")
-     ("mw" "Weight" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Weight")
-      "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)
-     ("mb" "Billiards" table-line (file+headline ,(co/org-agenda-file-paths "journal") "Billiards")
-      "| %U | %^g | %^{minutes} | %^{Notes} |" :kill-buffer t)
-     ))
   ;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
   (use-package org-habit
     :custom
@@ -521,9 +497,11 @@ https://emacs.stackexchange.com/a/7840
 #+end_src
 ** org-roam
 #+begin_src emacs-lisp :tangle yes
-(setq org-roam-directory (file-truename "~/org/roam"))
-(use-package org-roam
-  ;:custom
+(use-package! org-roam
+  :after org
+  :init
+  (setq org-roam-directory (file-truename "~/org/roam")
+        org-roam-v2-ack t)
   :custom
   (org-roam-dailies-capture-templates
    '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
@@ -538,8 +516,9 @@ https://emacs.stackexchange.com/a/7840
 #+end_src
 ** org-noter
 #+begin_src emacs-lisp
-(use-package org-noter
-  :custom
+(use-package! org-noter
+  :after org
+  :config
   (org-noter-set-doc-split-fraction 0.65)
   )
 #+end_src
@@ -597,7 +576,7 @@ https://emacs.stackexchange.com/a/7840
   )
 #+end_src
 ** leetcode
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-save-solutions t)
 (setq leetcode-directory "~/Coding/leetcode")
@@ -605,107 +584,15 @@ https://emacs.stackexchange.com/a/7840
 ** mu4e
 #+begin_src shell :tangle no
 paru -S isync mu
-mkdir -p ~/.mail/***REMOVED*** ~/.mail/***REMOVED***
+mkdir -p ~/.mail/$mailname
 mu init --maildir=~/.mail
-mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -V -a
+mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package mu4e
-  ;;:ensure nil
-  :defer 20
-  :config
-  (setq mu4e-update-interval 300)
-  (setq mu4e-change-filenames-when-moving t)
-  (setq mu4e-maildir "~/.mail")
-  (setq mu4e-attachment-dir "~/Downloads")
-
-  ;; enable inline images
-  (setq mu4e-view-show-images t)
-  ;; every new email composition gets its own frame!
-  (setq mu4e-compose-in-new-frame t)
-
-  ;;(mu4e-compose-signature-auto-include nil)
-
-  (setq mu4e-use-fancy-chars t)
-  (setq mu4e-view-show-addresses t)
-  (setq mu4e-view-prefer-html t)
-
-  ;;(setq mu4e-context-policy 'pick-first)
-  ;;(setq mu4e-compose-context-policy nil)
-  )
-
-(with-eval-after-load 'mu4e
-  (setq mu4e-get-mail-command "mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -c ~/.config/isync/***REMOVED***-mbsyncrc -a && proxychains -q mbsync -c ~/.config/isync/***REMOVED***-mbsyncrc -a")
-  (setq mu4e-contexts
-        `(
-          ,(make-mu4e-context
-            :name "private"
-            :enter-func (lambda () (mu4e-message "Entering context private"))
-            :leave-func (lambda () (mu4e-message "Leaving context private"))
-            :match-func (lambda (msg)
-                          (when msg
-                            (mu4e-message-contact-field-matches
-                             msg '(:from :to :cc :bcc) "***REMOVED***")))
-            :vars '((user-mail-address . "***REMOVED***")
-                    (user-full-name . "name")
-                    (mu4e-sent-folder . "/***REMOVED***/[***REMOVED***]/Sent Mail")
-                    (mu4e-trash-folder . "/***REMOVED***/[***REMOVED***]/Bin")
-                    (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
-                    (mu4e-compose-format-flowed . t)
-                    (mu4e-maildir-shortcuts . ( ("/***REMOVED***/INBOX"            . ?i)
-                                                ("/***REMOVED***/[***REMOVED***]/All Mail"  . ?a)
-                                                ("/***REMOVED***/[***REMOVED***]/Sent Mail" . ?s)
-                                                ("/***REMOVED***/[***REMOVED***]/Starred"   . ?r)
-                                                ("/***REMOVED***/[***REMOVED***]/Bin"       . ?t)
-                                                ("/***REMOVED***/[***REMOVED***]/Spam"   . ?v)
-                                                ))))
-          ,(make-mu4e-context
-            :name "work"
-            :enter-func (lambda () (mu4e-message "Entering context work"))
-            :leave-func (lambda () (mu4e-message "Leaving context work"))
-            :match-func (lambda (msg)
-                          (when msg
-                            (mu4e-message-contact-field-matches
-                             msg '(:from :to :cc :bcc) "***REMOVED***")))
-            :vars '((user-mail-address . "***REMOVED***")
-                    (user-full-name . "name")
-                    (mu4e-drafts-folder . "/***REMOVED***/Drafts")
-                    (mu4e-refile-folder . "/***REMOVED***/Archive")
-                    (mu4e-sent-folder . "/***REMOVED***/Sent Items")
-                    (mu4e-trash-folder . "/***REMOVED***/Trash")
-                    (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
-                    (mu4e-compose-format-flowed . t)
-                    (mu4e-maildir-shortcuts . ( ("/***REMOVED***/Inbox"            . ?i)
-                                                ("/***REMOVED***/Drafts" . ?D)
-                                                ("/***REMOVED***/Sent Items" . ?s)
-                                                ("/***REMOVED***/Notifications" . ?n)
-                                                ("/***REMOVED***/Junk E-mail" . ?j)
-                                                ))))
-          ,(make-mu4e-context
-            :name "***REMOVED***"
-            :enter-func (lambda () (mu4e-message "Entering context work"))
-            :leave-func (lambda () (mu4e-message "Leaving context work"))
-            :match-func (lambda (msg)
-                          (when msg
-                            (mu4e-message-contact-field-matches
-                             msg '(:from :to :cc :bcc) "***REMOVED***")))
-            :vars '((user-mail-address . "***REMOVED***")
-                    (user-full-name . "name")
-                    (mu4e-drafts-folder . "/***REMOVED***/Drafts")
-                    (mu4e-refile-folder . "/***REMOVED***/Archive")
-                    (mu4e-sent-folder . "/***REMOVED***/Sent Messages")
-                    (mu4e-trash-folder . "/***REMOVED***/Deleted Messages")
-                    (mu4e-compose-signature . (concat "name\n" "From Emacs\n"))
-                    (mu4e-compose-format-flowed . t)
-                    (mu4e-maildir-shortcuts . ( ("/***REMOVED***/Inbox"            . ?i)
-                                                ("/***REMOVED***/Drafts" . ?D)
-                                                ("/***REMOVED***/Sent Messages" . ?s)
-                                                ("/***REMOVED***/Junk" . ?j)
-                                                ))))
-          ))
-  )
+(load "~/.config/doom/mu4e.el")
 #+end_src
+
 *** alert
 #+begin_src emacs-lisp :tangle no
 (use-package mu4e-alert
@@ -757,16 +644,52 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+end_src
 ** elfeed
 #+begin_src emacs-lisp
-(use-package elfeed
-  :config
-  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+(use-package! elfeed
+  :when (featurep! :app rss)
   :bind (:map elfeed-search-mode-map
               ("A" . bjm/elfeed-show-all)
               ;("E" . bjm/elfeed-show-emacs)
               ("m" . elfeed-toggle-star)
               ;("D" . bjm/elfeed-show-daily)
               ("q" . bjm/elfeed-save-db-and-bury))
-  )
+  :config
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+  (defun bjm/elfeed-show-all ()
+    (interactive)
+    (bookmark-maybe-load-default-file)
+    (bookmark-jump "elfeed-all"))
+  
+  (defun elfeed-mark-all-as-read ()
+    (interactive)
+    (mark-whole-buffer)
+    (elfeed-search-untag-all-unread))
+  
+  (defalias 'elfeed-toggle-star
+    (elfeed-expose #'elfeed-search-toggle-all 'star))
+  
+  ;;functions to support syncing .elfeed between machines
+  ;;makes sure elfeed reads index from disk before launching
+  (defun bjm/elfeed-load-db-and-open ()
+    "Wrapper to load the elfeed db from disk before opening"
+    (interactive)
+    (elfeed-db-load)
+    (elfeed)
+    (elfeed-search-update--force))
+  
+  ;;write to disk when quiting
+  (defun bjm/elfeed-save-db-and-bury ()
+    "Wrapper to save the elfeed db to disk before burying buffer"
+    (interactive)
+    (elfeed-db-save)
+    (quit-window))
+  
+  ;(evil-define-key 'normal elfeed-show-mode-map
+  ;  (kbd "J") 'elfeed-goodies/split-show-next
+  ;  (kbd "K") 'elfeed-goodies/split-show-prev)
+  ;(evil-define-key 'normal elfeed-search-mode-map
+  ;  (kbd "J") 'elfeed-goodies/split-show-next
+  ;  (kbd "K") 'elfeed-goodies/split-show-prev)
+)
 
 (map! :leader
       (:prefix-map ("o" . "open")
@@ -775,52 +698,19 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
         )
        ))
 
-(use-package elfeed-org
+(use-package! elfeed-org
+  :after elfeed
   :config
   (elfeed-org)
   (setq rmh-elfeed-org-files (list "~/org/elfeed.org"))
   )
-(use-package elfeed-goodies
+
+(use-package! elfeed-goodies
+  :after elfeed
   :config
   (elfeed-goodies/setup)
   (setq elfeed-goodies/entry-pane-size 0.5)
   )
-
-(defun bjm/elfeed-show-all ()
-  (interactive)
-  (bookmark-maybe-load-default-file)
-  (bookmark-jump "elfeed-all"))
-
-(defun elfeed-mark-all-as-read ()
-  (interactive)
-  (mark-whole-buffer)
-  (elfeed-search-untag-all-unread))
-
-(defalias 'elfeed-toggle-star
-  (elfeed-expose #'elfeed-search-toggle-all 'star))
-
-;;functions to support syncing .elfeed between machines
-;;makes sure elfeed reads index from disk before launching
-(defun bjm/elfeed-load-db-and-open ()
-  "Wrapper to load the elfeed db from disk before opening"
-  (interactive)
-  (elfeed-db-load)
-  (elfeed)
-  (elfeed-search-update--force))
-
-;;write to disk when quiting
-(defun bjm/elfeed-save-db-and-bury ()
-  "Wrapper to save the elfeed db to disk before burying buffer"
-  (interactive)
-  (elfeed-db-save)
-  (quit-window))
-
-;(evil-define-key 'normal elfeed-show-mode-map
-;  (kbd "J") 'elfeed-goodies/split-show-next
-;  (kbd "K") 'elfeed-goodies/split-show-prev)
-;(evil-define-key 'normal elfeed-search-mode-map
-;  (kbd "J") 'elfeed-goodies/split-show-next
-;  (kbd "K") 'elfeed-goodies/split-show-prev)
 #+end_src
 
 ** dired-ranger
@@ -858,20 +748,20 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+end_src
 
 ** mathematica
-#+begin_src emacs-lisp :tangle no
-(use-package! lsp-mode
+#+begin_src emacs-lisp :tangle yes
+; last update was 5 years ago
+(use-package! wolfram-mode
   :config
-  (use-package! wolfram-mode
-    :config
-    (autoload 'wolfram-mode "wolfram-mode" nil t)
-    (autoload 'run-wolfram "wolfram-mode" nil t)
-    (setq wolfram-program "/usr/local/bin/wolfram")
-    (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
-    (setq wolfram-path "~/.Mathematica/Applications")
-    )
+  (autoload 'wolfram-mode "wolfram-mode" nil t)
+  (autoload 'run-wolfram "wolfram-mode" nil t)
+  (setq wolfram-program "/usr/local/bin/wolfram")
+  (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
+  (setq wolfram-path "~/.Mathematica/Applications")
+  )
 
+(after! lsp
   (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
-
+  
   (lsp-register-client
    (make-lsp-client :language-id 'wolfram
                     :new-connection (lsp-tcp-server-command
@@ -886,7 +776,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
                     :major-modes '(wolfram-mode)
                     :server-id 'lsp-wl
                     ))
-  )
+)
 #+end_src
 ** projectile
 #+begin_src emacs-lisp
@@ -907,18 +797,22 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   )
 #+end_src
 * Terminal
-** vterm and plugins
+** vterm
 #+begin_src emacs-lisp :tangle yes
 (use-package! vterm
-  :config
-  (setq vterm-shell "/usr/bin/fish"
-        vterm-buffer-name-string "vterm %s"
-        vterm-kill-buffer-on-exit t)
+  :custom
+  (vterm-shell "/usr/bin/fish")
+  (vterm-buffer-name-string "vterm %s")
+  (vterm-kill-buffer-on-exit t)
   )
-;(use-package multi-vterm)
-(use-package vterm-toggle
-  :config
+#+end_src
 
+** vterm toggle
+#+begin_src emacs-lisp :tangle no
+;(use-package multi-vterm)
+(use-package! vterm-toggle
+  :after vterm
+  :config
   ;; you can cd to the directory where your previous buffer file exists
   ;; after you have toggle to the vterm buffer with `vterm-toggle'.
   (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
@@ -927,12 +821,14 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   ;Switch to previous vterm buffer
   (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
 )
-(map! :leader
-      (:prefix-map ("o" . "open")
-       (:when (featurep! :term vterm)
-        :desc "Toggle vterm popup here"    "." #'vterm-toggle-cd
-        )
-       ))
+;; toggle a popup windows in current file dir (not project root)
+;; do i actually need these function?
+;(map! :leader
+;      (:prefix-map ("o" . "open")
+;       (:when (featurep! :term vterm)
+;        :desc "Toggle vterm popup here"    "." #'vterm-toggle-cd
+;        )
+;       ))
 #+end_src
 ** Colored output issues
 https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues

@@ -8,11 +8,11 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 
 (package! math-preview)
+(package! wolfram-mode)
 
 (package! tldr)
 (package! keycast)
 (package! elfeed-goodies)
-(package! vterm-toggle)
 
 (package! pomm)
 (package! screenshot
