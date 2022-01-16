@@ -30,35 +30,36 @@
 ;(add-to-list 'face-font-rescale-alist '("Sarasa Gothic SC" . 1.2))
 
 (setq +my/scale-factor
-      (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0)
-      )
+      (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
+
 (defun +my/font-size(size)
   (ceiling (* size +my/scale-factor))
-  )
+)
 
-(setq doom-font (font-spec :family "agave Nerd Font" :size (+my/font-size 14))
+(setq doom-font (font-spec :family "UbuntuMono Nerd Font" :size (+my/font-size 14))
       ;; big font mode resize serif-font and variable-pitch-font also
       doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (+my/font-size 17))
-      doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 11))
+      doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 13))
       doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (+my/font-size 11))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 9)))
 
+;; TODO resize cjk font with =C +=
 (defun +my/cjk-font(font-size)
   (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size))))
-  )
+                      (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size)))))
+
 
 (defun +my/better-font()
   (interactive)
   ;; english font
   (if (display-graphic-p)
       (progn
-        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "agave Nerd Font" (+my/font-size 14))) ;; 11 13 17 19 23
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "UbuntuMono Nerd Font" (+my/font-size 14))) ;; 11 13 17 19 23
         (set-face-attribute 'mode-line nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
         (set-face-attribute 'mode-line-inactive nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
-        (+my/cjk-font 11)
-        )))
+        (+my/cjk-font 11))))
+
 
 (defun +my|init-font(frame)
   (with-selected-frame frame
@@ -70,11 +71,17 @@
   (+my/better-font))
 
 ;;https://emacs.stackexchange.com/a/47092
+;; DONE restore ligature after exit big font mode
 (add-hook 'doom-big-font-mode-hook
           (lambda ()
             (if doom-big-font-mode
-                (add-hook 'doom-big-font-mode-hook #'+my/better-font)
-              (remove-hook 'doom-big-font-mode-hook #'+my/better-font))))
+                (progn
+                 (add-hook 'doom-big-font-mode-hook #'+my/better-font)
+                 (+ligatures-init-fira-font-h))
+              (progn
+                (remove-hook 'doom-big-font-mode-hook #'+my/better-font)
+                (+ligatures-init-fira-font-h)))))
+
 
 (add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
 (add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
@@ -196,7 +203,7 @@
 
   :custom
   (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
-  (org-ellipsis "...")
+  (org-ellipsis "⤵")
   (org-agenda-start-with-log-mode t)
   (org-log-done 'time)
   (org-log-into-drawer t)
