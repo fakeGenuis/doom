@@ -91,10 +91,13 @@
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t  ; if nil, italics is universally disabled
-        )
+        doom-themes-enable-italic t)  ; if nil, italics is universally disabled
+
   (load-theme 'doom-dracula t)
 
+  ;; or for treemacs users
+  ;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  ;(doom-themes-treemacs-config)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
@@ -132,6 +135,7 @@
 (use-package all-the-icons
   :config
   (setq all-the-icons-scale-factor 0.9)
+  (setq all-the-icons-dired-mode t)
   )
 
 (setq display-line-numbers-type nil)
@@ -263,6 +267,40 @@
   :config
   (org-noter-set-doc-split-fraction 0.65)
   )
+
+(use-package! treemacs
+  :when (featurep! :ui treemacs)
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (setq treemacs-width 17)
+  (setq treemacs-project-follow-cleanup t)
+  ;(setq treemacs-user-mode-line-format t)
+        ;https://github.com/hlissner/doom-emacs/issues/1551
+        ;doom-themes-treemacs-enable-variable-pitch nil
+
+  ;https://github.com/Alexander-Miller/treemacs/issues/486
+  ;; (dolist (face '(treemacs-root-face
+  ;;                 treemacs-git-unmodified-face
+  ;;                 treemacs-git-modified-face
+  ;;                 treemacs-git-renamed-face
+  ;;                 treemacs-git-ignored-face
+  ;;                 treemacs-git-untracked-face
+  ;;                 treemacs-git-added-face
+  ;;                 treemacs-git-conflict-face
+  ;;                 treemacs-directory-face
+  ;;                 treemacs-directory-collapsed-face
+  ;;                 treemacs-file-face
+  ;;                 treemacs-tags-face))
+  ;;  (set-face-attribute face nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20))))
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-fringe-indicator-mode 'always)
+  (treemacs-git-mode 'extended))
+
+(use-package treemacs-all-the-icons
+   :after (treemacs all-the-icons))
 
 (load "~/.config/doom/mu4e.el")
 

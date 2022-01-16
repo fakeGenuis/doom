@@ -23,6 +23,8 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 
+(package! treemacs-all-the-icons)
+
 (package! vlf)
 
 ;; To install a package directly from a remote git repo, you must specify a
