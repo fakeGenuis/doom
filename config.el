@@ -26,15 +26,17 @@
        ))
 
 ;; (display-pixel-height) error in daemon mode
-;(add-to-list 'face-font-rescale-alist '("agave Nerd Font" . 1.2))
-;(add-to-list 'face-font-rescale-alist '("Sarasa Gothic SC" . 1.2))
+                                        ;(add-to-list 'face-font-rescale-alist '("agave Nerd Font" . 1.2))
+                                        ;(add-to-list 'face-font-rescale-alist '("Sarasa Gothic SC" . 1.2))
 
 (setq +my/scale-factor
       (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
 
+(setq +my/is-laptop
+      (eq (shell-command "ls /sys/class/power_supply/BAT* &>/dev/null") 0))
+
 (defun +my/font-size(size)
-  (ceiling (* size +my/scale-factor))
-)
+     (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
 
 (setq doom-font (font-spec :family "UbuntuMono Nerd Font" :size (+my/font-size 14))
       ;; big font mode resize serif-font and variable-pitch-font also
@@ -48,7 +50,6 @@
   (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size)))))
-
 
 (defun +my/better-font()
   (interactive)
@@ -76,12 +77,11 @@
           (lambda ()
             (if doom-big-font-mode
                 (progn
-                 (add-hook 'doom-big-font-mode-hook #'+my/better-font)
-                 (+ligatures-init-fira-font-h))
+                  (add-hook 'doom-big-font-mode-hook #'+my/better-font)
+                  (+ligatures-init-fira-font-h))
               (progn
                 (remove-hook 'doom-big-font-mode-hook #'+my/better-font)
                 (+ligatures-init-fira-font-h)))))
-
 
 (add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
 (add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
