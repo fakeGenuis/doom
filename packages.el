@@ -16,7 +16,7 @@
 
 (package! pomm)
 (package! screenshot
-  :recipe (:host github :repo "tecosaur/screenshot"))
+  :recipe (:host github :repo "yangsheng6810/screenshot"))
 
 (package! org-pandoc-import
   :recipe (:host github
