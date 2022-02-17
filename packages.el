@@ -23,6 +23,8 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 
+(package! zotxt)
+
 (package! treemacs-all-the-icons)
 
 (package! vlf)
