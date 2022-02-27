@@ -2,8 +2,8 @@
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 
-(add-to-list 'default-frame-alist '(height . 24))
-(add-to-list 'default-frame-alist '(width . 80))
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width . 120))
 
 (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
 (add-to-list 'default-frame-alist '(alpha . (85 . 50)))
@@ -33,7 +33,7 @@
       (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
 
 (setq +my/is-laptop
-      (eq (shell-command "ls /sys/class/power_supply/BAT* &>/dev/null") 0))
+      (eq (shell-command "ls /sys/class/power_supply | grep BAT &>/dev/null") 0))
 
 (defun +my/font-size(size)
      (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
@@ -196,7 +196,7 @@
         evil-tex-select-newlines-with-envs nil)
   )
 
-(use-package org
+(use-package! org
   :init
   (setq org-directory "~/org/")
   (defvar co/org-agenda-directory (expand-file-name "agenda" org-directory))
@@ -204,7 +204,14 @@
     (if (listp path)
         (mapcar (lambda (x) (expand-file-name (concat x ".org") co/org-agenda-directory)) path)
       (expand-file-name (concat path ".org") co/org-agenda-directory)))
+  ;; https://emacs.stackexchange.com/a/63793
+  (defun org-copy-link-url ()
+    (interactive)
+    (kill-new (org-element-property :raw-link (org-element-context))))
 
+  ;; :bind (:map org-mode-map
+  ;;        :localleader
+  ;;        "y" #'org-copy-link-url)
   :custom
   (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
   (org-ellipsis "⤵")
@@ -216,7 +223,7 @@
   (org-refile-targets '(("archive.org" :maxlevel . 1)))
   (org-tag-alist
    '((:startgroup)
-                                        ; Put mutually exclusive tags here
+     ;; Put mutually exclusive tags here
      (:endgroup)
      ("@home" . ?H)
      ("@work" . ?W)
@@ -226,24 +233,26 @@
      ("idea" . ?i)))
 
   :config
+  (map! :map org-mode-map
+        :localleader
+        "y" #'org-copy-link-url)
   (load "~/.config/doom/org-capture-templates.el")
-  ;https://stackoverflow.com/a/50875921
-  ;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
+  ;;https://stackoverflow.com/a/50875921
+  ;;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
   (use-package org-habit
     :custom
     (org-habit-graph-column 60)
     :config
-    (add-to-list 'org-modules 'org-habit)
-    )
+    (add-to-list 'org-modules 'org-habit))
 
-  ;(org-clock-persist 'history)
+
+  ;;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
-  ; display inline images
+  ;; display inline images
   (org-display-inline-images)
 
   ;; Save Org buffers after refiling!
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
-)
+  (advice-add 'org-refile :after 'org-save-all-org-buffers))
 
 (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
 
