@@ -14,8 +14,8 @@
 - [[#editing][Editing]]
   - [[#about-parenthese][About Parenthese]]
   - [[#input-chinese][Input Chinese]]
-  - [[#file-templates][File Templates]]
   - [[#latex][Latex]]
+  - [[#file-templates][File Templates]]
 - [[#org][Org]]
   - [[#org-1][org]]
   - [[#org-agenda][org-agenda]]
@@ -26,17 +26,18 @@
   - [[#org-pandoc-import][org-pandoc-import]]
   - [[#org-noter][org-noter]]
 - [[#plugins][Plugins]]
+  - [[#mathematica][mathematica]]
+  - [[#leetcode][leetcode]]
   - [[#treemacs][treemacs]]
   - [[#ivy-posframe][ivy-posframe]]
-  - [[#leetcode][leetcode]]
   - [[#mu4e][mu4e]]
   - [[#yadm-with-magit][yadm (with magit)]]
   - [[#keycast][keycast]]
   - [[#elfeed][elfeed]]
   - [[#dired-ranger][dired-ranger]]
-  - [[#mathematica][mathematica]]
   - [[#projectile][projectile]]
   - [[#tldr][tldr]]
+  - [[#tab-bar][tab bar]]
 - [[#terminal][Terminal]]
   - [[#vterm][vterm]]
   - [[#vterm-toggle][vterm toggle]]
@@ -44,7 +45,6 @@
   - [[#fish-shell][fish shell]]
 - [[#others][Others]]
   - [[#maximize-when-start-up][maximize when start up]]
-  - [[#tab-bar][tab bar]]
   - [[#eaf][EAF]]
   - [[#edit-server][edit-server]]
   - [[#proxy][proxy]]
@@ -57,6 +57,7 @@
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 #+end_src
+
 * Display
 ** frame size
 #+begin_src emacs-lisp
@@ -282,19 +283,6 @@ https://emacs-china.org/t/topic/1271
   (("M-j" . pyim-convert-string-at-point) ;与 pyim-probe-dynamic-english 配合
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+end_src
-** File Templates
-+ [2021-07-26 Mon 10:11] How to create files using the file-templates module? · Issue #2134 · hlissner/doom-emacs · GitHub :grasp:
-https://github.com/hlissner/doom-emacs/issues/2134
-
-#+begin_src emacs-lisp :tangle yes
-(after! yasnippet
-  :config
-  ;(setq +file-templates-dir "~/.config/doom/templates/")
-  (set-file-template! "/leetcode/.+\\.cpp$"
-    ;:when +file-templates-in-emacs-dirs-p
-    :trigger "__leetcode.cpp" :mode 'c++-mode)
-  )
-#+end_src
 ** Latex
 #+begin_src emacs-lisp
 (eval-after-load 'latex
@@ -402,6 +390,20 @@ line are justified."
 ;; advise the function to a
 (advice-add 'org--format-latex-make-overlay :after 'org-justify-fragment-overlay)
 (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip)
+  )
+#+end_src
+
+** File Templates
++ [2021-07-26 Mon 10:11] How to create files using the file-templates module? · Issue #2134 · hlissner/doom-emacs · GitHub :grasp:
+https://github.com/hlissner/doom-emacs/issues/2134
+
+#+begin_src emacs-lisp :tangle yes
+(after! yasnippet
+  :config
+  ;(setq +file-templates-dir "~/.config/doom/templates/")
+  (set-file-template! "/leetcode/.+\\.cpp$"
+    ;:when +file-templates-in-emacs-dirs-p
+    :trigger "__leetcode.cpp" :mode 'c++-mode)
   )
 #+end_src
 
@@ -528,10 +530,48 @@ https://emacs.stackexchange.com/a/7840
 (use-package! org-noter
   :after org
   :config
-  (org-noter-set-doc-split-fraction 0.65)
+  (org-noter-set-doc-split-fraction (0.75 . 0.25))
   )
 #+end_src
 * Plugins
+** mathematica
+#+begin_src emacs-lisp :tangle yes
+; last update was 5 years ago
+(use-package! wolfram-mode
+  :config
+  (autoload 'wolfram-mode "wolfram-mode" nil t)
+  (autoload 'run-wolfram "wolfram-mode" nil t)
+  (setq wolfram-program "/usr/local/bin/wolfram")
+  (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
+  (setq wolfram-path "~/.Mathematica/Applications")
+  )
+
+(after! lsp
+  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
+
+  (lsp-register-client
+   (make-lsp-client :language-id 'wolfram
+                    :new-connection (lsp-tcp-server-command
+                                     (lambda (port)
+                                       `("wolfram" ;; or "wolframscript"
+                                         "-script" ;; or "-file"
+                                         "~/softwares/lsp-wl/init.wls"
+                                         ,(concat
+                                           "--socket="
+                                           (number-to-string port)
+                                           ))))
+                    :major-modes '(wolfram-mode)
+                    :server-id 'lsp-wl
+                    ))
+)
+#+end_src
+** leetcode
+#+begin_src emacs-lisp :tangle no
+(setq leetcode-prefer-language "cpp")
+(setq leetcode-save-solutions t)
+(setq leetcode-directory "~/Coding/leetcode")
+#+end_src
+
 ** treemacs
 #+begin_src emacs-lisp :tangle yes
 (use-package! treemacs
@@ -583,12 +623,6 @@ https://emacs.stackexchange.com/a/7840
   :config
   (ivy-posframe-mode 1)
   )
-#+end_src
-** leetcode
-#+begin_src emacs-lisp :tangle no
-(setq leetcode-prefer-language "cpp")
-(setq leetcode-save-solutions t)
-(setq leetcode-directory "~/Coding/leetcode")
 #+end_src
 ** mu4e
 #+begin_src shell :tangle no
@@ -756,37 +790,6 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   )
 #+end_src
 
-** mathematica
-#+begin_src emacs-lisp :tangle yes
-; last update was 5 years ago
-(use-package! wolfram-mode
-  :config
-  (autoload 'wolfram-mode "wolfram-mode" nil t)
-  (autoload 'run-wolfram "wolfram-mode" nil t)
-  (setq wolfram-program "/usr/local/bin/wolfram")
-  (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
-  (setq wolfram-path "~/.Mathematica/Applications")
-  )
-
-(after! lsp
-  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
-  
-  (lsp-register-client
-   (make-lsp-client :language-id 'wolfram
-                    :new-connection (lsp-tcp-server-command
-                                     (lambda (port)
-                                       `("wolfram" ;; or "wolframscript"
-                                         "-script" ;; or "-file"
-                                         "~/softwares/lsp-wl/init.wls"
-                                         ,(concat
-                                           "--socket="
-                                           (number-to-string port)
-                                           ))))
-                    :major-modes '(wolfram-mode)
-                    :server-id 'lsp-wl
-                    ))
-)
-#+end_src
 ** projectile
 #+begin_src emacs-lisp
 ;https://docs.projectile.mx/projectile/configuration.html
@@ -805,6 +808,36 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (setq tldr-enabled-categories '("common" "linux" "osx" "sunos"))
   )
 #+end_src
+** tab bar
+#+begin_src emacs-lisp :tangle no
+(use-package centaur-tabs
+  :config
+  (centaur-tabs-headline-match)
+  (centaur-tabs-mode t)
+  (setq centaur-tabs-style "box"
+        centaur-tabs-height 26
+        centaur-tabs-set-icons t
+        ;centaur-tabs-plain-icons t
+        centaur-tabs-gray-out-icons 'buffer
+        centaur-tabs-set-bar 'left
+        centaur-tabs-set-modified-marker t)
+  :hook
+  (+doom-dashboard-mode . centaur-tabs-local-mode)
+  (ranger-mode-hook . centaur-tabs-local-mode)
+  (calendar-mode . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
+  :bind
+  (:map evil-normal-state-map
+	  ("g t" . centaur-tabs-forward)
+	  ("g T" . centaur-tabs-backward))
+  )
+;(map! :leader
+;      (:prefix-map ("a" . "tabs")
+;       :desc "next-tabs" "j" #'centaur-tabs-forward
+;       :desc "previous-tab" "k" #'centaur-tabs-backward
+;       ))
+#+end_src
+
 * Terminal
 ** vterm
 #+begin_src emacs-lisp :tangle yes
@@ -854,36 +887,6 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp :tangle no
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-#+end_src
-
-** tab bar
-#+begin_src emacs-lisp :tangle no
-(use-package centaur-tabs
-  :config
-  (centaur-tabs-headline-match)
-  (centaur-tabs-mode t)
-  (setq centaur-tabs-style "box"
-        centaur-tabs-height 26
-        centaur-tabs-set-icons t
-        ;centaur-tabs-plain-icons t
-        centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'left
-        centaur-tabs-set-modified-marker t)
-  :hook
-  (+doom-dashboard-mode . centaur-tabs-local-mode)
-  (ranger-mode-hook . centaur-tabs-local-mode)
-  (calendar-mode . centaur-tabs-local-mode)
-  (org-agenda-mode . centaur-tabs-local-mode)
-  :bind
-  (:map evil-normal-state-map
-	  ("g t" . centaur-tabs-forward)
-	  ("g T" . centaur-tabs-backward))
-  )
-;(map! :leader
-;      (:prefix-map ("a" . "tabs")
-;       :desc "next-tabs" "j" #'centaur-tabs-forward
-;       :desc "previous-tab" "k" #'centaur-tabs-backward
-;       ))
 #+end_src
 
 ** EAF
@@ -938,6 +941,7 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 #+end_src
 ** screenshot
 currently buggy
-#+begin_src emacs-lisp
-;(use-package screenshot)
+#+begin_src emacs-lisp :tangle no
+(use-package screenshot)
 #+end_src
+

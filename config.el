@@ -142,14 +142,6 @@
 
 (setq show-paren-style 'expression)
 
-(after! yasnippet
-  :config
-  ;(setq +file-templates-dir "~/.config/doom/templates/")
-  (set-file-template! "/leetcode/.+\\.cpp$"
-    ;:when +file-templates-in-emacs-dirs-p
-    :trigger "__leetcode.cpp" :mode 'c++-mode)
-  )
-
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
          LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
@@ -194,6 +186,14 @@
   :config
   (setq evil-tex-include-newlines-in-envs nil
         evil-tex-select-newlines-with-envs nil)
+  )
+
+(after! yasnippet
+  :config
+  ;(setq +file-templates-dir "~/.config/doom/templates/")
+  (set-file-template! "/leetcode/.+\\.cpp$"
+    ;:when +file-templates-in-emacs-dirs-p
+    :trigger "__leetcode.cpp" :mode 'c++-mode)
   )
 
 (use-package! org
@@ -274,8 +274,37 @@
 (use-package! org-noter
   :after org
   :config
-  (org-noter-set-doc-split-fraction 0.65)
+  (org-noter-set-doc-split-fraction (0.75 . 0.25))
   )
+
+; last update was 5 years ago
+(use-package! wolfram-mode
+  :config
+  (autoload 'wolfram-mode "wolfram-mode" nil t)
+  (autoload 'run-wolfram "wolfram-mode" nil t)
+  (setq wolfram-program "/usr/local/bin/wolfram")
+  (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
+  (setq wolfram-path "~/.Mathematica/Applications")
+  )
+
+(after! lsp
+  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
+
+  (lsp-register-client
+   (make-lsp-client :language-id 'wolfram
+                    :new-connection (lsp-tcp-server-command
+                                     (lambda (port)
+                                       `("wolfram" ;; or "wolframscript"
+                                         "-script" ;; or "-file"
+                                         "~/softwares/lsp-wl/init.wls"
+                                         ,(concat
+                                           "--socket="
+                                           (number-to-string port)
+                                           ))))
+                    :major-modes '(wolfram-mode)
+                    :server-id 'lsp-wl
+                    ))
+)
 
 (use-package! treemacs
   :when (featurep! :ui treemacs)
@@ -443,35 +472,6 @@
           :desc "REPL"    "R" #'+eval/open-repl-other-window))
   )
 
-; last update was 5 years ago
-(use-package! wolfram-mode
-  :config
-  (autoload 'wolfram-mode "wolfram-mode" nil t)
-  (autoload 'run-wolfram "wolfram-mode" nil t)
-  (setq wolfram-program "/usr/local/bin/wolfram")
-  (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
-  (setq wolfram-path "~/.Mathematica/Applications")
-  )
-
-(after! lsp
-  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
-  
-  (lsp-register-client
-   (make-lsp-client :language-id 'wolfram
-                    :new-connection (lsp-tcp-server-command
-                                     (lambda (port)
-                                       `("wolfram" ;; or "wolframscript"
-                                         "-script" ;; or "-file"
-                                         "~/softwares/lsp-wl/init.wls"
-                                         ,(concat
-                                           "--socket="
-                                           (number-to-string port)
-                                           ))))
-                    :major-modes '(wolfram-mode)
-                    :server-id 'lsp-wl
-                    ))
-)
-
 ;https://docs.projectile.mx/projectile/configuration.html
 (use-package! projectile
   :config
@@ -499,5 +499,3 @@
 
 (use-package pomm
   :commands (pomm))
-
-;(use-package screenshot)
