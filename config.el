@@ -274,8 +274,20 @@
 (use-package! org-noter
   :after org
   :config
-  (org-noter-set-doc-split-fraction (0.75 . 0.25))
+  (org-noter-set-doc-split-fraction '(0.75 . 0.25))
   )
+
+(defun +my/append-to-list (list-var elements)
+  "Append ELEMENTS to the end of LIST-VAR.
+
+The return value is the new value of LIST-VAR."
+  (unless (consp elements)
+    (error "ELEMENTS must be a list"))
+  (let ((list (symbol-value list-var)))
+    (if list
+        (setcdr (last list) elements)
+      (set list-var elements)))
+  (symbol-value list-var))
 
 ; last update was 5 years ago
 (use-package! wolfram-mode
@@ -283,7 +295,10 @@
   (autoload 'wolfram-mode "wolfram-mode" nil t)
   (autoload 'run-wolfram "wolfram-mode" nil t)
   (setq wolfram-program "/usr/local/bin/wolfram")
-  (add-to-list 'auto-mode-alist '("\.m$" . wolfram-mode))
+  (+my/append-to-list 'auto-mode-alist '(("\.m$" . wolfram-mode)
+                                         ("\.wl$" . wolfram-mode)
+                                         ("\.wls$" . wolfram-mode)
+                                          ))
   (setq wolfram-path "~/.Mathematica/Applications")
   )
 
