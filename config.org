@@ -143,12 +143,9 @@
 (add-hook 'doom-big-font-mode-hook
           (lambda ()
             (if doom-big-font-mode
-                (progn
                   (add-hook 'doom-big-font-mode-hook #'+my/better-font)
-                  (+ligatures-init-fira-font-h))
-              (progn
                 (remove-hook 'doom-big-font-mode-hook #'+my/better-font)
-                (+ligatures-init-fira-font-h)))))
+                )))
 
 (add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
 (add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))

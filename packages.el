@@ -23,7 +23,9 @@
            :repo "tecosaur/org-pandoc-import"
            :files ("*.el" "filters" "preprocessors")))
 
-(package! zotxt)
+(package! zotxt
+  :recipe (:host github
+           :repo "name/zotxt"))
 
 (package! treemacs-all-the-icons)
 
