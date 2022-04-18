@@ -324,7 +324,18 @@ https://github.com/hlissner/doom-emacs/issues/5672
 ;(advice-add #'+lsp-init-company-backends-h :override #'+my/lsp-init-company-backends-h)
 
 (setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
+
+;https://tex.stackexchange.com/a/21205
+;; set XeTeX mode in TeX/LaTeX
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+             (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
+             ;(setq TeX-command-default "XeLaTeX")
+             ;(setq TeX-save-query nil)
+             (setq TeX-show-compilation nil)))
 #+end_src
+
+#+RESULTS:
 
 + add surround
   =V S [e|m|.] .=

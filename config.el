@@ -178,6 +178,15 @@
 
 (setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
 
+;https://tex.stackexchange.com/a/21205
+;; set XeTeX mode in TeX/LaTeX
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+             (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
+             ;(setq TeX-command-default "XeLaTeX")
+             ;(setq TeX-save-query nil)
+             (setq TeX-show-compilation nil)))
+
 (use-package! evil-tex
   :when (featurep! :editor evil +everywhere)
   :config
