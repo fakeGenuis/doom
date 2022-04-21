@@ -383,15 +383,15 @@ The return value is the new value of LIST-VAR."
         )
   )
 
-(after! keycast
+(use-package keycast
+  :config
   (define-minor-mode keycast-mode
-    ;; https://github.com/tarsius/keycast/issues/7#issuecomment-627604064
-    "Show current command and its key binding in the mode line."
+    "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
     :global t
     (if keycast-mode
         (add-hook 'pre-command-hook 'keycast--update t)
-      (remove-hook 'pre-command-hook 'keycast--update))))
-(add-to-list 'global-mode-string '("" mode-line-keycast))
+      (remove-hook 'pre-command-hook 'keycast--update)))
+  (add-to-list 'global-mode-string '("" keycast-mode-line)))
 (keycast-mode) ;; or run keycast-mode by demand
 
 (use-package! elfeed

@@ -698,16 +698,17 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/omf/init.fish]]
 
 ** keycast
+[[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
 #+begin_src emacs-lisp
-(after! keycast
+(use-package keycast
+  :config
   (define-minor-mode keycast-mode
-    ;; https://github.com/tarsius/keycast/issues/7#issuecomment-627604064
-    "Show current command and its key binding in the mode line."
+    "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
     :global t
     (if keycast-mode
         (add-hook 'pre-command-hook 'keycast--update t)
-      (remove-hook 'pre-command-hook 'keycast--update))))
-(add-to-list 'global-mode-string '("" mode-line-keycast))
+      (remove-hook 'pre-command-hook 'keycast--update)))
+  (add-to-list 'global-mode-string '("" keycast-mode-line)))
 (keycast-mode) ;; or run keycast-mode by demand
 #+end_src
 ** elfeed
