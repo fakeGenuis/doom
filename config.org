@@ -106,7 +106,7 @@
       ;; big font mode resize serif-font and variable-pitch-font also
       doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (+my/font-size 17))
       doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 13))
-      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (+my/font-size 11))
+      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (+my/font-size 14))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 9)))
 #+end_src
 
@@ -218,7 +218,6 @@
 (use-package all-the-icons
   :config
   (setq all-the-icons-scale-factor 0.9)
-  (setq all-the-icons-dired-mode t)
   )
 #+end_src
 
@@ -335,8 +334,6 @@ https://github.com/hlissner/doom-emacs/issues/5672
              (setq TeX-show-compilation nil)))
 #+end_src
 
-#+RESULTS:
-
 + add surround
   =V S [e|m|.] .=
   select all line with =V=
@@ -414,6 +411,24 @@ https://github.com/hlissner/doom-emacs/issues/2134
   )
 #+end_src
 
+default pdf viewer in emacs
+[[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
+#+begin_src emacs-lisp :tangle no
+(use-package! pdf-tools
+  :custom
+  (+latex-viewers '(pdf-tools evince okular)))
+
+;; to use pdfview with auctex
+(setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+(setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+;;(TeX-source-correlate-start-server t)
+;; not sure if last line is neccessary
+
+;; to have the buffer refresh after compilation
+(add-hook 'TeX-after-compilation-finished-functions
+          #'TeX-revert-document-buffer)
+
+#+end_src
 * Org
 ** org
 #+begin_src emacs-lisp
@@ -788,6 +803,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   :config
   ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
   (setq all-the-icons-dired-monochrome nil)
+  (setq all-the-icons-dired-mode t)
   )
 
 (use-package! ranger

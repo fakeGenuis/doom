@@ -42,7 +42,7 @@
       ;; big font mode resize serif-font and variable-pitch-font also
       doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (+my/font-size 17))
       doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 13))
-      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (+my/font-size 11))
+      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (+my/font-size 14))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 9)))
 
 ;; TODO resize cjk font with =C +=
@@ -132,7 +132,6 @@
 (use-package all-the-icons
   :config
   (setq all-the-icons-scale-factor 0.9)
-  (setq all-the-icons-dired-mode t)
   )
 
 (setq display-line-numbers-type nil)
@@ -466,6 +465,7 @@ The return value is the new value of LIST-VAR."
   :config
   ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
   (setq all-the-icons-dired-monochrome nil)
+  (setq all-the-icons-dired-mode t)
   )
 
 (use-package! ranger
