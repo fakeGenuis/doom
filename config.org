@@ -6,8 +6,8 @@
 - [[#display][Display]]
   - [[#frame-size][frame size]]
   - [[#transparency][transparency]]
-  - [[#fonts][fonts]]
   - [[#themes][Themes]]
+  - [[#fonts][fonts]]
   - [[#doom-modeline][doom-modeline]]
   - [[#icons][Icons]]
   - [[#line][Line]]
@@ -26,6 +26,7 @@
   - [[#org-pandoc-import][org-pandoc-import]]
   - [[#org-noter][org-noter]]
 - [[#plugins][Plugins]]
+  - [[#pdf-tools][pdf-tools]]
   - [[#mathematica][mathematica]]
   - [[#leetcode][leetcode]]
   - [[#treemacs][treemacs]]
@@ -45,8 +46,6 @@
   - [[#fish-shell][fish shell]]
 - [[#others][Others]]
   - [[#maximize-when-start-up][maximize when start up]]
-  - [[#eaf][EAF]]
-  - [[#edit-server][edit-server]]
   - [[#proxy][proxy]]
   - [[#pomm][pomm]]
   - [[#screenshot][screenshot]]
@@ -87,12 +86,13 @@
        ))
 #+end_src
 
-** fonts
+** Themes
 #+begin_src emacs-lisp :tangle yes
-;; (display-pixel-height) error in daemon mode
-                                        ;(add-to-list 'face-font-rescale-alist '("agave Nerd Font" . 1.2))
-                                        ;(add-to-list 'face-font-rescale-alist '("Sarasa Gothic SC" . 1.2))
+(setq doom-theme 'doom-dracula)
+#+end_src
 
+** fonts
+#+begin_src emacs-lisp :tangle yes :results none
 (setq +my/scale-factor
       (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
 
@@ -145,32 +145,11 @@ check code ligatures, *bold* and /italic/ enabled
 (add-hook 'doom-big-font-mode-hook
           (lambda ()
             (if doom-big-font-mode
-                  (add-hook 'doom-big-font-mode-hook #'+my/better-font)
-                (remove-hook 'doom-big-font-mode-hook #'+my/better-font)
-                )))
+                (add-hook 'doom-big-font-mode-hook #'+my/better-font)
+              (remove-hook 'doom-big-font-mode-hook #'+my/better-font))))
 
 (add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
 (add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
-#+end_src
-
-** Themes
-*bold* and /italic/ enabled
-#+begin_src emacs-lisp :tangle yes
-;(setq doom-theme 'doom-palenight)
-(use-package doom-themes
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t)  ; if nil, italics is universally disabled
-
-  (load-theme 'doom-dracula t)
-
-  ;; or for treemacs users
-  ;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-  ;(doom-themes-treemacs-config)
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  (doom-themes-org-config))
 #+end_src
 
 ** doom-modeline
@@ -178,31 +157,20 @@ check code ligatures, *bold* and /italic/ enabled
 (use-package! doom-modeline
   :hook (after-init . doom-modeline-mode)
 
+  :custom
   ;; The limit of the window width.
   ;; If `window-width' is smaller than the limit, some information won't be displayed.
-  (setq doom-modeline-window-width-limit fill-column
-        doom-modeline-enable-word-count t
-        doom-modeline-workspace-name t)
-  )
-;(if (equal (display-pixel-width) 3840)
-;    (custom-set-faces
-;     '(mode-line ((t (:family "Comic Shanns" :height 140))))
-;     '(mode-line-inactive ((t (:family "Comic Shanns" :height 140)))))
-;  (custom-set-faces
-;   '(mode-line ((t (:family "Comic Shanns" :height 120))))
-;   '(mode-line-inactive ((t (:family "Comic Shanns" :height 120)))))
-;)
+  (doom-modeline-window-width-limit fill-column)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-workspace-name t))
 
-;(setq doom-modeline-height 1)
-;(set-face-attribute 'mode-line nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
-;(set-face-attribute 'mode-line-inactive nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20)))
 ;https://github.com/seagle0128/doom-modeline/issues/187
 (defun +my/doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
-  (+ 20 (+my/font-size 2))
+  (+ 20 (+my/font-size 2)))
   ;(if (equal (display-pixel-width) 3840)
   ;    26 24)
-)
+
 (advice-add #'doom-modeline--font-height :override #'+my/doom-modeline--font-height)
 #+end_src
 
@@ -218,9 +186,8 @@ check code ligatures, *bold* and /italic/ enabled
 ** Icons
 #+begin_src emacs-lisp :tangle yes
 (use-package all-the-icons
-  :config
-  (setq all-the-icons-scale-factor 0.9)
-  )
+  :custom
+  (all-the-icons-scale-factor 0.9))
 #+end_src
 
 ** Line
@@ -281,68 +248,50 @@ https://emacs-china.org/t/topic/1271
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+end_src
 ** Latex
+clean intermediate files
 #+begin_src emacs-lisp
 (eval-after-load 'latex
   '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
          LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
          Tex-clean-confirm nil))
+#+end_src
+
+preview latex formulas
+#+begin_src emacs-lisp
 (use-package! math-preview
-  :config
-  (setq math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
+  :custom
+  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
                         ("\\begin{equation*}" . "\\end{equation*}")
                         ("\\[" . "\\]")
                         ("\\(" . "\\)")
                         ("$$" . "$$")
                         ("$" . "$")))
-  (setq math-preview-preprocess-functions '((lambda (s)
-                                         (concat "{\\color{white}" s "}"))))
-  )
+  (math-preview-preprocess-functions '((lambda (s)
+                                         (concat "{\\color{white}" s "}")))))
+
 (autoload 'latex-math-preview-expression "latex-math-preview" nil t)
 (autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
 (autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
 (autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
-(setq-default enable-local-variables t)
-;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
+;;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
 #+end_src
 
 word completion along with =(:lang (latex +lsp))=
 see =company-backends= variable docs
 https://github.com/hlissner/doom-emacs/issues/5672
 #+begin_src emacs-lisp
-;(defun +my/latex-mode-setup ()
-;  (setq-local company-backends
-;              (append '((company-dabbrev company-yasnippet company-ispell))
-;                      company-backends)))
-;(add-hook 'LaTeX-mode-hook '+my/latex-mode-setup)
-
-;(defun +my/lsp-init-company-backends-h ()
-;  (when (and lsp-completion-mode (not TeX-mode-p))
-;    (set (make-local-variable 'company-backends)
-;         (cons +lsp-company-backends
-;               (remove +lsp-company-backends
-;                       (remq 'company-capf company-backends))))))
-;
-;(advice-add #'+lsp-init-company-backends-h :override #'+my/lsp-init-company-backends-h)
-
 (setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
 
-;https://tex.stackexchange.com/a/21205
-;; set XeTeX mode in TeX/LaTeX
+;; https://tex.stackexchange.com/a/21205
+;; add XeTeX mode in TeX/LaTeX
 (add-hook 'LaTeX-mode-hook
           (lambda ()
-             (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
-             ;(setq TeX-command-default "XeLaTeX")
-             ;(setq TeX-save-query nil)
-             (setq TeX-show-compilation nil)))
+            (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))))
+;; (setq TeX-command-default "XeLaTeX")))
+;; (setq TeX-save-query nil)))
+;; (setq TeX-show-compilation nil)))
 #+end_src
 
-+ add surround
-  =V S [e|m|.] .=
-  select all line with =V=
-+ change surround
-  =c s [e|m|.] [e|m|.] .=
-+ select surround and add another surround
-  =v a [e|m|.] V S [e|m|.] .=
 #+begin_src emacs-lisp
 (use-package! evil-tex
   :when (featurep! :editor evil +everywhere)
@@ -352,85 +301,17 @@ https://github.com/hlissner/doom-emacs/issues/5672
   )
 #+end_src
 
-centering latex preview
-#+begin_src emacs-lisp :tangle no
-(use-package org
-  :defer 20
-  :config
-;; specify the justification you want
-(plist-put org-format-latex-options :justify 'center)
-
-(defun org-justify-fragment-overlay (beg end image imagetype)
-  "Adjust the justification of a LaTeX fragment.
-The justification is set by :justify in
-`org-format-latex-options'. Only equations at the beginning of a
-line are justified."
-  (cond
-   ;; Centered justification
-   ((and (eq 'center (plist-get org-format-latex-options :justify))
-         (= beg (line-beginning-position)))
-    (let* ((img (create-image image 'imagemagick t))
-           (width (car (image-size img)))
-           (offset (floor (- (/ (window-text-width) 2) (/ width 2)))))
-      (overlay-put (ov-at) 'before-string (make-string offset ? ))))
-   ;; Right justification
-   ((and (eq 'right (plist-get org-format-latex-options :justify))
-         (= beg (line-beginning-position)))
-    (let* ((img (create-image image 'imagemagick t))
-           (width (car (image-display-size (overlay-get (ov-at) 'display))))
-           (offset (floor (- (window-text-width) width (- (line-end-position) end)))))
-      (overlay-put (ov-at) 'before-string (make-string offset ? ))))))
-
-(defun org-latex-fragment-tooltip (beg end image imagetype)
-  "Add the fragment tooltip to the overlay and set click function to toggle it."
-  (overlay-put (ov-at) 'help-echo
-               (concat (buffer-substring beg end)
-                       "mouse-1 to toggle."))
-  (overlay-put (ov-at) 'local-map (let ((map (make-sparse-keymap)))
-                                    (define-key map [mouse-1]
-                                      `(lambda ()
-                                         (interactive)
-                                         (org-remove-latex-fragment-image-overlays ,beg ,end)))
-                                    map)))
-
-;; advise the function to a
-(advice-add 'org--format-latex-make-overlay :after 'org-justify-fragment-overlay)
-(advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip)
-  )
-#+end_src
-
 ** File Templates
-+ [2021-07-26 Mon 10:11] How to create files using the file-templates module? · Issue #2134 · hlissner/doom-emacs · GitHub :grasp:
-https://github.com/hlissner/doom-emacs/issues/2134
-
+[[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
 #+begin_src emacs-lisp :tangle yes
 (after! yasnippet
   :config
-  ;(setq +file-templates-dir "~/.config/doom/templates/")
+  ;; (setq +file-templates-dir "~/.config/doom/templates/")
   (set-file-template! "/leetcode/.+\\.cpp$"
-    ;:when +file-templates-in-emacs-dirs-p
-    :trigger "__leetcode.cpp" :mode 'c++-mode)
-  )
+    ;; :when +file-templates-in-emacs-dirs-p
+    :trigger "__leetcode.cpp" :mode 'c++-mode))
 #+end_src
 
-default pdf viewer in emacs
-[[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
-#+begin_src emacs-lisp :tangle no
-(use-package! pdf-tools
-  :custom
-  (+latex-viewers '(pdf-tools evince okular)))
-
-;; to use pdfview with auctex
-(setq TeX-view-program-selection '((output-pdf "PDF Tools")))
-(setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-;;(TeX-source-correlate-start-server t)
-;; not sure if last line is neccessary
-
-;; to have the buffer refresh after compilation
-(add-hook 'TeX-after-compilation-finished-functions
-          #'TeX-revert-document-buffer)
-
-#+end_src
 * Org
 ** org
 #+begin_src emacs-lisp
@@ -483,7 +364,6 @@ default pdf viewer in emacs
     :config
     (add-to-list 'org-modules 'org-habit))
 
-
   ;;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
   ;; display inline images
@@ -500,7 +380,6 @@ https://emacs.stackexchange.com/a/7840
 
 ** Color ~shell~ block output
 [[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
-
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package cl-lib
   :init
@@ -517,8 +396,8 @@ https://emacs.stackexchange.com/a/7840
   (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
   (setq org-babel-default-header-args:shell
         '((:results . "output verbatim drawer")
-          (:wrap . "src ansi")))
-)
+          (:wrap . "src ansi"))))
+
 #+END_SRC
 
 ** org-ref
@@ -573,9 +452,27 @@ The return value is the new value of LIST-VAR."
   (symbol-value list-var))
 #+end_src
 
+** pdf-tools
+default pdf viewer in emacs
+[[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
+#+begin_src emacs-lisp :tangle no
+(use-package! pdf-tools
+  :custom
+  (+latex-viewers '(pdf-tools evince okular)))
+
+;; to use pdfview with auctex
+(setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+(setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+;;(TeX-source-correlate-start-server t)
+;; not sure if last line is neccessary
+
+;; to have the buffer refresh after compilation
+(add-hook 'TeX-after-compilation-finished-functions
+          #'TeX-revert-document-buffer)
+#+end_src
 ** mathematica
 #+begin_src emacs-lisp :tangle yes
-; last update was 5 years ago
+;; last update was 5 years ago
 (use-package! wolfram-mode
   :config
   (autoload 'wolfram-mode "wolfram-mode" nil t)
@@ -583,10 +480,9 @@ The return value is the new value of LIST-VAR."
   (setq wolfram-program "/usr/local/bin/wolfram")
   (+my/append-to-list 'auto-mode-alist '(("\.m$" . wolfram-mode)
                                          ("\.wl$" . wolfram-mode)
-                                         ("\.wls$" . wolfram-mode)
-                                          ))
-  (setq wolfram-path "~/.Mathematica/Applications")
-  )
+                                         ("\.wls$" . wolfram-mode))))
+
+(setq wolfram-path "~/.Mathematica/Applications")
 
 (after! lsp
   (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
@@ -600,18 +496,17 @@ The return value is the new value of LIST-VAR."
                                          "~/softwares/lsp-wl/init.wls"
                                          ,(concat
                                            "--socket="
-                                           (number-to-string port)
-                                           ))))
+                                           (number-to-string port)))))
                     :major-modes '(wolfram-mode)
-                    :server-id 'lsp-wl
-                    ))
-)
+                    :server-id 'lsp-wl)))
 #+end_src
 ** leetcode
 #+begin_src emacs-lisp :tangle no
-(setq leetcode-prefer-language "cpp")
-(setq leetcode-save-solutions t)
-(setq leetcode-directory "~/Coding/leetcode")
+(use-package leetcode
+  :costum
+  (leetcode-prefer-language "cpp")
+  (leetcode-save-solutions t)
+  (leetcode-directory "~/Coding/leetcode"))
 #+end_src
 
 ** treemacs
@@ -624,11 +519,11 @@ The return value is the new value of LIST-VAR."
   :config
   (setq treemacs-width 17)
   (setq treemacs-project-follow-cleanup t)
-  ;(setq treemacs-user-mode-line-format t)
-        ;https://github.com/hlissner/doom-emacs/issues/1551
-        ;doom-themes-treemacs-enable-variable-pitch nil
+  ;; (setq treemacs-user-mode-line-format t)
+  ;; https://github.com/hlissner/doom-emacs/issues/1551
+  ;; doom-themes-treemacs-enable-variable-pitch nil
 
-  ;https://github.com/Alexander-Miller/treemacs/issues/486
+  ;; https://github.com/Alexander-Miller/treemacs/issues/486)
   ;; (dolist (face '(treemacs-root-face
   ;;                 treemacs-git-unmodified-face
   ;;                 treemacs-git-modified-face
@@ -648,23 +543,22 @@ The return value is the new value of LIST-VAR."
   (treemacs-git-mode 'extended))
 
 (use-package treemacs-all-the-icons
-   :after (treemacs all-the-icons))
+  :after (treemacs all-the-icons))
 #+end_src
 ** ivy-posframe
 #+begin_src emacs-lisp :tangle no
 (use-package ivy-posframe
   :custom
-(setq ivy-posframe-display-functions-alist
-      '((swiper          . ivy-display-function-fallback)
-        (complete-symbol . ivy-posframe-display-at-point)
-        (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-        (t               . ivy-posframe-display)))
-(setq ivy-posframe-parameters
-        '((left-fringe . 8)
-          (right-fringe . 8)))
+  (ivy-posframe-display-functions-alist
+   '((swiper          . ivy-display-function-fallback)
+     (complete-symbol . ivy-posframe-display-at-point)
+     (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+     (t               . ivy-posframe-display)))
+  (ivy-posframe-parameters
+   '((left-fringe . 8)
+     (right-fringe . 8)))
   :config
-  (ivy-posframe-mode 1)
-  )
+  (ivy-posframe-mode 1))
 #+end_src
 ** mu4e
 #+begin_src shell :tangle no
@@ -687,32 +581,31 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
   :config (mu4e-alert-set-default-style 'libnotify))
 #+end_src
 ** yadm (with magit)
-[[https://github.com/TheLocehiliosan/yadm/blob/dd86c8a691deed7fb438b7ef07179040b0f05026/yadm.md#configuration][yadm man page]]
+[[https://github.com/TheLocehiliosan/yadm/blob/dd86c8a691deed7fb438b7ef07179040b0f05026/yadm.md#configuration][yadm/yadm.md at dd86c8a691deed7fb438b7ef07179040b0f05026 · TheLocehiliosan/ya...]]
 [[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
+
 ~tramp~ from ~Melpa~ bugy, install it from ~aur~.
 #+begin_src emacs-lisp :tangle yes
 (use-package! tramp
   :config
-  ;(setenv "SHELL" "/bin/bash")
+  ;; (setenv "SHELL" "/bin/bash")
   (add-to-list 'tramp-methods
                '("yadm"
                  (tramp-remote-shell "/bin/bash")
                  (tramp-remote-shell-args ("-c"))
                  (tramp-login-program "yadm")
-                 (tramp-login-args (("enter")))
-                 ;(tramp-login-env (("SHELL") ("/bin/bash")))
-                 ))
+                 (tramp-login-args (("enter")))))
+                 ;; (tramp-login-env (("SHELL") ("/bin/bash")))))
+
   (defun yadm-status ()
     (interactive)
     (magit-status "/yadm::"))
   (map! :leader
         (:prefix "g"
-         :desc "yadm-status" "a" #'yadm-status)
-        )
-  )
+         :desc "yadm-status" "a" #'yadm-status)))
 #+end_src
 
-can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/omf/init.fish]]
+can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
 
 ** keycast
 [[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
@@ -733,26 +626,26 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 (use-package! elfeed
   :when (featurep! :app rss)
   :bind (:map elfeed-search-mode-map
-              ("A" . bjm/elfeed-show-all)
-              ;("E" . bjm/elfeed-show-emacs)
-              ("m" . elfeed-toggle-star)
-              ;("D" . bjm/elfeed-show-daily)
-              ("q" . bjm/elfeed-save-db-and-bury))
+         ("A" . bjm/elfeed-show-all)
+         ;; ("E" . bjm/elfeed-show-emacs)
+         ("m" . elfeed-toggle-star)
+         ;; ("D" . bjm/elfeed-show-daily)
+         ("q" . bjm/elfeed-save-db-and-bury))
   :config
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
   (defun bjm/elfeed-show-all ()
     (interactive)
     (bookmark-maybe-load-default-file)
     (bookmark-jump "elfeed-all"))
-  
+
   (defun elfeed-mark-all-as-read ()
     (interactive)
     (mark-whole-buffer)
     (elfeed-search-untag-all-unread))
-  
+
   (defalias 'elfeed-toggle-star
     (elfeed-expose #'elfeed-search-toggle-all 'star))
-  
+
   ;;functions to support syncing .elfeed between machines
   ;;makes sure elfeed reads index from disk before launching
   (defun bjm/elfeed-load-db-and-open ()
@@ -761,49 +654,46 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
     (elfeed-db-load)
     (elfeed)
     (elfeed-search-update--force))
-  
+
   ;;write to disk when quiting
   (defun bjm/elfeed-save-db-and-bury ()
     "Wrapper to save the elfeed db to disk before burying buffer"
     (interactive)
     (elfeed-db-save)
-    (quit-window))
-  
-  ;(evil-define-key 'normal elfeed-show-mode-map
-  ;  (kbd "J") 'elfeed-goodies/split-show-next
-  ;  (kbd "K") 'elfeed-goodies/split-show-prev)
-  ;(evil-define-key 'normal elfeed-search-mode-map
-  ;  (kbd "J") 'elfeed-goodies/split-show-next
-  ;  (kbd "K") 'elfeed-goodies/split-show-prev)
-)
+    (quit-window)))
+
+;; (evil-define-key 'normal elfeed-show-mode-map
+;;  (kbd "J") 'elfeed-goodies/split-show-next
+;;  (kbd "K") 'elfeed-goodies/split-show-prev)
+;; (evil-define-key 'normal elfeed-search-mode-map
+;;  (kbd "J") 'elfeed-goodies/split-show-next
+;;  (kbd "K") 'elfeed-goodies/split-show-prev))))
 
 (map! :leader
       (:prefix-map ("o" . "open")
        (:when (featurep! :app rss)
-        :desc "elfeed"    "e" #'elfeed
-        )
-       ))
+        :desc "elfeed"    "e" #'elfeed)))
+
 
 (use-package! elfeed-org
   :after elfeed
   :config
   (elfeed-org)
-  (setq rmh-elfeed-org-files (list "~/org/elfeed.org"))
-  )
+  (setq rmh-elfeed-org-files (list "~/org/elfeed.org")))
+
 
 (use-package! elfeed-goodies
   :after elfeed
   :config
   (elfeed-goodies/setup)
-  (setq elfeed-goodies/entry-pane-size 0.5)
-  )
+  (setq elfeed-goodies/entry-pane-size 0.5))
 #+end_src
 
 ** dired-ranger
 #+begin_src emacs-lisp
 (use-package! dired
   :config
-  ;https://github.com/jtbm37/all-the-icons-dired/pull/39/
+  ;; https://github.com/jtbm37/all-the-icons-dired/pull/39/
   (setq all-the-icons-dired-monochrome nil)
   (setq all-the-icons-dired-mode t)
   )
@@ -816,7 +706,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (ranger-modify-header t)
   (ranger-cleanup-on-disable t)
   (ranger-return-to-ranger t)
-  ; aviod noisy lsp root request when browsing
+  ;; aviod noisy lsp root request when browsing
   (ranger-show-literal t)
   (ranger-excluded-extensions '("mkv" "iso" "mp4" "ipynb"))
   (ranger-max-preview-size 10)
@@ -825,46 +715,45 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (ranger-preview-delay 0.04)
   :config
   (ranger-override-dired-mode t)
-  ;TODO change =ranger-pop-eshell= to vterm
-  ;(setq helm-descbinds-window-style 'same-window)
+  ;; TODO change =ranger-pop-eshell= to vterm
+  ;; (setq helm-descbinds-window-style 'same-window)
   (map! :leader
         (:prefix-map ("o" . "open")
-          :desc "ranger"    "r" #'ranger
-          :desc "REPL"    "R" #'+eval/open-repl-other-window))
+         :desc "ranger"    "r" #'ranger
+         :desc "REPL"    "R" #'+eval/open-repl-other-window))
   )
 #+end_src
 
 ** projectile
+[[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
 #+begin_src emacs-lisp
-;https://docs.projectile.mx/projectile/configuration.html
 (use-package! projectile
-  :config
-  (setq projectile-file-exists-remote-cache-expire (* 10 60)
-        projectile-track-known-projects-automatically nil
-        projectile-auto-discover nil)
-  ;(setq projectile-file-exists-local-cache-expire (* 5 60))
-  )
+  :custom
+  (projectile-file-exists-remote-cache-expire (* 10 60))
+  (projectile-track-known-projects-automatically nil)
+  (projectile-auto-discover nil))
+  ;; (projectile-file-exists-local-cache-expire (* 5 60)))
 #+end_src
 ** tldr
 #+begin_src emacs-lisp
 (use-package! tldr
-  :config
-  (setq tldr-enabled-categories '("common" "linux" "osx" "sunos"))
-  )
+  :custom
+  (tldr-enabled-categories '("common" "linux" "osx" "sunos")))
 #+end_src
 ** tab bar
 #+begin_src emacs-lisp :tangle no
 (use-package centaur-tabs
+  :custom
+  (centaur-tabs-style "box")
+  (centaur-tabs-height 26)
+  (centaur-tabs-set-icons t)
+  ;; (centaur-tabs-plain-icons t)
+  (centaur-tabs-gray-out-icons 'buffer)
+  (centaur-tabs-set-bar 'left)
+  (centaur-tabs-set-modified-marker t)
   :config
   (centaur-tabs-headline-match)
   (centaur-tabs-mode t)
-  (setq centaur-tabs-style "box"
-        centaur-tabs-height 26
-        centaur-tabs-set-icons t
-        ;centaur-tabs-plain-icons t
-        centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'left
-        centaur-tabs-set-modified-marker t)
   :hook
   (+doom-dashboard-mode . centaur-tabs-local-mode)
   (ranger-mode-hook . centaur-tabs-local-mode)
@@ -872,14 +761,9 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (org-agenda-mode . centaur-tabs-local-mode)
   :bind
   (:map evil-normal-state-map
-	  ("g t" . centaur-tabs-forward)
-	  ("g T" . centaur-tabs-backward))
+   ("g t" . centaur-tabs-forward)
+   ("g T" . centaur-tabs-backward))
   )
-;(map! :leader
-;      (:prefix-map ("a" . "tabs")
-;       :desc "next-tabs" "j" #'centaur-tabs-forward
-;       :desc "previous-tab" "k" #'centaur-tabs-backward
-;       ))
 #+end_src
 
 * Terminal
@@ -889,32 +773,29 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   :custom
   (vterm-shell "/usr/bin/fish")
   (vterm-buffer-name-string "vterm %s")
-  (vterm-kill-buffer-on-exit t)
-  )
+  (vterm-kill-buffer-on-exit t))
 #+end_src
 
 ** vterm toggle
 #+begin_src emacs-lisp :tangle no
-;(use-package multi-vterm)
 (use-package! vterm-toggle
   :after vterm
+  :custom
+  (vterm-toggle-cd-auto-create-buffer nil)
   :config
   ;; you can cd to the directory where your previous buffer file exists
   ;; after you have toggle to the vterm buffer with `vterm-toggle'.
   (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-  (setq vterm-toggle-cd-auto-create-buffer nil)
   (define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
-  ;Switch to previous vterm buffer
-  (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
-)
+  ;; Switch to previous vterm buffer
+  (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward))
+
 ;; toggle a popup windows in current file dir (not project root)
 ;; do i actually need these function?
-;(map! :leader
-;      (:prefix-map ("o" . "open")
-;       (:when (featurep! :term vterm)
-;        :desc "Toggle vterm popup here"    "." #'vterm-toggle-cd
-;        )
-;       ))
+;; (map! :leader
+;;       (:prefix-map ("o" . "open")
+;;        (:when (featurep! :term vterm)
+;;         :desc "Toggle vterm popup here"    "." #'vterm-toggle-cd)))
 #+end_src
 ** Colored output issues
 https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
@@ -933,51 +814,14 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
 
-** EAF
-#+begin_src emacs-lisp :tangle no
-(use-package eaf
-  :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
-  ;:load-path "/usr/share/emacs/site-lisp/eaf" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
-  :init
-  (use-package epc :defer t :ensure t)
-  (use-package ctable :defer t :ensure t)
-  (use-package deferred :defer t :ensure t)
-  (use-package s :defer t :ensure t)
-  :custom
-  (eaf-browser-continue-where-left-off t)
-  :config
-  (eaf-setq eaf-browser-enable-adblocker "true")
-  ;(eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  ;(eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  ;(eaf-bind-key take_photo "p" eaf-camera-keybinding)
-  ;(eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
-)
-#+end_src
-** edit-server
-#+begin_src emacs-lisp :tangle no
-(use-package edit-server
-  :commands edit-server-start
-  :init (if after-init-time
-              (edit-server-start)
-            (add-hook 'after-init-hook
-                      #'(lambda() (edit-server-start))))
-  :config (setq edit-server-new-frame-alist
-                '((name . "Edit with Emacs FRAME")
-                  (top . 200)
-                  (left . 200)
-                  (width . 80)
-                  (height . 25)
-                  (minibuffer . t)
-                  (menu-bar-lines . t)
-                  (window-system . x))))
-#+end_src
 ** proxy
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes :results none
 (setq url-proxy-services
    '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
-     ("http" . "proxy.com:8080")
-     ("https" . "proxy.com:8080")))
+     ("http" . "localhost:8889")
+     ("https" . "localhost:8889")))
 #+end_src
+
 ** pomm
 #+begin_src emacs-lisp
 (use-package pomm
