@@ -8,6 +8,7 @@
   - [[#transparency][transparency]]
   - [[#themes][Themes]]
   - [[#fonts][fonts]]
+  - [[#ligature][ligature]]
   - [[#doom-modeline][doom-modeline]]
   - [[#icons][Icons]]
   - [[#line][Line]]
@@ -106,12 +107,9 @@
       ;; big font mode resize serif-font and variable-pitch-font also
       doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (+my/font-size 17))
       doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 13))
-      doom-unicode-font (font-spec :family "FuraCode Nerd Font" :size (+my/font-size 14))
+      doom-unicode-font (font-spec :family "FuraCode Retina Nerd Font Mono" :size (+my/font-size 14))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 9)))
 #+end_src
-
-check code ligatures, *bold* and /italic/ enabled
-== -> => ==> != __ -- --- |-> >=
 
 [[https://emacs-china.org/t/doom-emacs/9628/9][doom emacs下中文字体的设置 - #9，来自 slack-py - Emacs-general - Emacs China]]
 #+begin_src emacs-lisp :tangle yes :results none
@@ -150,6 +148,28 @@ check code ligatures, *bold* and /italic/ enabled
 
 (add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
 (add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
+#+end_src
+** ligature
+check code ligatures, *bold* and /italic/ enabled
+== <- -> <= => != == >= <== ==> === ?= :=
+
+#+begin_src emacs-lisp :results none
+(plist-put! +ligatures-extra-symbols
+            :lambda     "ﬦ"
+            :private    "")
+
+(after! fish-mode
+  (set-ligatures! 'fish-mode
+    :def "function"
+    :return "return"
+    :and "&&"
+    :or "||"
+    :not "not"
+    :true "true"
+    :false "false"
+    :for "for"))
+
+(global-prettify-symbols-mode)
 #+end_src
 
 ** doom-modeline
