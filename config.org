@@ -19,6 +19,7 @@
   - [[#file-templates][File Templates]]
 - [[#org][Org]]
   - [[#org-1][org]]
+  - [[#org-src][org-src]]
   - [[#org-agenda][org-agenda]]
   - [[#color-shell-block-output][Color ~shell~ block output]]
   - [[#org-ref][org-ref]]
@@ -392,6 +393,14 @@ https://github.com/hlissner/doom-emacs/issues/5672
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers))
 #+end_src
+** org-src
+[[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
+#+begin_src emacs-lisp
+(after! org
+  (setq org-src-window-setup 'split-window-right)
+  (set-popup-rule! "^\\*Org Src" :ignore t))
+#+end_src
+
 ** org-agenda
 https://emacs.stackexchange.com/a/7840
 #+begin_src emacs-lisp
