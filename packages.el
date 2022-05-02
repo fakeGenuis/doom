@@ -12,7 +12,6 @@
 
 (package! tldr)
 (package! keycast)
-(package! elfeed-goodies)
 
 (package! pomm)
 (package! screenshot
