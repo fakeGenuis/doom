@@ -330,6 +330,15 @@ https://github.com/hlissner/doom-emacs/issues/5672
   )
 #+end_src
 
+cdlatex
+#+begin_src emacs-lisp
+(use-package! cdlatex
+  :config
+  (map! :map cdlatex-mode-map
+    :i "TAB" #'cdlatex-tab))
+#+end_src
+
+
 ** File Templates
 [[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
 #+begin_src emacs-lisp :tangle yes
