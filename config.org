@@ -27,6 +27,8 @@
   - [[#org-roam][org-roam]]
   - [[#org-pandoc-import][org-pandoc-import]]
   - [[#org-noter][org-noter]]
+- [[#lang][Lang]]
+  - [[#lua][lua]]
 - [[#plugins][Plugins]]
   - [[#pdf-tools][pdf-tools]]
   - [[#mathematica][mathematica]]
@@ -154,6 +156,7 @@
 check code ligatures, *bold* and /italic/ enabled
 == <- -> <= => != == >= <== ==> === ?= :=
 
+[[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
 #+begin_src emacs-lisp :results none
 (plist-put! +ligatures-extra-symbols
             :lambda     "ﬦ"
@@ -481,6 +484,30 @@ https://emacs.stackexchange.com/a/7840
   :config
   (org-noter-set-doc-split-fraction '(0.75 . 0.25))
   )
+#+end_src
+* Lang
+** lua
+lsp support
+#+begin_src emacs-lisp :results none :tangle yes
+(use-package! lua-mode
+  :when (featurep! :lang lua +lsp)
+  :custom
+  (lsp-clients-lua-language-server-bin "/usr/lib/lua-language-server/bin/lua-language-server")
+  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua"))
+#+end_src
+
+ligatures
+#+begin_src emacs-lisp
+(after! lua-mode
+  (set-ligatures! 'lua-mode
+    :def "function"
+    :return "return"
+    :and "and"
+    :or "or"
+    :not "not"
+    :true "true"
+    :false "false"
+    :for "for"))
 #+end_src
 * Plugins
 [[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
