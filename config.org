@@ -1,5 +1,5 @@
 #+TITLE: Config
-#+PROPERTY: header-args :tangle config.el
+#+PROPERTY: header-args :tangle config.el :results none
 
 * Table of Contents :TOC:
 - [[#info][Info]]
@@ -169,6 +169,14 @@ check code ligatures, *bold* and /italic/ enabled
     :true "true"
     :false "false"
     :for "for"))
+
+(after! wolfram-mode
+  (set-ligatures! 'fish-mode
+    :and "&&"
+    :or "||"
+    :not "not"
+    :true "True"
+    :false "False"))
 
 (global-prettify-symbols-mode)
 #+end_src
