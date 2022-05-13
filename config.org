@@ -701,10 +701,14 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   :when (featurep! :app rss)
   :bind (:map elfeed-search-mode-map
          ("q" . +my/elfeed-save-db-and-bury))
+  :init
+  (setq elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/")
+        elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/"))
   :custom
-  (elfeed-search-filter "@3-months-ago")
+  (elfeed-search-filter "@3-weeks-ago")
   (rmh-elfeed-org-files (list "~/org/elfeed.org"))
   :config
+  (make-directory elfeed-db-directory t)
   ;; (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 
   ;;functions to support syncing .elfeed between machines
