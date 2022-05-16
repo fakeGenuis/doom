@@ -27,11 +27,8 @@
   - [[#org-roam][org-roam]]
   - [[#org-pandoc-import][org-pandoc-import]]
   - [[#org-noter][org-noter]]
-- [[#lang][Lang]]
-  - [[#lua][lua]]
 - [[#plugins][Plugins]]
   - [[#pdf-tools][pdf-tools]]
-  - [[#mathematica][mathematica]]
   - [[#leetcode][leetcode]]
   - [[#treemacs][treemacs]]
   - [[#ivy-posframe][ivy-posframe]]
@@ -43,6 +40,9 @@
   - [[#projectile][projectile]]
   - [[#tldr][tldr]]
   - [[#tab-bar][tab bar]]
+- [[#lang][Lang]]
+  - [[#lua][lua]]
+  - [[#wolfram][wolfram]]
 - [[#terminal][Terminal]]
   - [[#vterm][vterm]]
   - [[#vterm-toggle][vterm toggle]]
@@ -161,25 +161,6 @@ check code ligatures, *bold* and /italic/ enabled
 (plist-put! +ligatures-extra-symbols
             :lambda     "ﬦ"
             :private    "")
-
-(after! fish-mode
-  (set-ligatures! 'fish-mode
-    :def "function"
-    :return "return"
-    :and "&&"
-    :or "||"
-    :not "not"
-    :true "true"
-    :false "false"
-    :for "for"))
-
-(after! wolfram-mode
-  (set-ligatures! 'fish-mode
-    :and "&&"
-    :or "||"
-    :not "not"
-    :true "True"
-    :false "False"))
 
 (global-prettify-symbols-mode)
 #+end_src
@@ -485,44 +466,21 @@ https://emacs.stackexchange.com/a/7840
   (org-noter-set-doc-split-fraction '(0.75 . 0.25))
   )
 #+end_src
-* Lang
-** lua
-lsp support
-#+begin_src emacs-lisp :results none :tangle yes
-(use-package! lua-mode
-  :when (featurep! :lang lua +lsp)
-  :custom
-  (lsp-clients-lua-language-server-bin "/usr/lib/lua-language-server/bin/lua-language-server")
-  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua"))
-#+end_src
-
-ligatures
-#+begin_src emacs-lisp
-(after! lua-mode
-  (set-ligatures! 'lua-mode
-    :def "function"
-    :return "return"
-    :and "and"
-    :or "or"
-    :not "not"
-    :true "true"
-    :false "false"
-    :for "for"))
-#+end_src
 * Plugins
 [[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
 #+begin_src emacs-lisp
 (defun +my/append-to-list (list-var elements)
   "Append ELEMENTS to the end of LIST-VAR.
 
+change to no return value
 The return value is the new value of LIST-VAR."
   (unless (consp elements)
     (error "ELEMENTS must be a list"))
   (let ((list (symbol-value list-var)))
     (if list
         (setcdr (last list) elements)
-      (set list-var elements)))
-  (symbol-value list-var))
+      (set list-var elements))))
+  ;(symbol-value list-var))
 #+end_src
 
 ** pdf-tools
@@ -542,36 +500,6 @@ default pdf viewer in emacs
 ;; to have the buffer refresh after compilation
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
-#+end_src
-** mathematica
-#+begin_src emacs-lisp :tangle yes
-;; last update was 5 years ago
-(use-package! wolfram-mode
-  :config
-  (autoload 'wolfram-mode "wolfram-mode" nil t)
-  (autoload 'run-wolfram "wolfram-mode" nil t)
-  (setq wolfram-program "/usr/local/bin/wolfram")
-  (+my/append-to-list 'auto-mode-alist '(("\.m$" . wolfram-mode)
-                                         ("\.wl$" . wolfram-mode)
-                                         ("\.wls$" . wolfram-mode))))
-
-(setq wolfram-path "~/.Mathematica/Applications")
-
-(after! lsp
-  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
-
-  (lsp-register-client
-   (make-lsp-client :language-id 'wolfram
-                    :new-connection (lsp-tcp-server-command
-                                     (lambda (port)
-                                       `("wolfram" ;; or "wolframscript"
-                                         "-script" ;; or "-file"
-                                         "~/softwares/lsp-wl/init.wls"
-                                         ,(concat
-                                           "--socket="
-                                           (number-to-string port)))))
-                    :major-modes '(wolfram-mode)
-                    :server-id 'lsp-wl)))
 #+end_src
 ** leetcode
 #+begin_src emacs-lisp :tangle no
@@ -813,6 +741,71 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   )
 #+end_src
 
+* Lang
+** lua
+lsp support
+#+begin_src emacs-lisp :results none :tangle yes
+(use-package! lua-mode
+  :when (featurep! :lang lua +lsp)
+  :custom
+  (lsp-clients-lua-language-server-bin "/usr/lib/lua-language-server/bin/lua-language-server")
+  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua"))
+#+end_src
+
+ligatures
+#+begin_src emacs-lisp
+(after! lua-mode
+  (set-ligatures! 'lua-mode
+    :def "function"
+    :return "return"
+    :and "and"
+    :or "or"
+    :not "not"
+    :true "true"
+    :false "false"
+    :for "for"))
+#+end_src
+** wolfram
+#+begin_src emacs-lisp :tangle yes
+;; last update was 5 years ago
+(use-package! wolfram-mode
+  :config
+  (autoload 'wolfram-mode "wolfram-mode" nil t)
+  (autoload 'run-wolfram "wolfram-mode" nil t)
+  (setq wolfram-program "/usr/local/bin/wolfram")
+  (+my/append-to-list 'auto-mode-alist '(
+                                         ("\\.wl\\'" . wolfram-mode)
+                                         ("\\.wls\\'" . wolfram-mode))))
+
+(setq wolfram-path "~/.Mathematica/Applications")
+
+(after! lsp
+  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
+
+  (lsp-register-client
+   (make-lsp-client :language-id 'wolfram
+                    :new-connection (lsp-tcp-server-command
+                                     (lambda (port)
+                                       `("wolfram" ;; or "wolframscript"
+                                         "-script" ;; or "-file"
+                                         "~/softwares/lsp-wl/init.wls"
+                                         ,(concat
+                                           "--socket="
+                                           (number-to-string port)))))
+                    :major-modes '(wolfram-mode)
+                    :server-id 'lsp-wl)))
+#+end_src
+
+ligatures
+#+begin_src emacs-lisp
+(after! wolfram-mode
+  (set-ligatures! 'wolfram-mode
+    :and "&&"
+    :or "||"
+    :not "not"
+    :true "True"
+    :false "False"))
+#+end_src
 * Terminal
 ** vterm
 #+begin_src emacs-lisp :tangle yes
@@ -854,6 +847,20 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 (when (and (executable-find "fish")
            (require 'fish-completion nil t))
   (global-fish-completion-mode))
+#+end_src
+
+ligatures
+#+begin_src emacs-lisp
+(after! fish-mode
+  (set-ligatures! 'fish-mode
+    :def "function"
+    :return "return"
+    :and "&&"
+    :or "||"
+    :not "not"
+    :true "true"
+    :false "false"
+    :for "for"))
 #+end_src
 * Others
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
