@@ -101,7 +101,7 @@
       (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
 
 (setq +my/is-laptop
-      (eq (shell-command "ls /sys/class/power_supply | grep BAT &>/dev/null") 0))
+      (not (string-equal (shell-command-to-string "fd BAT /sys/class/power_supply/") "")))
 
 (defun +my/font-size(size)
   (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
@@ -322,7 +322,6 @@ cdlatex
     :i "TAB" #'cdlatex-tab))
 #+end_src
 
-
 ** File Templates
 [[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
 #+begin_src emacs-lisp :tangle yes
@@ -517,6 +516,7 @@ default pdf viewer in emacs
   :init
   (with-eval-after-load 'winum
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  (setq treemacs-no-load-time-warnings t)
   :config
   (setq treemacs-width 17)
   (setq treemacs-project-follow-cleanup t)
@@ -629,14 +629,12 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   :when (featurep! :app rss)
   :bind (:map elfeed-search-mode-map
          ("q" . +my/elfeed-save-db-and-bury))
-  :init
-  (setq elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/")
-        elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/"))
   :custom
+  (elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/"))
+  (elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/"))
   (elfeed-search-filter "@3-weeks-ago")
   (rmh-elfeed-org-files (list "~/org/elfeed.org"))
   :config
-  (make-directory elfeed-db-directory t)
   ;; (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 
   ;;functions to support syncing .elfeed between machines
