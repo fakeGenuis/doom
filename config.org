@@ -815,7 +815,22 @@ ligatures
   :custom
   (vterm-shell "/usr/bin/fish")
   (vterm-buffer-name-string "vterm %s")
-  (vterm-kill-buffer-on-exit t))
+  (vterm-kill-buffer-on-exit t)
+  (vterm-ignore-blink-cursor nil)
+  (vterm-max-scrollback 10000)
+  :config
+  (map! :leader
+        (:prefix-map ("o" . "open")
+         :desc "toggle vterm here" "t" (cmd!! #'+vterm/toggle t)
+         :desc "toggle vterm at project root" "T" #'+vterm/toggle
+         :desc "open vterm here" "o" (cmd!! #'+vterm/here t)
+         :desc "open vterm at project root" "O" #'+vterm/here))
+  ;; TODO fixed-pitch in bpytop like
+  ;; (add-hook 'vterm-mode-hook
+  ;;           (lambda ()
+  ;;             (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch
+  ;;                  (buffer-face-mode t))))
+  (define-key vterm-mode-map (kbd "C-c ESC") #'vterm-send-escape))
 #+end_src
 
 ** vterm toggle
