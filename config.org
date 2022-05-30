@@ -17,6 +17,7 @@
   - [[#input-chinese][Input Chinese]]
   - [[#latex][Latex]]
   - [[#file-templates][File Templates]]
+  - [[#evil][Evil]]
 - [[#org][Org]]
   - [[#org-1][org]]
   - [[#org-src][org-src]]
@@ -332,7 +333,11 @@ cdlatex
     ;; :when +file-templates-in-emacs-dirs-p
     :trigger "__leetcode.cpp" :mode 'c++-mode))
 #+end_src
-
+** Evil
+[[https://emacs.stackexchange.com/questions/28135/in-evil-mode-how-can-i-prevent-adding-to-the-kill-ring-when-i-yank-text-visual][In Evil mode, how can I prevent adding to the kill ring when I yank text, vis...]]
+#+begin_src emacs-lisp
+(setq-default evil-kill-on-visual-paste nil)
+#+end_src
 * Org
 ** org
 #+begin_src emacs-lisp
