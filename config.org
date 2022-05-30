@@ -397,7 +397,7 @@ cdlatex
 [[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
 #+begin_src emacs-lisp
 (after! org
-  (setq org-src-window-setup 'split-window-right)
+  (setq org-src-window-setup 'reorganize-frame)
   (set-popup-rule! "^\\*Org Src" :ignore t))
 #+end_src
 
