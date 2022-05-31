@@ -492,7 +492,7 @@ The return value is the new value of LIST-VAR."
 ** pdf-tools
 default pdf viewer in emacs
 [[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (use-package! pdf-tools
   :custom
   (+latex-viewers '(pdf-tools evince okular)))
@@ -710,25 +710,26 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 ** Dired
 #+begin_src emacs-lisp
 (use-package dired
-  ;; Dirvish respects all the keybindings in `dired-mode-map'
-  :bind
-  (nil
-   :map dired-mode-map
-   ("h" . dired-up-directory)
-  ;;  ("j" . dired-next-line)
-  ;;  ("k" . dired-previous-line)
-   ("l" . dired-find-file))
-  ;;  ("i" . wdired-change-to-wdired-mode)
-  ;;  ("." . dired-omit-mode))
-  :config
+  :custom
   ;; (setq dired-recursive-deletes 'always)
-  (setq delete-by-moving-to-trash t)
-  (setq dired-dwim-target t)
+  (delete-by-moving-to-trash t)
+  (dired-dwim-target t)
   ;; Make sure to use the long name of flags when exists
   ;; eg. use "--almost-all" instead of "-A"
   ;; Otherwise some commands won't work properly
-  (setq dired-listing-switches
-        "-l --almost-all --human-readable --time-style=long-iso --group-directories-first --no-group"))
+  (dired-listing-switches
+        "-l --almost-all --human-readable --time-style=long-iso --group-directories-first --no-group")
+
+  :config
+  ;; Dirvish respects all the keybindings in `dired-mode-map'
+  (map!
+   :map dired-mode-map
+   :ng "h" #'dired-up-directory
+  ;;  ("j" . dired-next-line)
+  ;;  ("k" . dired-previous-line)
+   :ng "l" #'dired-find-file))
+  ;;  ("i" . wdired-change-to-wdired-mode)
+  ;;  ("." . dired-omit-mode))
 #+end_src
 ** Dirvish
 #+begin_src emacs-lisp
@@ -764,25 +765,29 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   ;;   (when (bound-and-true-p dired-filter-mode)
   ;;     (propertize (format " %s " (dired-filter--describe-filters))
   ;;                 'face 'dired-filter-group-header)))
-  :bind
+  ;;
   ;; Bind `dirvish|dirvish-dired|dirvish-side|dirvish-dwim' as you see fit
-  (("C-c f" . dirvish-fd)
+  (map!
+   (:leader
+    :prefix-map ("o" . "open")
+    :desc "dirvish"    "i" #'dirvish)
+   "C-c f" #'dirvish-fd
    :map dired-mode-map
-   ("TAB" . dirvish-toggle-subtree)
-   ("SPC" . dirvish-show-history)
-   ("*"   . dirvish-mark-menu)
-   ("r"   . dirvish-roam)
-   ("b"   . dirvish-goto-bookmark)
-   ("f"   . dirvish-file-info-menu)
-   ("M-n" . dirvish-go-forward-history)
-   ("M-p" . dirvish-go-backward-history)
-   ("M-s" . dirvish-setup-menu)
-   ("M-f" . dirvish-toggle-fullscreen)
-   ([remap dired-sort-toggle-or-edit] . dirvish-quicksort)
-   ([remap dired-do-redisplay] . dirvish-ls-switches-menu)
-   ([remap dired-summary] . dirvish-dispatch)
-   ([remap dired-do-copy] . dirvish-yank-menu)
-   ([remap mode-line-other-buffer] . dirvish-other-buffer)))
+   "TAB" #'dirvish-toggle-subtree
+   ;; "SPC" #'dirvish-show-history
+   "*"   #'dirvish-mark-menu
+   :gn "r"   #'dirvish-roam
+   :gn "b"   #'dirvish-goto-bookmark
+   :gn "f"   #'dirvish-file-info-menu
+   "M-n" #'dirvish-go-forward-history
+   "M-p" #'dirvish-go-backward-history
+   "M-s" #'dirvish-setup-menu
+   "M-f" #'dirvish-toggle-fullscreen
+   [remap dired-sort-toggle-or-edit] #'dirvish-quicksort
+   [remap dired-do-redisplay] #'dirvish-ls-switches-menu
+   [remap dired-summary] #'dirvish-dispatch
+   [remap dired-do-copy] #'dirvish-yank-menu
+   [remap mode-line-other-buffer] #'dirvish-other-buffer))
 #+end_src
 
 ** projectile
