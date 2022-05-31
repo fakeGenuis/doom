@@ -727,9 +727,18 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
    :ng "h" #'dired-up-directory
   ;;  ("j" . dired-next-line)
   ;;  ("k" . dired-previous-line)
-   :ng "l" #'dired-find-file))
-  ;;  ("i" . wdired-change-to-wdired-mode)
-  ;;  ("." . dired-omit-mode))
+   :ng "l" #'dired-find-file
+   :n "i" #'wdired-change-to-wdired-mode
+   :n "." #'dired-omit-mode))
+
+(use-package dired-x
+  ;; Enable dired-omit-mode by default
+  :hook
+  (dired-mode . dired-omit-mode)
+  :custom
+  ;; Make dired-omit-mode hide all "dotfiles"
+  (dired-omit-files
+        (concat dired-omit-files "\\|^\\..*$")))
 #+end_src
 ** Dirvish
 #+begin_src emacs-lisp
