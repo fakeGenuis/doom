@@ -183,11 +183,11 @@ check code ligatures, *bold* and /italic/ enabled
 ;https://github.com/seagle0128/doom-modeline/issues/187
 (defun +my/doom-modeline--font-height ()
   "Calculate the actual char height of the mode-line."
-  (+ 20 (+my/font-size 2)))
+  (+my/font-size 13))
   ;(if (equal (display-pixel-width) 3840)
   ;    26 24)
 
-(advice-add #'doom-modeline--font-height :override #'+my/doom-modeline--font-height)
+(advice-add #'doom-modeline--font-height :override #'(lambda nil (+my/font-size 13)))
 #+end_src
 
 [[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
@@ -517,7 +517,7 @@ default pdf viewer in emacs
 #+end_src
 
 ** treemacs
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! treemacs
   :when (featurep! :ui treemacs)
   :init
@@ -592,7 +592,7 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 [[https://github.com/TheLocehiliosan/yadm/blob/dd86c8a691deed7fb438b7ef07179040b0f05026/yadm.md#configuration][yadm/yadm.md at dd86c8a691deed7fb438b7ef07179040b0f05026 · TheLocehiliosan/ya...]]
 [[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
 
-~tramp~ from ~Melpa~ bugy, install it from ~aur~.
+~tramp~ from ~Melpa~ buggy, install it from ~aur~.
 #+begin_src emacs-lisp :tangle yes
 (use-package! tramp
   :config
@@ -735,15 +735,19 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   ;; Enable dired-omit-mode by default
   :hook
   (dired-mode . dired-omit-mode)
-  :custom
+  :config
   ;; Make dired-omit-mode hide all "dotfiles"
-  (dired-omit-files
+  (setq dired-omit-files
         (concat dired-omit-files "\\|^\\..*$")))
 #+end_src
 ** Dirvish
 #+begin_src emacs-lisp
 (use-package dirvish
+  :init
+  (setq +my/lineh (+my/font-size 13))
   :custom
+  (dirvish-mode-line-height '(+my/lineh . +my/lineh))
+  (dirvish-header-line-height '(+my/lineh . +my/lineh))
   ;; Go back home? Just press `bh'
   (dirvish-menu-bookmarks
    '(("h" "~/"                          "Home")
