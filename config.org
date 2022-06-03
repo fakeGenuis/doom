@@ -13,7 +13,7 @@
   - [[#icons][Icons]]
   - [[#line][Line]]
 - [[#editing][Editing]]
-  - [[#about-parenthese][About Parenthese]]
+  - [[#about-parentheses][About Parentheses]]
   - [[#input-chinese][Input Chinese]]
   - [[#latex][Latex]]
   - [[#file-templates][File Templates]]
@@ -71,7 +71,7 @@
 (add-to-list 'default-frame-alist '(width . 120))
 #+end_src
 ** transparency
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
 (add-to-list 'default-frame-alist '(alpha . (85 . 50)))
 
@@ -94,12 +94,12 @@
 #+end_src
 
 ** Themes
-#+begin_src emacs-lisp :tangle yes
-(setq doom-theme 'doom-dracula)
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-snazzy)
 #+end_src
 
 ** fonts
-#+begin_src emacs-lisp :tangle yes :results none
+#+begin_src emacs-lisp
 (setq +my/scale-factor
       (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
 
@@ -118,7 +118,7 @@
 #+end_src
 
 [[https://emacs-china.org/t/doom-emacs/9628/9][doom emacs下中文字体的设置 - #9，来自 slack-py - Emacs-general - Emacs China]]
-#+begin_src emacs-lisp :tangle yes :results none
+#+begin_src emacs-lisp
 ;; TODO resize cjk font with =C +=
 (defun +my/cjk-font(font-size)
   (dolist (charset '(kana han cjk-misc bopomofo))
@@ -132,6 +132,7 @@
         (custom-set-faces
          `(default ((t (:font ,doom-font))))
          `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
+         `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 11.5)))))))
         (+my/cjk-font 11))))
 
@@ -160,7 +161,7 @@ check code ligatures, *bold* and /italic/ enabled
 == <- -> <= => != == >= <== ==> === ?= :=
 
 [[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
-#+begin_src emacs-lisp :results none
+#+begin_src emacs-lisp
 (plist-put! +ligatures-extra-symbols
             :lambda     "ﬦ"
             :private    "")
@@ -169,7 +170,7 @@ check code ligatures, *bold* and /italic/ enabled
 #+end_src
 
 ** doom-modeline
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! doom-modeline
   :hook (after-init . doom-modeline-mode)
 
@@ -181,13 +182,13 @@ check code ligatures, *bold* and /italic/ enabled
   (doom-modeline-workspace-name t))
 
 ;https://github.com/seagle0128/doom-modeline/issues/187
-(defun +my/doom-modeline--font-height ()
+(defun +my/modeline-h ()
   "Calculate the actual char height of the mode-line."
-  (+my/font-size 13))
+  (ceiling (+ (/ (+my/font-size 14) 2.0) 8.0)))
   ;(if (equal (display-pixel-width) 3840)
   ;    26 24)
 
-(advice-add #'doom-modeline--font-height :override #'(lambda nil (+my/font-size 13)))
+(advice-add #'doom-modeline--font-height :override #'+my/modeline-h)
 #+end_src
 
 [[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
@@ -200,7 +201,7 @@ check code ligatures, *bold* and /italic/ enabled
 #+end_src
 
 ** Icons
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package all-the-icons
   :custom
   (all-the-icons-scale-factor 0.9))
@@ -211,8 +212,8 @@ check code ligatures, *bold* and /italic/ enabled
 (setq display-line-numbers-type nil)
 #+end_src
 * Editing
-** About Parenthese
-#+begin_src emacs-lisp :tangle yes
+** About Parentheses
+#+begin_src emacs-lisp :tangle no
 (setq show-paren-style 'expression)
 #+end_src
 
@@ -327,7 +328,7 @@ cdlatex
 
 ** File Templates
 [[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (after! yasnippet
   :config
   ;; (setq +file-templates-dir "~/.config/doom/templates/")
@@ -433,7 +434,6 @@ https://emacs.stackexchange.com/a/7840
   (setq org-babel-default-header-args:shell
         '((:results . "output verbatim drawer")
           (:wrap . "src ansi"))))
-
 #+END_SRC
 
 ** org-ref
@@ -446,7 +446,7 @@ https://emacs.stackexchange.com/a/7840
 (setq deft-default-extension "org")
 #+end_src
 ** org-roam
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-roam
   :after org
   :init
@@ -593,7 +593,7 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 [[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
 
 ~tramp~ from ~Melpa~ buggy, install it from ~aur~.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! tramp
   :config
   ;; (setenv "SHELL" "/bin/bash")
@@ -631,7 +631,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+end_src
 ** elfeed
 [[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
-#+begin_src emacs-lisp :results none
+#+begin_src emacs-lisp
 (use-package! elfeed
   :when (featurep! :app rss)
   :bind (:map elfeed-search-mode-map
@@ -674,7 +674,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+end_src
 
 ** dired-ranger
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! dired
   :config
   ;; https://github.com/jtbm37/all-the-icons-dired/pull/39/
@@ -711,7 +711,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+begin_src emacs-lisp
 (use-package dired
   :custom
-  ;; (setq dired-recursive-deletes 'always)
+  (setq dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
   (dired-dwim-target t)
   ;; Make sure to use the long name of flags when exists
@@ -744,10 +744,11 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+begin_src emacs-lisp
 (use-package dirvish
   :init
-  (setq +my/lineh (+my/font-size 13))
+  ;; (setq +my/lineh (+my/font-size 14))
   :custom
-  (dirvish-mode-line-height '(+my/lineh . +my/lineh))
-  (dirvish-header-line-height '(+my/lineh . +my/lineh))
+  ;; TODO fix line height
+  ;; (dirvish-mode-line-height '(+my/lineh . +my/lineh))
+  ;; (dirvish-header-line-height '(+my/lineh . +my/lineh))
   ;; Go back home? Just press `bh'
   (dirvish-menu-bookmarks
    '(("h" "~/"                          "Home")
@@ -761,24 +762,28 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
      :right
      ;; For `dired-filter' users, replace `omit' with `filter' segment defined below
      (omit yank index)))
-  (dirvish-attributes '(subtree-state
-                        ;; file-size
-                        ;; Feel free to replace `all-the-icons' with `vscode-icon'.
-                        all-the-icons))
+  (dirvish-attributes '(subtree-state all-the-icons))
+  ;; (dirvish-attributes '(file-size vscode-icon)) ; Feel free to try different combination
   ;; Maybe the icons are too big to your eyes
   (dirvish-all-the-icons-height 0.8)
   ;; In case you want the details at startup like `dired'
-  (dirvish-hide-details nil)
+  (dirvish-hide-details t)
   :config
   ;; Place this line under :init to ensure the overriding at startup, see #22
   (dirvish-override-dired-mode)
-  (dirvish-peek-mode)
+  ;; (dirvish-peek-mode)
   ;; Define mode line segment for `dired-filter'
   ;; (dirvish-define-mode-line filter "Describe filters."
   ;;   (when (bound-and-true-p dired-filter-mode)
   ;;     (propertize (format " %s " (dired-filter--describe-filters))
   ;;                 'face 'dired-filter-group-header)))
   ;;
+  ;; (dirvish-define-preview exa (file)
+  ;; "Use `exa' to generate directory preview."
+  ;; (when (file-directory-p file) ; we only interest in directories here
+  ;;   `(shell . ("exa" "--color=always" "-al" "--icons",file)))) ; use the output of `exa' command as preview
+
+  ;; (add-to-list 'dirvish-preview-dispatchers 'exa)
   ;; Bind `dirvish|dirvish-dired|dirvish-side|dirvish-dwim' as you see fit
   (map!
    (:leader
@@ -787,7 +792,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
    "C-c f" #'dirvish-fd
    :map dired-mode-map
    "TAB" #'dirvish-toggle-subtree
-   ;; "SPC" #'dirvish-show-history
+   "SPC" #'dirvish-show-history
    "*"   #'dirvish-mark-menu
    :gn "r"   #'dirvish-roam
    :gn "b"   #'dirvish-goto-bookmark
@@ -851,7 +856,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 * Lang
 ** lua
 lsp support
-#+begin_src emacs-lisp :results none :tangle yes
+#+begin_src emacs-lisp
 (use-package! lua-mode
   :when (featurep! :lang lua +lsp)
   :custom
@@ -873,7 +878,7 @@ ligatures
     :for "for"))
 #+end_src
 ** wolfram
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; last update was 5 years ago
 (use-package! wolfram-mode
   :config
@@ -915,7 +920,7 @@ ligatures
 #+end_src
 * Terminal
 ** vterm
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! vterm
   :custom
   (vterm-shell "/usr/bin/fish")
@@ -991,7 +996,7 @@ ligatures
 #+end_src
 
 ** proxy
-#+begin_src emacs-lisp :tangle yes :results none
+#+begin_src emacs-lisp
 (setq url-proxy-services
    '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
      ("http" . "localhost:8889")
