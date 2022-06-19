@@ -43,6 +43,7 @@
   - [[#projectile][projectile]]
   - [[#tldr][tldr]]
   - [[#tab-bar][tab bar]]
+  - [[#lsp][lsp]]
 - [[#lang][Lang]]
   - [[#lua][lua]]
   - [[#wolfram][wolfram]]
@@ -135,6 +136,9 @@
          `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 11.5)))))))
+         ;; `(lsp-ui-sideline-global ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 11.5)))))))
+         ;; font size specific may not work
+         ;; `(lsp-ui-sideline-global ((t (:font ,doom-big-font)))))
         (+my/cjk-font 11))))
 
 (defun +my|init-font(frame)
@@ -853,7 +857,36 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
    ("g T" . centaur-tabs-backward))
   )
 #+end_src
+** lsp
+[[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
+#+begin_src emacs-lisp
+(use-package lsp-ui :commands lsp-ui-mode
+  :config
+  (progn
+    ;;
+    ;; 2022-03-28 - fix sideline height computation
+    ;;
+    (defun lsp-ui-sideline--compute-height nil
+      "Return a fixed size for text in sideline."
+      (let ((fontHeight (face-attribute 'lsp-ui-sideline-global :height)))
+        (if (null text-scale-mode-remapping)
+            '(height
+              (if (floatp fontHeight) fontHeight
+                (/ (face-attribute 'lsp-ui-sideline-global :height) 100.0))
 
+              ;; Readjust height when text-scale-mode is used
+              (list 'height
+                    (/ 1 (or (plist-get (cdr text-scale-mode-remapping) :height)
+                             1)))))))
+
+    ;;
+    ;; 2022-03-28 - fix sideline alignment
+    ;;
+    (defun lsp-ui-sideline--align (&rest lengths)
+      "Align sideline string by LENGTHS from the right of the window."
+      (list (* (window-font-width nil 'lsp-ui-sideline-global)
+               (+ (apply '+ lengths) (if (display-graphic-p) 1 2)))))))
+#+end_src
 * Lang
 ** lua
 lsp support
