@@ -25,8 +25,7 @@
 (package! zotxt
   :recipe (:host github
            :repo "name/zotxt"))
-
-(package! treemacs-all-the-icons)
+(package! academic-phrases)
 
 (package! vlf)
 

@@ -295,7 +295,6 @@ preview latex formulas
 (autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
 (autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
 (autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
-;;(setq-default Tex-master (concat (projectile-project-root) "main.tex"))
 #+end_src
 
 word completion along with =(:lang (latex +lsp))=
@@ -345,6 +344,11 @@ cdlatex
 [[https://emacs.stackexchange.com/questions/28135/in-evil-mode-how-can-i-prevent-adding-to-the-kill-ring-when-i-yank-text-visual][In Evil mode, how can I prevent adding to the kill ring when I yank text, vis...]]
 #+begin_src emacs-lisp
 (setq-default evil-kill-on-visual-paste nil)
+#+end_src
+
+Disabling cursor movement when exiting insert mode
+#+begin_src emacs-lisp
+(setq evil-move-cursor-back nil)
 #+end_src
 * Org
 ** org
@@ -716,7 +720,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+begin_src emacs-lisp
 (use-package dired
   :custom
-  (setq dired-recursive-deletes 'always)
+  (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
   (dired-dwim-target t)
   ;; Make sure to use the long name of flags when exists
@@ -751,6 +755,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   :init
   ;; (setq +my/lineh (+my/font-size 14))
   :custom
+  (dirvish-keep-alive-on-quit t)
   ;; TODO fix line height
   ;; (dirvish-mode-line-height '(+my/lineh . +my/lineh))
   ;; (dirvish-header-line-height '(+my/lineh . +my/lineh))
@@ -767,7 +772,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
      :right
      ;; For `dired-filter' users, replace `omit' with `filter' segment defined below
      (omit yank index)))
-  (dirvish-attributes '(subtree-state all-the-icons))
+  (dirvish-attributes '(subtree-state all-the-icons file-size git-msg vc-state))
   ;; (dirvish-attributes '(file-size vscode-icon)) ; Feel free to try different combination
   ;; Maybe the icons are too big to your eyes
   (dirvish-all-the-icons-height 0.8)
@@ -784,9 +789,9 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   ;;                 'face 'dired-filter-group-header)))
   ;;
   ;; (dirvish-define-preview exa (file)
-  ;; "Use `exa' to generate directory preview."
-  ;; (when (file-directory-p file) ; we only interest in directories here
-  ;;   `(shell . ("exa" "--color=always" "-al" "--icons",file)))) ; use the output of `exa' command as preview
+  ;;  "Use `exa' to generate directory preview."
+  ;;  (when (file-directory-p file) ; we only interest in directories here
+  ;;     `(shell . ("exa" "--color=always" "-al" "--icons" ,file)))) ; use the output of `exa' command as preview
 
   ;; (add-to-list 'dirvish-preview-dispatchers 'exa)
   ;; Bind `dirvish|dirvish-dired|dirvish-side|dirvish-dwim' as you see fit
@@ -802,10 +807,10 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
    :gn "r"   #'dirvish-roam
    :gn "b"   #'dirvish-goto-bookmark
    :gn "f"   #'dirvish-file-info-menu
-   "M-n" #'dirvish-go-forward-history
-   "M-p" #'dirvish-go-backward-history
-   "M-s" #'dirvish-setup-menu
-   "M-f" #'dirvish-toggle-fullscreen
+   :gn "M-n" #'dirvish-history-go-forward
+   :gn "M-p" #'dirvish-history-go-backward
+   :gn "M-s" #'dirvish-setup-menu
+   :gn "M-f" #'dirvish-toggle-fullscreen
    [remap dired-sort-toggle-or-edit] #'dirvish-quicksort
    [remap dired-do-redisplay] #'dirvish-ls-switches-menu
    [remap dired-summary] #'dirvish-dispatch
