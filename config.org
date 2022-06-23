@@ -110,11 +110,12 @@
 (defun +my/font-size(size)
   (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
 
-(setq doom-font (font-spec :family "UbuntuLiga Nerd Font Mono" :size (+my/font-size 14))
+(setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 13))
       ;; big font mode resize serif-font and variable-pitch-font also
-      doom-big-font (font-spec :family "Mononoki Nerd Font Mono" :size (+my/font-size 17))
+      doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 13))
-      doom-unicode-font (font-spec :family "FuraCode Retina Nerd Font Mono" :size (+my/font-size 14))
+      ;; doom-unicode-font (font-spec :family "FuraCode Retina Nerd Font Mono" :size (+my/font-size 13))
+      ;; doom-unicode-font (font-spec :family "agave Nerd Font Mono" :size (+my/font-size 14))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 9)))
 #+end_src
 
@@ -122,7 +123,7 @@
 #+begin_src emacs-lisp
 ;; TODO resize cjk font with =C +=
 (defun +my/cjk-font(font-size)
-  (dolist (charset '(kana han cjk-misc bopomofo))
+  (dolist (charset '(kana han cjk-misc))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size)))))
 
@@ -134,7 +135,7 @@
          `(default ((t (:font ,doom-font))))
          `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
-         `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 11.5)))))))
+         `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 12)))))))
          ;; `(lsp-ui-sideline-global ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 11.5)))))))
          ;; font size specific may not work
          ;; `(lsp-ui-sideline-global ((t (:font ,doom-big-font)))))
@@ -167,7 +168,6 @@ check code ligatures, *bold* and /italic/ enabled
 [[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
 #+begin_src emacs-lisp
 (plist-put! +ligatures-extra-symbols
-            :lambda     "ﬦ"
             :private    "")
 
 (global-prettify-symbols-mode)
