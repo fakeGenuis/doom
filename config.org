@@ -49,7 +49,6 @@
   - [[#wolfram][wolfram]]
 - [[#terminal][Terminal]]
   - [[#vterm][vterm]]
-  - [[#vterm-toggle][vterm toggle]]
   - [[#colored-output-issues][Colored output issues]]
   - [[#fish-shell][fish shell]]
 - [[#others][Others]]
@@ -960,6 +959,30 @@ ligatures
 * Terminal
 ** vterm
 #+begin_src emacs-lisp
+(defun +my/vterm-switch ()
+  "Switch to vterm buffer in `Term' workspace.
+If `Term' workspace not exist, create it.
+If no vterm buffer in `Term' workspace, create it."
+  (interactive)
+  (+workspace-switch "Term" t)
+  (let ((vterm-buffer
+         ;; return first vterm buffer in `Term' workspace
+          (catch 'foo
+            (dolist (buffer (+workspace-buffer-list))
+              (let ((bn (buffer-name buffer)))
+                (when (and bn
+                           ;; https://stackoverflow.com/a/2238589
+                         (with-current-buffer bn
+                             (eq major-mode 'vterm-mode)))
+                      (throw 'foo bn))))))
+        (display-buffer-alist))
+    (if vterm-buffer
+        (switch-to-buffer vterm-buffer)
+      ;; create vterm buffer if not exist
+      (vterm vterm-buffer-name))))
+#+end_src
+
+#+begin_src emacs-lisp
 (use-package! vterm
   :custom
   (vterm-shell "/usr/bin/fish")
@@ -970,39 +993,21 @@ ligatures
   :config
   (map! :leader
         (:prefix-map ("o" . "open")
-         :desc "toggle vterm here" "t" (cmd!! #'+vterm/toggle t)
-         :desc "toggle vterm at project root" "T" #'+vterm/toggle
-         :desc "open vterm here" "o" (cmd!! #'+vterm/here t)
-         :desc "open vterm at project root" "O" #'+vterm/here))
+         :desc "popup vterm here" "p" (cmd!! #'+vterm/toggle t)
+         ;; :desc "popup vterm at project root" "P" #'+vterm/toggle
+         :desc "vterm here" "v" (cmd!! #'+vterm/here t)))
+         ;; :desc "vterm at project root" "V" #'+vterm/here))
+  (map! :leader
+        (:prefix-map ("b" . "buffer")
+         :desc "Switch to vterm buffer" "v" #'+my/vterm-switch))
   ;; TODO fixed-pitch in bpytop like
   ;; (add-hook 'vterm-mode-hook
   ;;           (lambda ()
   ;;             (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch
   ;;                  (buffer-face-mode t))))
-  (define-key vterm-mode-map (kbd "C-c ESC") #'vterm-send-escape))
+  (define-key vterm-mode-map (kbd "M-q") #'vterm-send-escape))
 #+end_src
 
-** vterm toggle
-#+begin_src emacs-lisp :tangle no
-(use-package! vterm-toggle
-  :after vterm
-  :custom
-  (vterm-toggle-cd-auto-create-buffer nil)
-  :config
-  ;; you can cd to the directory where your previous buffer file exists
-  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
-  (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
-  (define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
-  ;; Switch to previous vterm buffer
-  (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward))
-
-;; toggle a popup windows in current file dir (not project root)
-;; do i actually need these function?
-;; (map! :leader
-;;       (:prefix-map ("o" . "open")
-;;        (:when (featurep! :term vterm)
-;;         :desc "Toggle vterm popup here"    "." #'vterm-toggle-cd)))
-#+end_src
 ** Colored output issues
 https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 #+begin_src emacs-lisp :tangle no
