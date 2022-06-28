@@ -983,6 +983,13 @@ If no vterm buffer in `Term' workspace, create it."
 #+end_src
 
 #+begin_src emacs-lisp
+(defun +my/vterm-cd-project-root ()
+  (interactive)
+  (vterm-send-string "cd $PROOT")
+  (vterm-send-return))
+#+end_src
+
+#+begin_src emacs-lisp
 (use-package! vterm
   :custom
   (vterm-shell "/usr/bin/fish")
@@ -993,10 +1000,10 @@ If no vterm buffer in `Term' workspace, create it."
   :config
   (map! :leader
         (:prefix-map ("o" . "open")
-         :desc "popup vterm here" "p" (cmd!! #'+vterm/toggle t)
-         ;; :desc "popup vterm at project root" "P" #'+vterm/toggle
-         :desc "vterm here" "v" (cmd!! #'+vterm/here t)))
-         ;; :desc "vterm at project root" "V" #'+vterm/here))
+         ;; default to vterm at current file directory
+         ;; `C-Return' to project root
+         :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
+         :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
   (map! :leader
         (:prefix-map ("b" . "buffer")
          :desc "Switch to vterm buffer" "v" #'+my/vterm-switch))
@@ -1005,7 +1012,8 @@ If no vterm buffer in `Term' workspace, create it."
   ;;           (lambda ()
   ;;             (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch
   ;;                  (buffer-face-mode t))))
-  (define-key vterm-mode-map (kbd "M-q") #'vterm-send-escape))
+  (define-key vterm-mode-map (kbd "M-q") #'vterm-send-escape)
+  (define-key vterm-mode-map [ (control return) ] #'+my/vterm-cd-project-root))
 #+end_src
 
 ** Colored output issues
