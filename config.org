@@ -759,7 +759,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   ;; (dirvish-mode-line-height '(+my/lineh . +my/lineh))
   ;; (dirvish-header-line-height '(+my/lineh . +my/lineh))
   ;; Go back home? Just press `bh'
-  (dirvish-menu-bookmarks
+  (dirvish-bookmark-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
      ("m" "/mnt/"                       "Drives")
@@ -804,7 +804,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
    "SPC" #'dirvish-show-history
    "*"   #'dirvish-mark-menu
    :gn "r"   #'dirvish-roam
-   :gn "b"   #'dirvish-goto-bookmark
+   :gn "b"   #'dirvish-bookmark-goto
    :gn "f"   #'dirvish-file-info-menu
    :gn "M-n" #'dirvish-history-go-forward
    :gn "M-p" #'dirvish-history-go-backward
