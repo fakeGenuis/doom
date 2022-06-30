@@ -57,6 +57,8 @@
   - [[#pomm][pomm]]
   - [[#screenshot][screenshot]]
   - [[#reverse-words][reverse words]]
+  - [[#popup][popup]]
+  - [[#shrface][shrface]]
 
 * Info
 #+begin_src emacs-lisp
@@ -1075,4 +1077,29 @@ currently buggy
      (reverse
       (split-string
        (delete-and-extract-region beg end) "\\b"))))
+#+end_src
+** popup
+remove ~eww~ from popup buffer list
+#+begin_src emacs-lisp
+(when (featurep! :ui popup)
+  (set-popup-rule!
+    "^\\*eww\\*"  ; `eww' (and used by dash docsets)
+    :ignore t))
+#+end_src
+** shrface
+#+begin_src emacs-lisp
+(use-package shrface
+  :defer t
+  :config
+  (shrface-basic)
+  (shrface-trial)
+  (shrface-default-keybindings) ; setup default keybindings
+  (setq shrface-href-versatile t))
+
+(use-package eww
+  :defer t
+  :init
+  (add-hook 'eww-after-render-hook #'shrface-mode)
+  :config
+  (require 'shrface))
 #+end_src
