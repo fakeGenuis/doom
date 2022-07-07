@@ -114,11 +114,10 @@
 
 (setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 13))
       ;; big font mode resize serif-font and variable-pitch-font also
-      doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
-      doom-serif-font (font-spec :family "Source Serif Pro" :size (+my/font-size 13))
-      ;; doom-unicode-font (font-spec :family "FuraCode Retina Nerd Font Mono" :size (+my/font-size 13))
-      ;; doom-unicode-font (font-spec :family "agave Nerd Font Mono" :size (+my/font-size 14))
-      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 9)))
+      ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
+      doom-unicode-font (font-spec :family "Twemoji")
+      doom-serif-font (font-spec :family "Rec Mono Casual" :size (+my/font-size 12))
+      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 11)))
 #+end_src
 
 [[https://emacs-china.org/t/doom-emacs/9628/9][doom emacs下中文字体的设置 - #9，来自 slack-py - Emacs-general - Emacs China]]
@@ -138,9 +137,6 @@
          `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 12)))))))
-         ;; `(lsp-ui-sideline-global ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 11.5)))))))
-         ;; font size specific may not work
-         ;; `(lsp-ui-sideline-global ((t (:font ,doom-big-font)))))
         (+my/cjk-font 11))))
 
 (defun +my|init-font(frame)
@@ -1086,6 +1082,8 @@ remove ~eww~ from popup buffer list
     "^\\*eww\\*"  ; `eww' (and used by dash docsets)
     :ignore t))
 #+end_src
+
+use ~+popup-mode~ to toggle popup mode globally.
 ** shrface
 #+begin_src emacs-lisp
 (use-package shrface
