@@ -97,8 +97,27 @@
 #+end_src
 
 ** Themes
+restore last random theme
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-snazzy)
+;; (setq doom-theme 'doom-snazzy)
+(load (string-join `(,doom-private-dir "theme.el")))
+#+end_src
+
+difficult to choose theme? random it
+#+begin_src emacs-lisp
+(defun +my/random-theme ()
+    (interactive)
+    (let* ((all-themes (custom-available-themes))
+           (next-theme (nth (random (length all-themes)) all-themes))
+           (theme-config-file (string-join `(,doom-private-dir "theme.el"))))
+      (message "Switching to theme: %s" next-theme)
+      (consult-theme next-theme)
+      (write-region (format "(setq doom-theme '%s)\n" next-theme) nil theme-config-file)))
+
+(after! doom-themes
+  (map! :leader
+        (:prefix "t"
+         :desc "Random theme" "t" #'+my/random-theme)))
 #+end_src
 
 ** fonts
