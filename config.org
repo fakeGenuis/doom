@@ -91,7 +91,7 @@
          '(85 . 50) '(100 . 100)))))
 
 (map! :leader
-      (:prefix-map ("t" . "toggle")
+      (:prefix "t"
        :desc "Toggle transparency"    "T" #'toggle-transparency
        ))
 #+end_src
@@ -687,7 +687,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 
 
 (map! :leader
-      (:prefix-map ("o" . "open")
+      (:prefix "o"
        (:when (featurep! :app rss)
         :desc "elfeed"    "e" #'elfeed)))
 
@@ -727,7 +727,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   ;; TODO change =ranger-pop-eshell= to vterm
   ;; (setq helm-descbinds-window-style 'same-window)
   (map! :leader
-        (:prefix-map ("o" . "open")
+        (:prefix "o"
          :desc "ranger"    "r" #'ranger
          :desc "REPL"    "R" #'+eval/open-repl-other-window))
   )
@@ -813,7 +813,7 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   ;; Bind `dirvish|dirvish-dired|dirvish-side|dirvish-dwim' as you see fit
   (map!
    (:leader
-    :prefix-map ("o" . "open")
+    :prefix "o"
     :desc "dirvish"    "i" #'dirvish)
    "C-c f" #'dirvish-fd
    :map dired-mode-map
@@ -1016,13 +1016,13 @@ If no vterm buffer in `Term' workspace, create it."
   (vterm-max-scrollback 10000)
   :config
   (map! :leader
-        (:prefix-map ("o" . "open")
+        (:prefix "o"
          ;; default to vterm at current file directory
          ;; `C-Return' to project root
          :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
          :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
   (map! :leader
-        (:prefix-map ("b" . "buffer")
+        (:prefix "b"
          :desc "Switch to vterm buffer" "v" #'+my/vterm-switch))
   ;; TODO fixed-pitch in bpytop like
   ;; (add-hook 'vterm-mode-hook
