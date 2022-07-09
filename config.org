@@ -134,9 +134,18 @@ difficult to choose theme? random it
 (setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 13))
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
-      doom-unicode-font (font-spec :family "Twemoji")
+      ;; doom-unicode-font (font-spec :family "Twemoji")
       doom-serif-font (font-spec :family "Rec Mono Casual" :size (+my/font-size 12))
       doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 11)))
+#+end_src
+
+[[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
+#+begin_src emacs-lisp
+(defun +my/ligature-font ()
+  (dolist (chars '("ℤ" "ℝ" "ℕ"))
+      (set-fontset-font (frame-parameter nil 'font) (string-to-char chars) "DejaVu Math TeX Gyre") nil 'prepend)
+  ;; (set-fontset-font t ?𝔽 "DejaVu Math TeX Gyre")
+  (set-fontset-font (frame-parameter nil 'font) '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre") nil 'prepend)
 #+end_src
 
 [[https://emacs-china.org/t/doom-emacs/9628/9][doom emacs下中文字体的设置 - #9，来自 slack-py - Emacs-general - Emacs China]]
@@ -151,6 +160,7 @@ difficult to choose theme? random it
   (interactive)
   (if (display-graphic-p)
       (progn
+        (+my/ligature-font)
         (custom-set-faces
          `(default ((t (:font ,doom-font))))
          `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
@@ -387,10 +397,10 @@ Disabling cursor movement when exiting insert mode
   ;;        "y" #'org-copy-link-url)
   :custom
   (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
-  (org-ellipsis "⤵")
   (org-agenda-start-with-log-mode t)
   (org-log-done 'time)
   (org-log-into-drawer t)
+  (org-ellipsis "↴")
   (org-image-actual-width 400)
   (org-startup-with-inline-images t)
   (org-refile-targets '(("archive.org" :maxlevel . 1)))
