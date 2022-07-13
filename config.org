@@ -114,10 +114,9 @@ difficult to choose theme? random it
       (consult-theme next-theme)
       (write-region (format "(setq doom-theme '%s)\n" next-theme) nil theme-config-file)))
 
-(after! doom-themes
-  (map! :leader
-        (:prefix "t"
-         :desc "Random theme" "t" #'+my/random-theme)))
+(map! :leader
+      (:prefix "t"
+       :desc "Random theme" "t" #'+my/random-theme))
 #+end_src
 
 ** fonts
