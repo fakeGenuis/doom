@@ -949,9 +949,10 @@ ligatures
   (autoload 'wolfram-mode "wolfram-mode" nil t)
   (autoload 'run-wolfram "wolfram-mode" nil t)
   (setq wolfram-program "/usr/local/bin/wolfram")
-  (+my/append-to-list 'auto-mode-alist '(
-                                         ("\\.wl\\'" . wolfram-mode)
-                                         ("\\.wls\\'" . wolfram-mode))))
+  (prependq! auto-mode-alist '(
+                               ("\\.m\\'" . wolfram-mode)
+                               ("\\.wl\\'" . wolfram-mode)
+                               ("\\.wls\\'" . wolfram-mode))))
 
 (setq wolfram-path "~/.Mathematica/Applications")
 
