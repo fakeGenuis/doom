@@ -171,7 +171,6 @@ track current theme for later load
       (progn
         (+my/ligature-font)
         (custom-set-faces
-         `(default ((t (:font ,doom-font))))
          `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
          `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 12)))))))
@@ -464,7 +463,7 @@ Disabling cursor movement when exiting insert mode
   (map! :map org-mode-map
         :localleader
         "y" #'org-copy-link-url)
-  (load "~/.config/doom/org-capture-templates.el")
+  (load (expand-file-name "org-capture-templates.el" doom-private-dir))
   ;;https://stackoverflow.com/a/50875921
   ;;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
   (use-package org-habit
@@ -657,7 +656,7 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
 #+begin_src emacs-lisp
-(load "~/.config/doom/mu4e.el")
+(load (expand-file-name "mu4e.el" doom-private-dir))
 #+end_src
 
 *** alert
