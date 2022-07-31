@@ -822,16 +822,17 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
 #+end_src
 ** Dirvish
 #+begin_src emacs-lisp
+(setq +my/lineh (+my/modeline-h))
+(setq dirvish-mode-line-height `(,+my/lineh . ,+my/lineh))
+(setq dirvish-header-line-height `(,+my/lineh . ,+my/lineh))
+
 (use-package dirvish
   :init
-  ;; (setq +my/lineh (+my/font-size 14))
+  (dirvish-override-dired-mode)
   :custom
-  (dirvish-keep-alive-on-quit t)
+  (dirvish-reuse-session t)
   ;; TODO fix line height
-  ;; (dirvish-mode-line-height '(+my/lineh . +my/lineh))
-  ;; (dirvish-header-line-height '(+my/lineh . +my/lineh))
-  ;; Go back home? Just press `bh'
-  (dirvish-bookmark-entries
+  (dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
      ("m" "/mnt/"                       "Drives")
@@ -843,29 +844,13 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
      :right
      ;; For `dired-filter' users, replace `omit' with `filter' segment defined below
      (omit yank index)))
-  (dirvish-attributes '(subtree-state all-the-icons file-size git-msg vc-state))
-  ;; (dirvish-attributes '(file-size vscode-icon)) ; Feel free to try different combination
+  (dirvish-attributes '(vc-state subtree-state all-the-icons collapse git-msg file-size))
   ;; Maybe the icons are too big to your eyes
   (dirvish-all-the-icons-height 0.8)
   ;; In case you want the details at startup like `dired'
   (dirvish-hide-details t)
   :config
-  ;; Place this line under :init to ensure the overriding at startup, see #22
-  (dirvish-override-dired-mode)
   ;; (dirvish-peek-mode)
-  ;; Define mode line segment for `dired-filter'
-  ;; (dirvish-define-mode-line filter "Describe filters."
-  ;;   (when (bound-and-true-p dired-filter-mode)
-  ;;     (propertize (format " %s " (dired-filter--describe-filters))
-  ;;                 'face 'dired-filter-group-header)))
-  ;;
-  ;; (dirvish-define-preview exa (file)
-  ;;  "Use `exa' to generate directory preview."
-  ;;  (when (file-directory-p file) ; we only interest in directories here
-  ;;     `(shell . ("exa" "--color=always" "-al" "--icons" ,file)))) ; use the output of `exa' command as preview
-
-  ;; (add-to-list 'dirvish-preview-dispatchers 'exa)
-  ;; Bind `dirvish|dirvish-dired|dirvish-side|dirvish-dwim' as you see fit
   (map!
    (:leader
     :prefix "o"
@@ -876,12 +861,16 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
    "SPC" #'dirvish-show-history
    "*"   #'dirvish-mark-menu
    :gn "r"   #'dirvish-roam
-   :gn "b"   #'dirvish-bookmark-goto
+   :gn "b"   #'dirvish-quick-access
+   :gn "y"   #'dirvish-yank-menu
+   :gn "N"   #'dirvish-narrow
    :gn "f"   #'dirvish-file-info-menu
    :gn "M-n" #'dirvish-history-go-forward
    :gn "M-p" #'dirvish-history-go-backward
    :gn "M-s" #'dirvish-setup-menu
-   :gn "M-f" #'dirvish-toggle-fullscreen
+   :gn "M-f" #'dirvish-layout-toggle
+   :gn "M-m" #'dirvish-mark-menu
+   :gn "q"   #'dirvish-quit
    [remap dired-sort-toggle-or-edit] #'dirvish-quicksort
    [remap dired-do-redisplay] #'dirvish-ls-switches-menu
    [remap dired-summary] #'dirvish-dispatch
