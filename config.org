@@ -202,10 +202,10 @@ check code ligatures, *bold* and /italic/ enabled
 
 [[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
 #+begin_src emacs-lisp
-(plist-put! +ligatures-extra-symbols
-            :private    "")
-
-(global-prettify-symbols-mode)
+(with-eval-after-load "ligatures"
+  (plist-put! +ligatures-extra-symbols
+              :private    "")
+  (global-prettify-symbols-mode))
 #+end_src
 
 ** doom-modeline
@@ -466,7 +466,7 @@ Disabling cursor movement when exiting insert mode
   (load (expand-file-name "org-capture-templates.el" doom-private-dir))
   ;;https://stackoverflow.com/a/50875921
   ;;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
-  (use-package org-habit
+  (use-package! org-habit
     :custom
     (org-habit-graph-column 60)
     :config
@@ -964,7 +964,7 @@ lsp support
 
 ligatures
 #+begin_src emacs-lisp
-(after! lua-mode
+(with-eval-after-load "ligatures"
   (set-ligatures! 'lua-mode
     :def "function"
     :return "return"
@@ -1009,7 +1009,7 @@ ligatures
 
 ligatures
 #+begin_src emacs-lisp
-(after! wolfram-mode
+(with-eval-after-load "ligatures"
   (set-ligatures! 'wolfram-mode
     :and "&&"
     :or "||"
@@ -1091,7 +1091,7 @@ https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 
 ligatures
 #+begin_src emacs-lisp
-(after! fish-mode
+(with-eval-after-load "ligatures"
   (set-ligatures! 'fish-mode
     :def "function"
     :return "return"
