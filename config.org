@@ -1,299 +1,123 @@
-#+TITLE: Config
-#+PROPERTY: header-args :tangle config.el :results none
+#+TITLE: Doom Emacs Configuration
+#+PROPERTY: header-args:emacs-lisp :results none
+#+PROPERTY: header-args:fish :tangle install.fish :results none :shebang "#!/usr/bin/fish" :file-mode (identity #o755)
 
-* Table of Contents :TOC:
+* Table of Contents :TOC_3:
 - [[#info][Info]]
-- [[#display][Display]]
-  - [[#frame-size][frame size]]
-  - [[#transparency][transparency]]
-  - [[#themes][Themes]]
-  - [[#fonts][fonts]]
-  - [[#ligature][ligature]]
-  - [[#doom-modeline][doom-modeline]]
-  - [[#icons][Icons]]
-  - [[#line][Line]]
-  - [[#doom-dashboard][doom-dashboard]]
-- [[#editing][Editing]]
-  - [[#about-parentheses][About Parentheses]]
+- [[#input][Input]]
   - [[#input-chinese][Input Chinese]]
-  - [[#latex][Latex]]
-  - [[#file-templates][File Templates]]
-  - [[#evil][Evil]]
-- [[#org][Org]]
-  - [[#org-1][org]]
-  - [[#org-src][org-src]]
-  - [[#org-agenda][org-agenda]]
-  - [[#color-shell-block-output][Color ~shell~ block output]]
-  - [[#org-ref][org-ref]]
-  - [[#deft][deft]]
-  - [[#org-roam][org-roam]]
-  - [[#org-pandoc-import][org-pandoc-import]]
-  - [[#org-noter][org-noter]]
-- [[#plugins][Plugins]]
-  - [[#pdf-tools][pdf-tools]]
-  - [[#leetcode][leetcode]]
+- [[#completion][Completion]]
+- [[#display][Display]]
+  - [[#themes][Themes]]
+  - [[#fonts][Fonts]]
+    - [[#doom-font][Doom font]]
+    - [[#all-the-icons-font][=all-the-icons= font]]
+    - [[#unicode][=unicode=]]
+    - [[#chinese-fonts][Chinese fonts]]
+  - [[#doom-dashboard][Doom-dashboard]]
+  - [[#ligatures][Ligatures]]
+  - [[#doom-modeline][Doom-modeline]]
+  - [[#popup][Popup]]
   - [[#treemacs][treemacs]]
-  - [[#ivy-posframe][ivy-posframe]]
-  - [[#mu4e][mu4e]]
-  - [[#yadm-with-magit][yadm (with magit)]]
-  - [[#keycast][keycast]]
-  - [[#elfeed][elfeed]]
+  - [[#tab-bar][tab bar]]
+  - [[#others][Others]]
+- [[#editing][Editing]]
+  - [[#evil][Evil]]
+  - [[#file-templates][File Templates]]
+  - [[#format][format]]
+  - [[#others-1][Others]]
+- [[#emacs][Emacs]]
   - [[#dired-ranger][dired-ranger]]
   - [[#dired][Dired]]
   - [[#dirvish][Dirvish]]
-  - [[#projectile][projectile]]
-  - [[#tldr][tldr]]
-  - [[#tab-bar][tab bar]]
-  - [[#lsp][lsp]]
-- [[#lang][Lang]]
-  - [[#lua][lua]]
-  - [[#wolfram][wolfram]]
-- [[#terminal][Terminal]]
-  - [[#vterm][vterm]]
+- [[#term][Term]]
+  - [[#vterm][=vterm=]]
   - [[#colored-output-issues][Colored output issues]]
   - [[#fish-shell][fish shell]]
-- [[#others][Others]]
-  - [[#maximize-when-start-up][maximize when start up]]
-  - [[#proxy][proxy]]
+- [[#checkers][Checkers]]
+  - [[#spell-checker][Spell checker]]
+- [[#tools][Tools]]
+  - [[#pdf-tools][pdf-tools]]
+  - [[#editorconfig][=editorconfig=]]
+  - [[#lookup][lookup]]
+  - [[#lsp][lsp]]
+  - [[#magit][magit]]
+- [[#lang][Lang]]
+  - [[#latex][Latex]]
+    - [[#cdlatex][=cdlatex=]]
+    - [[#lsp-1][=lsp=]]
+    - [[#math-preview][math preview]]
+    - [[#others-2][Others]]
+  - [[#lua][lua]]
+  - [[#wolfram][wolfram]]
+  - [[#python][python]]
+  - [[#shell][shell]]
+  - [[#org][org]]
+    - [[#org-noter][org-noter]]
+    - [[#org-roam][org-roam]]
+    - [[#org-pandoc-import][org-pandoc-import]]
+    - [[#color-shell-block-output][Color ~shell~ block output]]
+    - [[#others-3][others]]
+- [[#email][Email]]
+  - [[#mu4e][mu4e]]
+    - [[#alert][alert]]
+- [[#app][App]]
+  - [[#elfeed][=elfeed=]]
+- [[#other-packages][Other packages]]
+  - [[#keycast][keycast]]
+  - [[#projectile][projectile]]
+  - [[#shrface][shrface]]
   - [[#pomm][pomm]]
   - [[#screenshot][screenshot]]
+  - [[#tldr][tldr]]
+  - [[#leetcode][leetcode]]
+  - [[#ivy-posframe][ivy-posframe]]
+- [[#other-configs][Other configs]]
+  - [[#maximize-when-start-up][maximize when start up]]
+  - [[#proxy][proxy]]
   - [[#reverse-words][reverse words]]
-  - [[#popup][popup]]
-  - [[#shrface][shrface]]
+- [[#end][End]]
 
 * Info
+
+requirements of =doom emacs=
+#+begin_src fish
+set -a 2install ripgrep fd
+#+end_src
+
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 #+end_src
 
-* Display
-** frame size
-#+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(width . 120))
-#+end_src
-** transparency
-#+begin_src emacs-lisp
-(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
-(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+#+begin_src emacs-lisp :tangle init.el
+;;; init.el -*- lexical-binding: t; -*-
 
-(defun toggle-transparency ()
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-                    ((numberp (cdr alpha)) (cdr alpha))
-                    ;; Also handle undocumented (<active> <inactive>) form.
-                    ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         '(85 . 50) '(100 . 100)))))
-
-(map! :leader
-      (:prefix "t"
-       :desc "Toggle transparency"    "T" #'toggle-transparency
-       ))
+(doom!
 #+end_src
 
-** Themes
-restore last selected theme
-#+begin_src emacs-lisp
-;; (setq doom-theme 'doom-snazzy)
-(load (string-join `(,doom-private-dir "theme.el")))
+#+begin_src emacs-lisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
 #+end_src
 
-difficult to choose theme? random it
-#+begin_src emacs-lisp
-(defun +my/random-theme ()
-    (interactive)
-    (let* ((all-themes (custom-available-themes))
-           (next-theme (nth (random (length all-themes)) all-themes)))
-      (message "Switching to theme: %s" next-theme)
-      (consult-theme next-theme)))
+* Input
 
-(map! :leader
-      (:prefix "t"
-       :desc "Random theme" "t" #'+my/random-theme))
+#+begin_src emacs-lisp :tangle init.el
+:input
+chinese
 #+end_src
 
-track current theme for later load
-#+begin_src emacs-lisp
-(defun +my/save-theme (prev new-theme &rest args)
-  (let
-      ((theme-config-file (expand-file-name "theme.el" doom-private-dir)))
-    (write-region
-      (format "(setq doom-theme '%s)\n" new-theme) nil theme-config-file)))
-
-(add-variable-watcher 'doom-theme #'+my/save-theme)
-#+end_src
-
-** fonts
-#+begin_src emacs-lisp
-(setq +my/scale-factor
-      (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
-
-(setq +my/is-laptop
-      (not (string-equal (shell-command-to-string "fd BAT /sys/class/power_supply/") "")))
-
-(defun +my/font-size(size)
-  (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
-
-(setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 13))
-      ;; big font mode resize serif-font and variable-pitch-font also
-      ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
-      ;; doom-unicode-font (font-spec :family "Twemoji")
-      doom-serif-font (font-spec :family "Rec Mono Casual" :size (+my/font-size 12))
-      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 11)))
-#+end_src
-
-[[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
-#+begin_src emacs-lisp
-(defun +my/ligature-font ()
-  (dolist (chars '("ℤ" "ℝ" "ℕ"))
-      (set-fontset-font (frame-parameter nil 'font) (string-to-char chars) "DejaVu Math TeX Gyre") nil 'prepend)
-  ;; (set-fontset-font t ?𝔽 "DejaVu Math TeX Gyre")
-  (set-fontset-font (frame-parameter nil 'font) '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre") nil 'prepend)
-#+end_src
-
-[[https://emacs-china.org/t/doom-emacs/9628/9][doom emacs下中文字体的设置 - #9，来自 slack-py - Emacs-general - Emacs China]]
-#+begin_src emacs-lisp
-;; TODO resize cjk font with =C +=
-(defun +my/cjk-font(font-size)
-  (dolist (charset '(kana han cjk-misc))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size)))))
-
-(defun +my/better-font()
-  (interactive)
-  (if (display-graphic-p)
-      (progn
-        (+my/ligature-font)
-        (custom-set-faces
-         `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
-         `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
-         `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 12)))))))
-        (+my/cjk-font 11))))
-
-(defun +my|init-font(frame)
-  (with-selected-frame frame
-    (if (display-graphic-p)
-        (+my/better-font))))
-
-(if (and (fboundp 'daemonp) (daemonp))
-    (add-hook 'after-make-frame-functions #'+my|init-font)
-  (+my/better-font))
-
-;;https://emacs.stackexchange.com/a/47092
-;; DONE restore ligature after exit big font mode
-(add-hook 'doom-big-font-mode-hook
-          (lambda ()
-            (if doom-big-font-mode
-                (add-hook 'doom-big-font-mode-hook #'+my/better-font)
-              (remove-hook 'doom-big-font-mode-hook #'+my/better-font))))
-
-(add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
-(add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
-#+end_src
-** ligature
-check code ligatures, *bold* and /italic/ enabled
-== <- -> <= => != == >= <== ==> === ?= :=
-
-[[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
-#+begin_src emacs-lisp
-(with-eval-after-load "ligatures"
-  (plist-put! +ligatures-extra-symbols
-              :private    "")
-  (global-prettify-symbols-mode))
-#+end_src
-
-** doom-modeline
-#+begin_src emacs-lisp
-(use-package! doom-modeline
-  :hook (after-init . doom-modeline-mode)
-
-  :custom
-  ;; The limit of the window width.
-  ;; If `window-width' is smaller than the limit, some information won't be displayed.
-  (doom-modeline-window-width-limit fill-column)
-  (doom-modeline-enable-word-count t)
-  (doom-modeline-workspace-name t))
-
-;https://github.com/seagle0128/doom-modeline/issues/187
-(defun +my/modeline-h ()
-  "Calculate the actual char height of the mode-line."
-  (ceiling (+ (/ (+my/font-size 14) 2.0) 8.0)))
-  ;(if (equal (display-pixel-width) 3840)
-  ;    26 24)
-
-(advice-add #'doom-modeline--font-height :override #'+my/modeline-h)
-#+end_src
-
-[[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
-#+begin_src emacs-lisp :tangle no
-;; wrap your mode-line-format
-;((:eval (when (doom-modeline--active) .)))
-(set-face-attribute 'mode-line-inactive nil
-                    :underline t
-                    :background (face-background 'default))
-#+end_src
-
-** Icons
-#+begin_src emacs-lisp
-(use-package all-the-icons
-  :custom
-  (all-the-icons-scale-factor 0.9))
-#+end_src
-
-** Line
-#+begin_src emacs-lisp
-(setq display-line-numbers-type nil)
-#+end_src
-** doom-dashboard
-
-References
-- [[https://discourse.doomemacs.org/t/how-to-change-your-splash-screen/57][How to change your splash screen - Configuration - Doom Emacs Discourse]]
-- [[https://stackoverflow.com/a/25158644][elisp - Read from a file into a Emacs lisp list - Stack Overflow]]
-
-#+begin_src emacs-lisp
-(defun my-weebery-is-always-greater ()
-  ;; generated by ~figlet -W DOOM EMACS~
-  (let* ((banner (s-split "\n" (f-read (expand-file-name "splash" doom-private-dir)) t))
-         (longest-line (apply #'max (mapcar #'length banner))))
-    (put-text-property
-     (point)
-     (dolist (line banner (point))
-       (insert (+doom-dashboard--center
-                +doom-dashboard--width
-                (concat line (make-string (max 0 (- longest-line (length line))) 32)))
-               "\n"))
-     'face 'doom-dashboard-banner)))
-
-(setq +doom-dashboard-ascii-banner-fn #'my-weebery-is-always-greater)
-#+end_src
-
-add =vterm= entry
-#+begin_src emacs-lisp
-(add-to-list '+doom-dashboard-menu-sections
-             '("Open vterm"
-               :icon (all-the-icons-octicon "terminal" :face 'doom-dashboard-menu-title)
-               :when (featurep! :term vterm)
-               :face (:inherit (doom-dashboard-menu-title bold))
-               :action +vterm/here))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(assoc-delete-all "Open vterm here" +doom-dashboard-menu-sections)
-#+end_src
-* Editing
-** About Parentheses
-#+begin_src emacs-lisp :tangle no
-(setq show-paren-style 'expression)
+=fcitx= input method
+#+begin_src fish
+set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+end_src
 
 ** Input Chinese
-https://emacs-china.org/t/topic/1271
+
+[[https://emacs-china.org/t/topic/1271][Emacs GUI下不能输入中文 - Emacs-general - Emacs China]]
 #+begin_src emacs-lisp :tangle no
 (use-package pyim
   :demand t
@@ -339,263 +163,280 @@ https://emacs-china.org/t/topic/1271
   (("M-j" . pyim-convert-string-at-point) ;与 pyim-probe-dynamic-english 配合
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+end_src
-** Latex
-clean intermediate files
-#+begin_src emacs-lisp
-(eval-after-load 'latex
-  '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
-         LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
-         Tex-clean-confirm nil))
+
+* Completion
+
+#+begin_src emacs-lisp :tangle init.el
+:completion
+(company +childframe)
+(vertico +icons)
 #+end_src
 
-preview latex formulas
+* Display
+
+#+begin_src emacs-lisp :tangle init.el
+:ui
+doom                     ; what makes DOOM look the way it does
+doom-dashboard           ; a nifty splash screen for Emacs
+(emoji +unicode)         ; 🙂
+hl-todo                  ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+indent-guides            ; highlighted indent columns
+(ligatures               ; ligatures and symbols to make your code pretty again
+ +extra)
+modeline                 ; snazzy, Atom-inspired modeline, plus API
+nav-flash                ; blink cursor line after big motions
+ophints                  ; highlight the region an operation acts on
+unicode                  ; extended unicode support for various languages
+(popup +defaults)        ; tame sudden yet inevitable temporary windows
+vc-gutter                ; vcs diff in the fringe
+(window-select +numbers) ; visually switch windows
+workspaces               ; tab emulation, persistence & separate workspaces
+zen                      ; distraction-free coding or writing
+#+end_src
+*The order of modules in above list make sense, so don't put them into subsections.*
+
+** Themes
+
+restore last selected theme
 #+begin_src emacs-lisp
-(use-package! math-preview
+(defun load-in-doom-dir (file-name)
+  (let ((full-name (expand-file-name file-name doom-private-dir)))
+    (if (file-exists-p full-name)
+        (load full-name))))
+
+(load-in-doom-dir "theme.el")
+#+end_src
+
+difficult to choose theme? random it
+#+begin_src emacs-lisp
+(defun +my/random-theme ()
+  (interactive)
+  (let* ((all-themes (custom-available-themes))
+         (next-theme (nth (random (length all-themes)) all-themes)))
+    (message "Switching to theme: %s" next-theme)
+    (consult-theme next-theme)))
+
+(map! :leader
+      (:prefix "t"
+       :desc "Random theme" "t" #'+my/random-theme))
+#+end_src
+
+track current theme for later load
+#+begin_src emacs-lisp
+(defun +my/save-theme (prev new-theme &rest args)
+  (let
+      ((theme-config-file (expand-file-name "theme.el" doom-private-dir)))
+    (write-region
+     (format "(setq doom-theme '%s)\n" new-theme) nil theme-config-file)))
+
+(add-variable-watcher 'doom-theme #'+my/save-theme)
+#+end_src
+
+** Fonts
+
+#+begin_src fish
+set -a 2install ttf-{dejavu,recursive,sarasa-gothic,twemoji} nerd-fonts-{fira-code,mononoki,ubuntu-mono}
+
+# doom modeline font
+set COMICSHANNS_PATH "$HOME/.local/lib/commic_shanns"
+fc-list | grep "comic shanns" &>/dev/null || begin
+    git clone https://github.com/shannpersand/comic-shanns.git "$COMICSHANNS_PATH"
+    cd "$COMICSHANNS_PATH" || exit 1
+    cp v2/* ~/.local/share/fonts
+end
+#+end_src
+
+*** Doom font
+
+#+begin_src emacs-lisp
+(setq +my/scale-factor
+      (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
+
+(setq +my/is-laptop
+      (not (string-equal (shell-command-to-string "fd BAT /sys/class/power_supply/") "")))
+
+(defun +my/font-size(size)
+  (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
+
+(setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 13))
+      ;; big font mode resize serif-font and variable-pitch-font also
+      ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
+      ;; doom-unicode-font (font-spec :family "Twemoji")
+      doom-serif-font (font-spec :family "Rec Mono Casual" :size (+my/font-size 12))
+      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 11)))
+#+end_src
+
+*** =all-the-icons= font
+
+#+begin_src emacs-lisp
+(use-package all-the-icons
   :custom
-  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
-                        ("\\begin{equation*}" . "\\end{equation*}")
-                        ("\\[" . "\\]")
-                        ("\\(" . "\\)")
-                        ("$$" . "$$")
-                        ("$" . "$")))
-  (math-preview-preprocess-functions '((lambda (s)
-                                         (concat "{\\color{white}" s "}")))))
-
-(autoload 'latex-math-preview-expression "latex-math-preview" nil t)
-(autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
-(autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
-(autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
+  (all-the-icons-scale-factor 0.9))
 #+end_src
 
-word completion along with =(:lang (latex +lsp))=
-see =company-backends= variable docs
-https://github.com/hlissner/doom-emacs/issues/5672
-#+begin_src emacs-lisp
-(setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
+*** =unicode=
 
-;; https://tex.stackexchange.com/a/21205
-;; add XeTeX mode in TeX/LaTeX
-(add-hook 'LaTeX-mode-hook
-          (lambda ()
-            (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))))
-;; (setq TeX-command-default "XeLaTeX")))
-;; (setq TeX-save-query nil)))
-;; (setq TeX-show-compilation nil)))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! evil-tex
-  :when (featurep! :editor evil +everywhere)
-  :config
-  (setq evil-tex-include-newlines-in-envs nil
-        evil-tex-select-newlines-with-envs nil)
-  )
-#+end_src
-
-cdlatex
-#+begin_src emacs-lisp
-(use-package! cdlatex
-  :config
-  (map! :map cdlatex-mode-map
-    :i "TAB" #'cdlatex-tab))
-#+end_src
-
-** File Templates
-[[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
-#+begin_src emacs-lisp
-(after! yasnippet
-  :config
-  ;; (setq +file-templates-dir "~/.config/doom/templates/")
-  (set-file-template! "/leetcode/.+\\.cpp$"
-    ;; :when +file-templates-in-emacs-dirs-p
-    :trigger "__leetcode.cpp" :mode 'c++-mode))
-#+end_src
-** Evil
-[[https://emacs.stackexchange.com/questions/28135/in-evil-mode-how-can-i-prevent-adding-to-the-kill-ring-when-i-yank-text-visual][In Evil mode, how can I prevent adding to the kill ring when I yank text, vis...]]
-#+begin_src emacs-lisp
-(setq-default evil-kill-on-visual-paste nil)
-#+end_src
-
-Disabling cursor movement when exiting insert mode
-#+begin_src emacs-lisp
-(setq evil-move-cursor-back nil)
-#+end_src
-* Org
-** org
-#+begin_src emacs-lisp
-(use-package! org
-  :init
-  (setq org-directory "~/org/")
-  (defvar co/org-agenda-directory (expand-file-name "agenda" org-directory))
-  (defun co/org-agenda-file-paths (path)
-    (if (listp path)
-        (mapcar (lambda (x) (expand-file-name (concat x ".org") co/org-agenda-directory)) path)
-      (expand-file-name (concat path ".org") co/org-agenda-directory)))
-  ;; https://emacs.stackexchange.com/a/63793
-  (defun org-copy-link-url ()
-    (interactive)
-    (kill-new (org-element-property :raw-link (org-element-context))))
-
-  ;; :bind (:map org-mode-map
-  ;;        :localleader
-  ;;        "y" #'org-copy-link-url)
-  :custom
-  (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
-  (org-agenda-start-with-log-mode t)
-  (org-log-done 'time)
-  (org-log-into-drawer t)
-  (org-ellipsis "↴")
-  (org-image-actual-width 400)
-  (org-startup-with-inline-images t)
-  (org-refile-targets '(("archive.org" :maxlevel . 1)))
-  (org-tag-alist
-   '((:startgroup)
-     ;; Put mutually exclusive tags here
-     (:endgroup)
-     ("@home" . ?H)
-     ("@work" . ?W)
-     ("agenda" . ?a)
-     ("publish" . ?P)
-     ("batch" . ?b)
-     ("idea" . ?i)))
-
-  :config
-  (map! :map org-mode-map
-        :localleader
-        "y" #'org-copy-link-url)
-  (load (expand-file-name "org-capture-templates.el" doom-private-dir))
-  ;;https://stackoverflow.com/a/50875921
-  ;;https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
-  (use-package! org-habit
-    :custom
-    (org-habit-graph-column 60)
-    :config
-    (add-to-list 'org-modules 'org-habit))
-
-  ;;(org-clock-persist 'history)
-  (org-clock-persistence-insinuate)
-  ;; display inline images
-  (org-display-inline-images)
-
-  ;; Save Org buffers after refiling!
-  (advice-add 'org-refile :after 'org-save-all-org-buffers))
-#+end_src
-** org-src
-[[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
-#+begin_src emacs-lisp
-(after! org
-  (setq org-src-window-setup 'reorganize-frame)
-  (set-popup-rule! "^\\*Org Src" :ignore t))
-#+end_src
-
-** org-agenda
-https://emacs.stackexchange.com/a/7840
-#+begin_src emacs-lisp
-(advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
-#+end_src
-
-** Color ~shell~ block output
-[[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package cl-lib
-  :init
-  (defun org-redisplay-ansi-source-blocks ()
-    "Refresh the display of ANSI text source blocks."
-    (interactive)
-    (org-element-map (org-element-parse-buffer) 'src-block
-      (lambda (src)
-        (when (equalp "ansi" (org-element-property :language src))
-          (let ((begin (org-element-property :begin src))
-                (end (org-element-property :end src)))
-            (ansi-color-apply-on-region begin end))))))
-  :custom
-  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
-  (setq org-babel-default-header-args:shell
-        '((:results . "output verbatim drawer")
-          (:wrap . "src ansi"))))
+#+BEGIN_SRC elisp
+(after! unicode-fonts
+  (dolist (unicode-block '("Mathematical Alphanumeric Symbols"
+                           "Mathematical Operators"
+                           "Miscellaneous Mathematical Symbols-A"
+                           "Miscellaneous Mathematical Symbols-B"
+                           "Miscellaneous Symbols"
+                           "Miscellaneous Symbols and Arrows"
+                           "Miscellaneous Symbols and Pictographs"))
+      (push "DejaVu Math TeX Gyre" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+END_SRC
 
-** org-ref
+[[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
 #+begin_src emacs-lisp :tangle no
-(use-package org-ref)
+(defun +my/ligature-font ()
+  (dolist (chars '("ℤ" "ℝ" "ℕ"))
+      (set-fontset-font (frame-parameter nil 'font) (string-to-char chars) "DejaVu Math TeX Gyre") nil 'prepend)
+  ;; (set-fontset-font t ?𝔽 "DejaVu Math TeX Gyre")
+  (set-fontset-font (frame-parameter nil 'font) '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre") nil 'prepend)
 #+end_src
-** deft
-#+begin_src emacs-lisp :tangle no
-(setq deft-directory "~/org")
-(setq deft-default-extension "org")
-#+end_src
-** org-roam
+
+*** Chinese fonts
+
+[[https://emacs-china.org/t/doom-emacs/9628/9][doom emacs下中文字体的设置 - #9，来自 slack-py - Emacs-general - Emacs China]]
 #+begin_src emacs-lisp
-(use-package! org-roam
-  :after org
-  :init
-  (setq org-roam-directory (file-truename "~/org/roam")
-        org-roam-v2-ack t)
+;; TODO resize cjk font with =C +=
+(defun +my/cjk-font(font-size)
+  (dolist (charset '(kana han cjk-misc))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size)))))
+
+(defun +my/better-font()
+  (interactive)
+  (if (display-graphic-p)
+      (progn
+        (custom-set-faces
+         `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
+         `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
+         `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 12)))))))
+        (+my/cjk-font 11))))
+
+(defun +my|init-font(frame)
+  (with-selected-frame frame
+    (if (display-graphic-p)
+        (+my/better-font))))
+
+(if (and (fboundp 'daemonp) (daemonp))
+    (add-hook 'after-make-frame-functions #'+my|init-font)
+  (+my/better-font))
+
+;;https://emacs.stackexchange.com/a/47092
+;; DONE restore ligature after exit big font mode
+(add-hook 'doom-big-font-mode-hook
+          (lambda ()
+            (if doom-big-font-mode
+                (add-hook 'doom-big-font-mode-hook #'+my/better-font)
+              (remove-hook 'doom-big-font-mode-hook #'+my/better-font))))
+
+(add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
+(add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
+#+end_src
+
+** Doom-dashboard
+
+References
+- [[https://discourse.doomemacs.org/t/how-to-change-your-splash-screen/57][How to change your splash screen - Configuration - Doom Emacs Discourse]]
+- [[https://stackoverflow.com/a/25158644][elisp - Read from a file into a Emacs lisp list - Stack Overflow]]
+
+#+begin_src emacs-lisp
+(defun my-weebery-is-always-greater (splash-file-name)
+  ;; generated by ~figlet -W DOOM EMACS~
+  (let* ((banner (s-split "\n" (f-read splash-file-name) t))
+         (longest-line (apply #'max (mapcar #'length banner))))
+    (put-text-property
+     (point)
+     (dolist (line banner (point))
+       (insert (+doom-dashboard--center
+                +doom-dashboard--width
+                (concat line (make-string (max 0 (- longest-line (length line))) 32)))
+               "\n"))
+     'face 'doom-dashboard-banner)))
+
+(let ((splash-file-name (expand-file-name "splash" doom-private-dir)))
+  (if (file-exists-p splash-file-name)
+    (setq +doom-dashboard-ascii-banner-fn (lambda () (my-weebery-is-always-greater splash-file-name)))
+    ))
+#+end_src
+
+add =vterm= entry
+#+begin_src emacs-lisp
+(add-to-list '+doom-dashboard-menu-sections
+             '("Open vterm"
+               :icon (all-the-icons-octicon "terminal" :face 'doom-dashboard-menu-title)
+               :when (featurep! :term vterm)
+               :face (:inherit (doom-dashboard-menu-title bold))
+               :action +vterm/here))
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(assoc-delete-all "Open vterm here" +doom-dashboard-menu-sections)
+#+end_src
+
+** Ligatures
+
+check code ligatures, *bold* and /italic/ enabled
+== <- -> <= => != == >= <== ==> === ?= :=
+
+[[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
+#+begin_src emacs-lisp
+(with-eval-after-load "ligatures"
+  (plist-put! +ligatures-extra-symbols
+              :private    "")
+  (global-prettify-symbols-mode))
+#+end_src
+
+** Doom-modeline
+
+#+begin_src emacs-lisp
+(use-package! doom-modeline
+  :hook (after-init . doom-modeline-mode)
+
   :custom
-  (org-roam-dailies-capture-templates
-   '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
-      :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
-  :config
-  (require 'org-roam-dailies)
-  )
-#+end_src
-** org-pandoc-import
-#+begin_src emacs-lisp
-(use-package! org-pandoc-import :after org)
-#+end_src
-** org-noter
-#+begin_src emacs-lisp
-(use-package! org-noter
-  :after org
-  :config
-  (org-noter-set-doc-split-fraction '(0.75 . 0.25))
-  )
-#+end_src
-* Plugins
-[[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
-#+begin_src emacs-lisp
-(defun +my/append-to-list (list-var elements)
-  "Append ELEMENTS to the end of LIST-VAR.
+  ;; The limit of the window width.
+  ;; If `window-width' is smaller than the limit, some information won't be displayed.
+  (doom-modeline-window-width-limit fill-column)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-workspace-name t))
 
-change to no return value
-The return value is the new value of LIST-VAR."
-  (unless (consp elements)
-    (error "ELEMENTS must be a list"))
-  (let ((list (symbol-value list-var)))
-    (if list
-        (setcdr (last list) elements)
-      (set list-var elements))))
-  ;(symbol-value list-var))
+;https://github.com/seagle0128/doom-modeline/issues/187
+(defun +my/modeline-h ()
+  "Calculate the actual char height of the mode-line."
+  (ceiling (+ (/ (+my/font-size 14) 2.0) 8.0)))
+  ;(if (equal (display-pixel-width) 3840)
+  ;    26 24)
+
+(advice-add #'doom-modeline--font-height :override #'+my/modeline-h)
 #+end_src
 
-** pdf-tools
-default pdf viewer in emacs
-[[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
-#+begin_src emacs-lisp
-(use-package! pdf-tools
-  :custom
-  (+latex-viewers '(pdf-tools evince okular)))
-
-;; to use pdfview with auctex
-(setq TeX-view-program-selection '((output-pdf "PDF Tools")))
-(setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
-;;(TeX-source-correlate-start-server t)
-;; not sure if last line is neccessary
-
-;; to have the buffer refresh after compilation
-(add-hook 'TeX-after-compilation-finished-functions
-          #'TeX-revert-document-buffer)
-#+end_src
-** leetcode
+[[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
 #+begin_src emacs-lisp :tangle no
-(use-package leetcode
-  :costum
-  (leetcode-prefer-language "cpp")
-  (leetcode-save-solutions t)
-  (leetcode-directory "~/Coding/leetcode"))
+;; wrap your mode-line-format
+;((:eval (when (doom-modeline--active) .)))
+(set-face-attribute 'mode-line-inactive nil
+                    :underline t
+                    :background (face-background 'default))
 #+end_src
+
+** Popup
+
+remove ~eww~ from popup buffer list
+#+begin_src emacs-lisp
+(when (featurep! :ui popup)
+  (set-popup-rule!
+    "^\\*eww\\*"  ; `eww' (and used by dash docsets)
+    :ignore t))
+#+end_src
+
+use ~+popup-mode~ to toggle popup mode globally.
 
 ** treemacs
+
 #+begin_src emacs-lisp :tangle no
 (use-package! treemacs
   :when (featurep! :ui treemacs)
@@ -632,127 +473,133 @@ default pdf viewer in emacs
 (use-package treemacs-all-the-icons
   :after (treemacs all-the-icons))
 #+end_src
-** ivy-posframe
+
+** tab bar
+
 #+begin_src emacs-lisp :tangle no
-(use-package ivy-posframe
+(use-package centaur-tabs
   :custom
-  (ivy-posframe-display-functions-alist
-   '((swiper          . ivy-display-function-fallback)
-     (complete-symbol . ivy-posframe-display-at-point)
-     (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-     (t               . ivy-posframe-display)))
-  (ivy-posframe-parameters
-   '((left-fringe . 8)
-     (right-fringe . 8)))
+  (centaur-tabs-style "box")
+  (centaur-tabs-height 26)
+  (centaur-tabs-set-icons t)
+  ;; (centaur-tabs-plain-icons t)
+  (centaur-tabs-gray-out-icons 'buffer)
+  (centaur-tabs-set-bar 'left)
+  (centaur-tabs-set-modified-marker t)
   :config
-  (ivy-posframe-mode 1))
-#+end_src
-** mu4e
-#+begin_src shell :tangle no
-paru -S isync mu
-mkdir -p ~/.mail/$mailname
-mu init --maildir=~/.mail
-mbsync -c ~/.config/isync/$mbsyncrc -V -a
+  (centaur-tabs-headline-match)
+  (centaur-tabs-mode t)
+  :hook
+  (+doom-dashboard-mode . centaur-tabs-local-mode)
+  (ranger-mode-hook . centaur-tabs-local-mode)
+  (calendar-mode . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
+  :bind
+  (:map evil-normal-state-map
+   ("g t" . centaur-tabs-forward)
+   ("g T" . centaur-tabs-backward))
+  )
 #+end_src
 
+** Others
+
+Frame size
 #+begin_src emacs-lisp
-(load (expand-file-name "mu4e.el" doom-private-dir))
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width . 120))
 #+end_src
 
-*** alert
-#+begin_src emacs-lisp :tangle no
-(use-package mu4e-alert
-  :after mu4e
-  :hook ((after-init . mu4e-alert-enable-mode-line-display)
-         (after-init . mu4e-alert-enable-notifications))
-  :config (mu4e-alert-set-default-style 'libnotify))
-#+end_src
-** yadm (with magit)
-[[https://github.com/TheLocehiliosan/yadm/blob/dd86c8a691deed7fb438b7ef07179040b0f05026/yadm.md#configuration][yadm/yadm.md at dd86c8a691deed7fb438b7ef07179040b0f05026 · TheLocehiliosan/ya...]]
-[[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
-
-~tramp~ from ~Melpa~ buggy, install it from ~aur~.
+Transparency
 #+begin_src emacs-lisp
-(use-package! tramp
-  :config
-  ;; (setenv "SHELL" "/bin/bash")
-  (add-to-list 'tramp-methods
-               '("yadm"
-                 (tramp-remote-shell "/bin/bash")
-                 (tramp-remote-shell-args ("-c"))
-                 (tramp-login-program "yadm")
-                 (tramp-login-args (("enter")))))
-                 ;; (tramp-login-env (("SHELL") ("/bin/bash")))))
+(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
 
-  (defun yadm-status ()
-    (interactive)
-    (magit-status "/yadm::"))
-  (map! :leader
-        (:prefix "g"
-         :desc "yadm-status" "a" #'yadm-status)))
-#+end_src
-
-can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
-
-** keycast
-[[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
-#+begin_src emacs-lisp
-(use-package keycast
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
-    :global t
-    (if keycast-mode
-        (add-hook 'pre-command-hook 'keycast--update t)
-      (remove-hook 'pre-command-hook 'keycast--update)))
-  (add-to-list 'global-mode-string '("" keycast-mode-line)))
-(keycast-mode) ;; or run keycast-mode by demand
-#+end_src
-** elfeed
-[[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
-#+begin_src emacs-lisp
-(use-package! elfeed
-  :when (featurep! :app rss)
-  :bind (:map elfeed-search-mode-map
-         ("q" . +my/elfeed-save-db-and-bury))
-  :custom
-  (elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/"))
-  (elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/"))
-  (elfeed-search-filter "@3-weeks-ago")
-  (rmh-elfeed-org-files (list "~/org/elfeed.org"))
-  :config
-  ;; (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-
-  ;;functions to support syncing .elfeed between machines
-  ;;makes sure elfeed reads index from disk before launching
-  (defun +my/elfeed-load-db-and-open ()
-    "Wrapper to load the elfeed db from disk before opening"
-    (interactive)
-    (elfeed-db-load)
-    (elfeed)
-    (elfeed-search-update--force))
-
-  ;;write to disk when quiting
-  (defun +my/elfeed-save-db-and-bury ()
-    "Wrapper to save the elfeed db to disk before burying buffer"
-    (interactive)
-    (elfeed-db-save)
-    (quit-window)))
-
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
 
 (map! :leader
-      (:prefix "o"
-       (:when (featurep! :app rss)
-        :desc "elfeed"    "e" #'elfeed)))
+      (:prefix "t"
+       :desc "Toggle transparency"    "T" #'toggle-transparency
+       ))
+#+end_src
 
+Line numbers
+#+begin_src emacs-lisp
+(setq display-line-numbers-type nil)
+#+end_src
 
-(use-package! elfeed-goodies
-  :after elfeed
+* Editing
+
+#+begin_src emacs-lisp :tangle init.el
+:editor
+(evil +everywhere); come to the dark side, we have cookies
+file-templates    ; auto-snippets for empty files
+fold              ; (nigh) universal code folding
+(format +onsave)  ; automated prettiness
+multiple-cursors  ; editing in many places at once
+parinfer          ; turn lisp into python, sort of
+snippets          ; my elves. They type so I don't have to
+word-wrap         ; soft wrapping with language-aware indent
+#+end_src
+
+** Evil
+
+[[https://emacs.stackexchange.com/questions/28135/in-evil-mode-how-can-i-prevent-adding-to-the-kill-ring-when-i-yank-text-visual][In Evil mode, how can I prevent adding to the kill ring when I yank text, vis...]]
+#+begin_src emacs-lisp
+(setq-default evil-kill-on-visual-paste nil)
+#+end_src
+
+Disabling cursor movement when exiting insert mode
+#+begin_src emacs-lisp
+(setq evil-move-cursor-back nil)
+#+end_src
+
+** File Templates
+
+[[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
+#+begin_src emacs-lisp :tangle no
+(after! yasnippet
   :config
-  (setq elfeed-goodies/entry-pane-size 0.5))
+  ;; (setq +file-templates-dir "~/.config/doom/templates/")
+  (set-file-template! "/leetcode/.+\\.cpp$"
+    ;; :when +file-templates-in-emacs-dirs-p
+    :trigger "__leetcode.cpp" :mode 'c++-mode))
+#+end_src
+
+** format
+
+#+begin_src fish
+set -a 2install prettier shfmt clang-format python-black
+#+end_src
+
+** Others
+
+About Parentheses
+#+begin_src emacs-lisp :tangle no
+(setq show-paren-style 'expression)
+#+end_src
+
+* Emacs
+
+#+begin_src emacs-lisp :tangle init.el
+:emacs
+electric     ; smarter, keyword-based electric-indent
+ibuffer      ; interactive buffer management
+(undo +tree) ; persistent, smarter undo for your inevitable mistakes
+vc           ; version-control and Emacs, sitting in a tree
 #+end_src
 
 ** dired-ranger
+
 #+begin_src emacs-lisp :tangle no
 (use-package! dired
   :config
@@ -786,7 +633,9 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
          :desc "REPL"    "R" #'+eval/open-repl-other-window))
   )
 #+end_src
+
 ** Dired
+
 #+begin_src emacs-lisp
 (use-package dired
   :custom
@@ -819,7 +668,13 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
   (setq dired-omit-files
         (concat dired-omit-files "\\|^\\..*$")))
 #+end_src
+
 ** Dirvish
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! dirvish)
+#+end_src
+
 #+begin_src emacs-lisp
 (setq +my/lineh (+my/modeline-h))
 (setq dirvish-mode-line-height `(,+my/lineh . ,+my/lineh))
@@ -877,148 +732,19 @@ can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.conf
    [remap mode-line-other-buffer] #'dirvish-other-buffer))
 #+end_src
 
-** projectile
-[[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
-#+begin_src emacs-lisp
-(use-package! projectile
-  :custom
-  (projectile-indexing-method 'alien)
-  (projectile-sort-order 'recently-active)
-  (projectile-file-exists-remote-cache-expire (* 10 60))
-  (projectile-track-known-projects-automatically nil)
-  ;(projectile-require-project-root t)
-  (projectile-auto-discover t))
-  ;; (projectile-file-exists-local-cache-expire (* 5 60)))
-#+end_src
-** tldr
-#+begin_src emacs-lisp
-(use-package! tldr
-  :custom
-  (tldr-enabled-categories '("common" "linux" "osx" "sunos")))
-#+end_src
-** tab bar
-#+begin_src emacs-lisp :tangle no
-(use-package centaur-tabs
-  :custom
-  (centaur-tabs-style "box")
-  (centaur-tabs-height 26)
-  (centaur-tabs-set-icons t)
-  ;; (centaur-tabs-plain-icons t)
-  (centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-set-bar 'left)
-  (centaur-tabs-set-modified-marker t)
-  :config
-  (centaur-tabs-headline-match)
-  (centaur-tabs-mode t)
-  :hook
-  (+doom-dashboard-mode . centaur-tabs-local-mode)
-  (ranger-mode-hook . centaur-tabs-local-mode)
-  (calendar-mode . centaur-tabs-local-mode)
-  (org-agenda-mode . centaur-tabs-local-mode)
-  :bind
-  (:map evil-normal-state-map
-   ("g t" . centaur-tabs-forward)
-   ("g T" . centaur-tabs-backward))
-  )
-#+end_src
-** lsp
-[[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
-#+begin_src emacs-lisp
-(use-package lsp-ui :commands lsp-ui-mode
-  :config
-  (progn
-    ;;
-    ;; 2022-03-28 - fix sideline height computation
-    ;;
-    (defun lsp-ui-sideline--compute-height nil
-      "Return a fixed size for text in sideline."
-      (let ((fontHeight (face-attribute 'lsp-ui-sideline-global :height)))
-        (if (null text-scale-mode-remapping)
-            '(height
-              (if (floatp fontHeight) fontHeight
-                (/ (face-attribute 'lsp-ui-sideline-global :height) 100.0))
+* Term
 
-              ;; Readjust height when text-scale-mode is used
-              (list 'height
-                    (/ 1 (or (plist-get (cdr text-scale-mode-remapping) :height)
-                             1)))))))
-
-    ;;
-    ;; 2022-03-28 - fix sideline alignment
-    ;;
-    (defun lsp-ui-sideline--align (&rest lengths)
-      "Align sideline string by LENGTHS from the right of the window."
-      (list (* (window-font-width nil 'lsp-ui-sideline-global)
-               (+ (apply '+ lengths) (if (display-graphic-p) 1 2)))))))
-#+end_src
-* Lang
-** lua
-lsp support
-#+begin_src emacs-lisp
-(use-package! lua-mode
-  :when (featurep! :lang lua +lsp)
-  :custom
-  (lsp-clients-lua-language-server-bin "/usr/lib/lua-language-server/bin/lua-language-server")
-  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua"))
+#+begin_src fish
+set -a 2install fish libvterm
 #+end_src
 
-ligatures
-#+begin_src emacs-lisp
-(with-eval-after-load "ligatures"
-  (set-ligatures! 'lua-mode
-    :def "function"
-    :return "return"
-    :and "and"
-    :or "or"
-    :not "not"
-    :true "true"
-    :false "false"
-    :for "for"))
-#+end_src
-** wolfram
-#+begin_src emacs-lisp
-;; last update was 5 years ago
-(use-package! wolfram-mode
-  :config
-  (autoload 'wolfram-mode "wolfram-mode" nil t)
-  (autoload 'run-wolfram "wolfram-mode" nil t)
-  (setq wolfram-program "/usr/local/bin/wolfram")
-  (prependq! auto-mode-alist '(
-                               ("\\.m\\'" . wolfram-mode)
-                               ("\\.wl\\'" . wolfram-mode)
-                               ("\\.wls\\'" . wolfram-mode))))
-
-(setq wolfram-path "~/.Mathematica/Applications")
-
-(after! lsp
-  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
-
-  (lsp-register-client
-   (make-lsp-client :language-id 'wolfram
-                    :new-connection (lsp-tcp-server-command
-                                     (lambda (port)
-                                       `("wolfram" ;; or "wolframscript"
-                                         "-script" ;; or "-file"
-                                         "~/softwares/lsp-wl/init.wls"
-                                         ,(concat
-                                           "--socket="
-                                           (number-to-string port)))))
-                    :major-modes '(wolfram-mode)
-                    :server-id 'lsp-wl)))
+#+begin_src emacs-lisp :tangle init.el
+:term
+vterm ; the best terminal emulation in Emacs
 #+end_src
 
-ligatures
-#+begin_src emacs-lisp
-(with-eval-after-load "ligatures"
-  (set-ligatures! 'wolfram-mode
-    :and "&&"
-    :or "||"
-    :not "not"
-    :true "True"
-    :false "False"))
-#+end_src
-* Terminal
-** vterm
+** =vterm=
+
 #+begin_src emacs-lisp
 (defun +my/vterm-switch ()
   "Switch to vterm buffer in `Term' workspace.
@@ -1028,14 +754,14 @@ If no vterm buffer in `Term' workspace, create it."
   (+workspace-switch "Term" t)
   (let ((vterm-buffer
          ;; return first vterm buffer in `Term' workspace
-          (catch 'foo
-            (dolist (buffer (+workspace-buffer-list))
-              (let ((bn (buffer-name buffer)))
-                (when (and bn
-                           ;; https://stackoverflow.com/a/2238589
-                         (with-current-buffer bn
-                             (eq major-mode 'vterm-mode)))
-                      (throw 'foo bn))))))
+         (catch 'foo
+           (dolist (buffer (+workspace-buffer-list))
+             (let ((bn (buffer-name buffer)))
+               (when (and bn
+                          ;; https://stackoverflow.com/a/2238589
+                          (with-current-buffer bn
+                            (eq major-mode 'vterm-mode)))
+                 (throw 'foo bn))))))
         (display-buffer-alist))
     (if vterm-buffer
         (switch-to-buffer vterm-buffer)
@@ -1078,11 +804,14 @@ If no vterm buffer in `Term' workspace, create it."
 #+end_src
 
 ** Colored output issues
+
 https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
 #+begin_src emacs-lisp :tangle no
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+end_src
+
 ** fish shell
+
 #+begin_src emacs-lisp
 (when (and (executable-find "fish")
            (require 'fish-completion nil t))
@@ -1102,52 +831,672 @@ ligatures
     :false "false"
     :for "for"))
 #+end_src
-* Others
-** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
+
+* Checkers
+
+#+begin_src emacs-lisp :tangle init.el
+:checkers
+syntax           ; tasing you for every semicolon you forget
+(spell +flyspell ; tasing you for misspelling mispelling
+       +everywhere)
+#+end_src
+
+** Spell checker
+
+#+begin_src fish
+set -a 2install aspell aspell-en
+#+end_src
+
+* Tools
+
+#+begin_src emacs-lisp :tangle init.el
+:tools
+biblio          ; Writes a PhD for you (citation needed)
+debugger        ; FIXME stepping through code, to help you add bugs
+docker
+editorconfig    ; let someone else argue about tabs vs spaces
+(eval +overlay) ; run code, run (also, repls)
+(lookup         ; navigate your code and its documentation
+ +docsets
+ +dictionary)
+(lsp +peek)     ; M-x vscode
+magit           ; a git porcelain for Emacs
+pdf             ; pdf enhancements
+rgb             ; creating color strings
+upload          ; map local to remote projects via ssh/ftp
+#+end_src
+
+** pdf-tools
+
+default pdf viewer in emacs
+[[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
+#+begin_src emacs-lisp
+(use-package! pdf-tools
+  :custom
+  (+latex-viewers '(pdf-tools evince okular)))
+
+;; to use pdfview with auctex
+(setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+(setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+;;(TeX-source-correlate-start-server t)
+;; not sure if last line is neccessary
+
+;; to have the buffer refresh after compilation
+(add-hook 'TeX-after-compilation-finished-functions
+          #'TeX-revert-document-buffer)
+#+end_src
+
+** =editorconfig=
+
+#+begin_src fish :tangle install.fish
+set -a 2install emacs-editorconfig-git
+#+end_src
+
+** lookup
+
+#+begin_src fish
+set -a 2install sqlite wordnet-cli
+#+end_src
+
+** lsp
+
+[[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
+#+begin_src emacs-lisp
+(use-package lsp-ui :commands lsp-ui-mode
+  :config
+  (progn
+    ;;
+    ;; 2022-03-28 - fix sideline height computation
+    ;;
+    (defun lsp-ui-sideline--compute-height nil
+      "Return a fixed size for text in sideline."
+      (let ((fontHeight (face-attribute 'lsp-ui-sideline-global :height)))
+        (if (null text-scale-mode-remapping)
+            '(height
+              (if (floatp fontHeight) fontHeight
+                (/ (face-attribute 'lsp-ui-sideline-global :height) 100.0))
+
+              ;; Readjust height when text-scale-mode is used
+              (list 'height
+                    (/ 1 (or (plist-get (cdr text-scale-mode-remapping) :height)
+                             1)))))))
+
+    ;;
+    ;; 2022-03-28 - fix sideline alignment
+    ;;
+    (defun lsp-ui-sideline--align (&rest lengths)
+      "Align sideline string by LENGTHS from the right of the window."
+      (list (* (window-font-width nil 'lsp-ui-sideline-global)
+               (+ (apply '+ lengths) (if (display-graphic-p) 1 2)))))))
+#+end_src
+
+** magit
+
+[[https://github.com/TheLocehiliosan/yadm][GitHub - TheLocehiliosan/yadm: Yet Another Dotfiles Manager]]
+[[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
+
+~tramp~ from ~Melpa~ buggy, install it from ~aur~.
+#+begin_src emacs-lisp
+(use-package! tramp
+  :config
+  ;; (setenv "SHELL" "/bin/bash")
+  (add-to-list 'tramp-methods
+               '("yadm"
+                 (tramp-remote-shell "/bin/bash")
+                 (tramp-remote-shell-args ("-c"))
+                 (tramp-login-program "yadm")
+                 (tramp-login-args (("enter")))))
+                 ;; (tramp-login-env (("SHELL") ("/bin/bash")))))
+
+  (defun yadm-status ()
+    (interactive)
+    (magit-status "/yadm::"))
+  (map! :leader
+        (:prefix "g"
+         :desc "yadm-status" "a" #'yadm-status)))
+#+end_src
+
+can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
+
+* Lang
+
+#+begin_src emacs-lisp :tangle init.el
+:lang
+(cc +lsp)              ; C/C++/Obj-C madness
+emacs-lisp             ; drown in parentheses
+(lua +lsp)             ; one-based indices? one-based indices
+markdown               ; writing docs for people to ignore
+(org                   ; organize your plain life in plain text
+ +hugo
+ +dragndrop
+ +gnuplot
+ +noter
+ +present
+ +pandoc
+ +pretty
+ +jupyter
+ +roam2)
+(latex                 ; writing papers in Emacs has never been so fun
+ +lsp
+ +fold
+ +cdlatex)
+(python +lsp +pyright) ; beautiful is better than ugly
+(sh +fish +lsp)        ; she sells {ba,z,fi}sh shells on the C xor
+(yaml +lsp)            ; JSON, but readable
+#+end_src
+
+** Latex
+
+#+begin_src fish
+set -a 2install miktex texlab
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! evil-tex
+  :when (featurep! :editor evil +everywhere)
+  :config
+  (setq evil-tex-include-newlines-in-envs nil
+        evil-tex-select-newlines-with-envs nil)
+  )
+#+end_src
+
+*** =cdlatex=
+
+#+begin_src emacs-lisp
+(use-package! cdlatex
+  :config
+  (map! :map cdlatex-mode-map
+    :i "TAB" #'cdlatex-tab))
+#+end_src
+
+*** =lsp=
+
+word completion along with =(:lang (latex +lsp))=
+see =company-backends= variable docs
+https://github.com/hlissner/doom-emacs/issues/5672
+#+begin_src emacs-lisp
+(setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
+#+end_src
+
+*** math preview
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! math-preview)
+#+end_src
+
+preview latex formulas
+#+begin_src emacs-lisp
+(use-package! math-preview
+  :custom
+  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
+                        ("\\begin{equation*}" . "\\end{equation*}")
+                        ("\\[" . "\\]")
+                        ("\\(" . "\\)")
+                        ("$$" . "$$")
+                        ("$" . "$")))
+  (math-preview-preprocess-functions '((lambda (s)
+                                         (concat "{\\color{white}" s "}")))))
+
+(autoload 'latex-math-preview-expression "latex-math-preview" nil t)
+(autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
+(autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
+(autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
+#+end_src
+
+*** Others
+
+clean intermediate files
+#+begin_src emacs-lisp
+(eval-after-load 'latex
+  '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
+         LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
+         Tex-clean-confirm nil))
+#+end_src
+
+add =XeTeX= mode in =TeX/LaTeX=
+[[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
+
+#+begin_src emacs-lisp
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+            (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))))
+;; (setq TeX-command-default "XeLaTeX")))
+;; (setq TeX-save-query nil)))
+;; (setq TeX-show-compilation nil)))
+#+end_src
+
+** lua
+
+#+begin_src fish
+set -a 2install lua-language-server
+#+end_src
+
+lsp support
+#+begin_src emacs-lisp
+(use-package! lua-mode
+  :when (featurep! :lang lua +lsp)
+  :custom
+  (lsp-clients-lua-language-server-bin "/usr/lib/lua-language-server/bin/lua-language-server")
+  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua"))
+#+end_src
+
+ligatures
+#+begin_src emacs-lisp
+(with-eval-after-load "ligatures"
+  (set-ligatures! 'lua-mode
+    :def "function"
+    :return "return"
+    :and "and"
+    :or "or"
+    :not "not"
+    :true "true"
+    :false "false"
+    :for "for"))
+#+end_src
+
+** wolfram
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! wolfram-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+;; last update was 5 years ago
+(use-package! wolfram-mode
+  :config
+  (autoload 'wolfram-mode "wolfram-mode" nil t)
+  (autoload 'run-wolfram "wolfram-mode" nil t)
+  (setq wolfram-program "/usr/local/bin/wolfram")
+  (prependq! auto-mode-alist '(
+                               ("\\.m\\'" . wolfram-mode)
+                               ("\\.wl\\'" . wolfram-mode)
+                               ("\\.wls\\'" . wolfram-mode))))
+
+(setq wolfram-path "~/.Mathematica/Applications")
+
+(after! lsp
+  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
+
+  (lsp-register-client
+   (make-lsp-client :language-id 'wolfram
+                    :new-connection (lsp-tcp-server-command
+                                     (lambda (port)
+                                       `("wolfram" ;; or "wolframscript"
+                                         "-script" ;; or "-file"
+                                         "~/softwares/lsp-wl/init.wls"
+                                         ,(concat
+                                           "--socket="
+                                           (number-to-string port)))))
+                    :major-modes '(wolfram-mode)
+                    :server-id 'lsp-wl)))
+#+end_src
+
+ligatures
+#+begin_src emacs-lisp
+(with-eval-after-load "ligatures"
+  (set-ligatures! 'wolfram-mode
+    :and "&&"
+    :or "||"
+    :not "not"
+    :true "True"
+    :false "False"))
+#+end_src
+
+** python
+
+#+begin_src fish
+set -a 2install python-{pytest,nose,pyflakes,isort,lsp-server}
+#+end_src
+
+** shell
+
+#+begin_src fish
+set -a 2install shellcheck-bin bash-language-server
+#+end_src
+
+** org
+
+#+begin_src fish
+set -a 2install gnuplot
+#+end_src
+
+References
+- [[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
+- [[https://emacs.stackexchange.com/a/63793][How to copy links OUT of org-mode? - Emacs Stack Exchange]]
+- [[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
+
+#+begin_src emacs-lisp
+(setq org-directory "~/org/")
+(defvar co/org-agenda-directory (expand-file-name "agenda" org-directory))
+(defun co/org-agenda-file-paths (path)
+  (if (listp path)
+      (mapcar (lambda (x) (expand-file-name (concat x ".org") co/org-agenda-directory)) path)
+    (expand-file-name (concat path ".org") co/org-agenda-directory)))
+
+(defun org-copy-link-url ()
+  (interactive)
+  (kill-new (org-element-property :raw-link (org-element-context))))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org
+  :custom
+  (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
+  (org-agenda-start-with-log-mode t)
+  (org-log-done 'time)
+  (org-log-into-drawer t)
+  (org-ellipsis "↴")
+  (org-image-actual-width 400)
+  (org-startup-with-inline-images t)
+  (org-refile-targets '(("archive.org" :maxlevel . 1)))
+  (org-tag-alist
+   '((:startgroup)
+     ;; Put mutually exclusive tags here
+     (:endgroup)
+     ("@home" . ?H)
+     ("@work" . ?W)
+     ("agenda" . ?a)
+     ("publish" . ?P)
+     ("batch" . ?b)
+     ("idea" . ?i)))
+
+  :config
+  (map! :map org-mode-map
+        :localleader
+        "y" #'org-copy-link-url)
+  (load-in-doom-dir "org-capture-templates.el")
+
+  ;;(org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
+  ;; display inline images
+  (org-display-inline-images)
+
+  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers))
+#+end_src
+
+*** org-noter
+
+#+begin_src emacs-lisp
+(use-package! org-noter
+  :after org
+  :config
+  (org-noter-set-doc-split-fraction '(0.75 . 0.25))
+  )
+#+end_src
+
+*** org-roam
+
+#+begin_src emacs-lisp
+(use-package! org-roam
+  :after org
+  :init
+  (setq org-roam-directory (file-truename "~/org/roam")
+        org-roam-v2-ack t)
+  :custom
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
+      :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  :config
+  (require 'org-roam-dailies)
+  )
+#+end_src
+
+*** org-pandoc-import
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo "tecosaur/org-pandoc-import"
+           :files ("*.el" "filters" "preprocessors")))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-pandoc-import :after org)
+#+end_src
+
+*** Color ~shell~ block output
+
+[[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package cl-lib
+  :init
+  (defun org-redisplay-ansi-source-blocks ()
+    "Refresh the display of ANSI text source blocks."
+    (interactive)
+    (org-element-map (org-element-parse-buffer) 'src-block
+      (lambda (src)
+        (when (equalp "ansi" (org-element-property :language src))
+          (let ((begin (org-element-property :begin src))
+                (end (org-element-property :end src)))
+            (ansi-color-apply-on-region begin end))))))
+  :custom
+  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
+  (setq org-babel-default-header-args:shell
+        '((:results . "output verbatim drawer")
+          (:wrap . "src ansi"))))
+#+END_SRC
+
+*** others
+
+org-src
+[[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
+#+begin_src emacs-lisp
+(after! org
+  (setq org-src-window-setup 'reorganize-frame)
+  (set-popup-rule! "^\\*Org Src" :ignore t))
+#+end_src
+
+org-agenda
+[[https://emacs.stackexchange.com/a/7840][saving - How do I automatically save org-mode buffers? - Emacs Stack Exchange]]
+#+begin_src emacs-lisp
+(advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
+#+end_src
+
+org-ref
 #+begin_src emacs-lisp :tangle no
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(use-package org-ref)
 #+end_src
 
-** proxy
-#+begin_src emacs-lisp
-(setq url-proxy-services
-   '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
-     ("http" . "localhost:8889")
-     ("https" . "localhost:8889")))
-#+end_src
-
-** pomm
-#+begin_src emacs-lisp
-(use-package pomm
-  :commands (pomm))
-#+end_src
-** screenshot
-currently buggy
+org-deft
 #+begin_src emacs-lisp :tangle no
-(use-package screenshot)
-#+end_src
-** reverse words
-#+begin_src emacs-lisp
-  (defun +my/reverse-words (beg end)
-    "Reverse the order of words in region."
-    (interactive "*r")
-    (apply
-     'insert
-     (reverse
-      (split-string
-       (delete-and-extract-region beg end) "\\b"))))
-#+end_src
-** popup
-remove ~eww~ from popup buffer list
-#+begin_src emacs-lisp
-(when (featurep! :ui popup)
-  (set-popup-rule!
-    "^\\*eww\\*"  ; `eww' (and used by dash docsets)
-    :ignore t))
+(setq deft-directory "~/org")
+(setq deft-default-extension "org")
 #+end_src
 
-use ~+popup-mode~ to toggle popup mode globally.
+org-habit
+#+begin_src emacs-lisp
+(use-package! org-habit
+  :custom
+  (org-habit-graph-column 60)
+  :config
+  (add-to-list 'org-modules 'org-habit))
+#+end_src
+
+* Email
+
+#+begin_src fish
+set -a 2install isync mu mbsync
+#+end_src
+
+Example for initialing =mu= and =mbsync=
+#+begin_src fish :tangle no
+mkdir -p ~/.mail/$mailname
+mu init --maildir=~/.mail --add-email-address=...@...
+mbsync -c ~/.config/isync/$mbsyncrc -V -a
+#+end_src
+
+#+begin_src emacs-lisp :tangle init.el
+:email
+(mu4e +***REMOVED***)
+#+end_src
+
+** mu4e
+
+#+begin_src emacs-lisp
+(use-package mu4e
+  ;;:ensure nil
+  :defer 20
+  :config
+  (setq mu4e-update-interval 300)
+  (setq mu4e-maildir "~/.mail")
+  (setq mu4e-change-filenames-when-moving t)
+  (setq mu4e-attachment-dir "~/Downloads")
+
+  ;; enable inline images
+  (setq mu4e-view-show-images t)
+  ;; every new email composition gets its own frame!
+  (setq mu4e-compose-in-new-frame t)
+
+  ;;(mu4e-compose-signature-auto-include nil)
+
+  (setq mu4e-use-fancy-chars t)
+  (setq mu4e-view-show-addresses t)
+  (setq mu4e-view-prefer-html t))
+
+  ;; (setq mu4e-context-policy 'pick-first)
+  ;; (setq mu4e-compose-context-policy nil))
+#+end_src
+
+#+begin_src emacs-lisp
+(load-in-doom-dir "mu4e.el")
+#+end_src
+
+*** alert
+
+#+begin_src emacs-lisp :tangle no
+(use-package mu4e-alert
+  :after mu4e
+  :hook ((after-init . mu4e-alert-enable-mode-line-display)
+         (after-init . mu4e-alert-enable-notifications))
+  :config (mu4e-alert-set-default-style 'libnotify))
+#+end_src
+
+* App
+
+#+begin_src emacs-lisp :tangle init.el
+:app
+calendar
+everywhere                 ; don't leave emacs
+(rss +org)                 ; emacs as an RSS reader
+#+end_src
+
+** =elfeed=
+
+[[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
+#+begin_src emacs-lisp
+(use-package! elfeed
+  :when (featurep! :app rss)
+  :bind (:map elfeed-search-mode-map
+         ("q" . +my/elfeed-save-db-and-bury))
+  :custom
+  (elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/"))
+  (elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/"))
+  (elfeed-search-filter "@3-weeks-ago")
+  (rmh-elfeed-org-files (list "~/org/elfeed.org"))
+  :config
+  ;; (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+
+  ;;functions to support syncing .elfeed between machines
+  ;;makes sure elfeed reads index from disk before launching
+  (defun +my/elfeed-load-db-and-open ()
+    "Wrapper to load the elfeed db from disk before opening"
+    (interactive)
+    (elfeed-db-load)
+    (elfeed)
+    (elfeed-search-update--force))
+
+  ;;write to disk when quiting
+  (defun +my/elfeed-save-db-and-bury ()
+    "Wrapper to save the elfeed db to disk before burying buffer"
+    (interactive)
+    (elfeed-db-save)
+    (quit-window)))
+
+
+(map! :leader
+      (:prefix "o"
+       (:when (featurep! :app rss)
+        :desc "elfeed"    "e" #'elfeed)))
+
+
+(use-package! elfeed-goodies
+  :after elfeed
+  :config
+  (setq elfeed-goodies/entry-pane-size 0.5))
+#+end_src
+
+* Other packages
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! zotxt
+  :recipe (:host github
+           :repo "name/zotxt"))
+(package! academic-phrases)
+
+(package! vlf)
+
+(package! inherit-org :recipe (:host github :repo "chenyanming/inherit-org"))
+
+#+end_src
+
+[[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
+#+begin_src emacs-lisp
+(defun +my/append-to-list (list-var elements)
+  "Append ELEMENTS to the end of LIST-VAR.
+
+change to no return value
+The return value is the new value of LIST-VAR."
+  (unless (consp elements)
+    (error "ELEMENTS must be a list"))
+  (let ((list (symbol-value list-var)))
+    (if list
+        (setcdr (last list) elements)
+      (set list-var elements))))
+  ;(symbol-value list-var))
+#+end_src
+
+** keycast
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! keycast)
+#+end_src
+
+[[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
+#+begin_src emacs-lisp
+(use-package keycast
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
+    :global t
+    (if keycast-mode
+        (add-hook 'pre-command-hook 'keycast--update t)
+      (remove-hook 'pre-command-hook 'keycast--update)))
+  (add-to-list 'global-mode-string '("" keycast-mode-line)))
+(keycast-mode) ;; or run keycast-mode by demand
+#+end_src
+
+** projectile
+
+[[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
+#+begin_src emacs-lisp
+(use-package! projectile
+  :custom
+  (projectile-indexing-method 'alien)
+  (projectile-sort-order 'recently-active)
+  (projectile-file-exists-remote-cache-expire (* 10 60))
+  (projectile-track-known-projects-automatically nil)
+  ;(projectile-require-project-root t)
+  (projectile-auto-discover t))
+  ;; (projectile-file-exists-local-cache-expire (* 5 60)))
+#+end_src
+
 ** shrface
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! shrface)
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package shrface
   :defer t
@@ -1163,4 +1512,108 @@ use ~+popup-mode~ to toggle popup mode globally.
   (add-hook 'eww-after-render-hook #'shrface-mode)
   :config
   (require 'shrface))
+#+end_src
+
+** pomm
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! pomm)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package pomm
+  :commands (pomm))
+#+end_src
+
+** screenshot
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! screenshot
+  :recipe (:host github :repo "yangsheng6810/screenshot"))
+#+end_src
+
+currently buggy
+#+begin_src emacs-lisp :tangle no
+(use-package screenshot)
+#+end_src
+
+** tldr
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! tldr)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! tldr
+  :custom
+  (tldr-enabled-categories '("common" "linux" "osx" "sunos")))
+#+end_src
+
+** leetcode
+
+#+begin_src emacs-lisp :tangle no
+(use-package leetcode
+  :costum
+  (leetcode-prefer-language "cpp")
+  (leetcode-save-solutions t)
+  (leetcode-directory "~/Coding/leetcode"))
+#+end_src
+
+** ivy-posframe
+
+#+begin_src emacs-lisp :tangle no
+(use-package ivy-posframe
+  :custom
+  (ivy-posframe-display-functions-alist
+   '((swiper          . ivy-display-function-fallback)
+     (complete-symbol . ivy-posframe-display-at-point)
+     (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
+     (t               . ivy-posframe-display)))
+  (ivy-posframe-parameters
+   '((left-fringe . 8)
+     (right-fringe . 8)))
+  :config
+  (ivy-posframe-mode 1))
+#+end_src
+
+* Other configs
+
+** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
+#+begin_src emacs-lisp :tangle no
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+#+end_src
+
+** proxy
+#+begin_src emacs-lisp
+(setq url-proxy-services
+   '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
+     ("http" . "localhost:8889")
+     ("https" . "localhost:8889")))
+#+end_src
+
+** reverse words
+#+begin_src emacs-lisp
+(defun +my/reverse-words (beg end)
+  "Reverse the order of words in region."
+  (interactive "*r")
+  (apply
+   'insert
+   (reverse
+    (split-string
+     (delete-and-extract-region beg end) "\\b"))))
+#+end_src
+
+* End
+
+#+begin_src fish
+paru -S --needed --noconfirm $2install
+#+end_src
+
+#+begin_src emacs-lisp :tangle init.el
+:os
+tty                        ; improve the terminal Emacs experience
+
+:config
+literate
+(default +bindings +smartparens))
 #+end_src
