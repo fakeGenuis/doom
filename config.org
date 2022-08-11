@@ -7,6 +7,7 @@
 - [[#input][Input]]
   - [[#input-chinese][Input Chinese]]
 - [[#completion][Completion]]
+  - [[#company][company]]
 - [[#display][Display]]
   - [[#themes][Themes]]
   - [[#fonts][Fonts]]
@@ -36,6 +37,9 @@
   - [[#fish-shell][fish shell]]
 - [[#checkers][Checkers]]
   - [[#spell-checker][Spell checker]]
+  - [[#grammar][grammar]]
+  - [[#kill-proselint][KILL =proselint=]]
+  - [[#grammarly][=grammarly=]]
 - [[#tools][Tools]]
   - [[#pdf-tools][pdf-tools]]
   - [[#editorconfig][=editorconfig=]]
@@ -172,6 +176,13 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 (vertico +icons)
 #+end_src
 
+** company
+
+=company-ispell= needs word dictionary
+#+begin_src fish
+set -a 2install words
+#+end_src
+
 * Display
 
 #+begin_src emacs-lisp :tangle init.el
@@ -213,7 +224,6 @@ difficult to choose theme? random it
   (interactive)
   (let* ((all-themes (custom-available-themes))
          (next-theme (nth (random (length all-themes)) all-themes)))
-    (message "Switching to theme: %s" next-theme)
     (consult-theme next-theme)))
 
 (map! :leader
@@ -227,7 +237,8 @@ track current theme for later load
   (let
       ((theme-config-file (expand-file-name "theme.el" doom-private-dir)))
     (write-region
-     (format "(setq doom-theme '%s)\n" new-theme) nil theme-config-file)))
+     (format "(setq doom-theme '%s)\n" new-theme) nil theme-config-file)
+    (message "Switch to theme: %s" new-theme)))
 
 (add-variable-watcher 'doom-theme #'+my/save-theme)
 #+end_src
@@ -839,12 +850,60 @@ ligatures
 syntax           ; tasing you for every semicolon you forget
 (spell +flyspell ; tasing you for misspelling mispelling
        +everywhere)
+grammar          ; tasing grammar mistake every you make
 #+end_src
 
 ** Spell checker
 
 #+begin_src fish
 set -a 2install aspell aspell-en
+#+end_src
+
+** grammar
+
+#+begin_src fish
+set -a 2install languagetool
+#+end_src
+
+disable annoying =writegood-mode=
+#+begin_src emacs-lisp :tangle packages.el
+(package! writegood-mode
+  :disable t)
+#+end_src
+
+** KILL =proselint=
+
+#+begin_src fish :tangle no
+pip install proselint
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(package! flymake-proselint)
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(use-package! flycheck
+  :config
+  (flycheck-define-checker proselint
+      "Flycheck checker using Proselint.
+
+  See URL `http://proselint.com/'."
+      :command ("proselint" "--json" "-")
+      :standard-input t
+      :error-parser flycheck-proselint-parse-errors
+      :modes (text-mode org-mode latex-mode LaTeX-mode markdown-mode gfm-mode message-mode)))
+#+end_src
+
+** =grammarly=
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! flycheck-grammarly)
+#+end_src
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'flycheck
+  (flycheck-grammarly-setup))
+(setq flycheck-grammarly-check-time 0.8)
 #+end_src
 
 * Tools
@@ -1429,9 +1488,7 @@ everywhere                 ; don't leave emacs
 * Other packages
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! zotxt
-  :recipe (:host github
-           :repo "name/zotxt"))
+(package! zotxt)
 (package! academic-phrases)
 
 (package! vlf)
