@@ -2,86 +2,6 @@
 #+PROPERTY: header-args:emacs-lisp :results none
 #+PROPERTY: header-args:fish :tangle install.fish :results none :shebang "#!/usr/bin/fish" :file-mode (identity #o755)
 
-* Table of Contents :TOC_3:
-- [[#info][Info]]
-- [[#input][Input]]
-  - [[#input-chinese][Input Chinese]]
-- [[#completion][Completion]]
-  - [[#company][company]]
-- [[#display][Display]]
-  - [[#themes][Themes]]
-  - [[#fonts][Fonts]]
-    - [[#doom-font][Doom font]]
-    - [[#all-the-icons-font][=all-the-icons= font]]
-    - [[#unicode][=unicode=]]
-    - [[#chinese-fonts][Chinese fonts]]
-  - [[#doom-dashboard][Doom-dashboard]]
-  - [[#ligatures][Ligatures]]
-  - [[#doom-modeline][Doom-modeline]]
-  - [[#popup][Popup]]
-  - [[#treemacs][treemacs]]
-  - [[#tab-bar][tab bar]]
-  - [[#others][Others]]
-- [[#editing][Editing]]
-  - [[#evil][Evil]]
-  - [[#file-templates][File Templates]]
-  - [[#format][format]]
-  - [[#others-1][Others]]
-- [[#emacs][Emacs]]
-  - [[#dired-ranger][dired-ranger]]
-  - [[#dired][Dired]]
-  - [[#dirvish][Dirvish]]
-- [[#term][Term]]
-  - [[#vterm][=vterm=]]
-  - [[#colored-output-issues][Colored output issues]]
-  - [[#fish-shell][fish shell]]
-- [[#checkers][Checkers]]
-  - [[#spell-checker][Spell checker]]
-  - [[#grammar][grammar]]
-  - [[#kill-proselint][KILL =proselint=]]
-  - [[#grammarly][=grammarly=]]
-- [[#tools][Tools]]
-  - [[#pdf-tools][pdf-tools]]
-  - [[#editorconfig][=editorconfig=]]
-  - [[#lookup][lookup]]
-  - [[#lsp][lsp]]
-  - [[#magit][magit]]
-- [[#lang][Lang]]
-  - [[#latex][Latex]]
-    - [[#cdlatex][=cdlatex=]]
-    - [[#lsp-1][=lsp=]]
-    - [[#math-preview][math preview]]
-    - [[#others-2][Others]]
-  - [[#lua][lua]]
-  - [[#wolfram][wolfram]]
-  - [[#python][python]]
-  - [[#shell][shell]]
-  - [[#org][org]]
-    - [[#org-noter][org-noter]]
-    - [[#org-roam][org-roam]]
-    - [[#org-pandoc-import][org-pandoc-import]]
-    - [[#color-shell-block-output][Color ~shell~ block output]]
-    - [[#others-3][others]]
-- [[#email][Email]]
-  - [[#mu4e][mu4e]]
-    - [[#alert][alert]]
-- [[#app][App]]
-  - [[#elfeed][=elfeed=]]
-- [[#other-packages][Other packages]]
-  - [[#keycast][keycast]]
-  - [[#projectile][projectile]]
-  - [[#shrface][shrface]]
-  - [[#pomm][pomm]]
-  - [[#screenshot][screenshot]]
-  - [[#tldr][tldr]]
-  - [[#leetcode][leetcode]]
-  - [[#ivy-posframe][ivy-posframe]]
-- [[#other-configs][Other configs]]
-  - [[#maximize-when-start-up][maximize when start up]]
-  - [[#proxy][proxy]]
-  - [[#reverse-words][reverse words]]
-- [[#end][End]]
-
 * Info
 
 requirements of =doom emacs=
@@ -412,8 +332,10 @@ check code ligatures, *bold* and /italic/ enabled
   ;; The limit of the window width.
   ;; If `window-width' is smaller than the limit, some information won't be displayed.
   (doom-modeline-window-width-limit fill-column)
-  (doom-modeline-enable-word-count t)
-  (doom-modeline-workspace-name t))
+  (doom-modeline-enable-word-count nil)
+  (doom-modeline-persp-name t)
+  (doom-modeline-persp-icon nil)
+  (doom-modeline-workspace-name nil))
 
 ;https://github.com/seagle0128/doom-modeline/issues/187
 (defun +my/modeline-h ()
@@ -667,6 +589,7 @@ vc           ; version-control and Emacs, sitting in a tree
   ;;  ("j" . dired-next-line)
   ;;  ("k" . dired-previous-line)
    :ng "l" #'dired-find-file
+   :ng "+" #'dired-create-empty-file
    :n "i" #'wdired-change-to-wdired-mode
    :n "." #'dired-omit-mode))
 
@@ -896,11 +819,11 @@ pip install proselint
 
 ** =grammarly=
 
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! flycheck-grammarly)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (with-eval-after-load 'flycheck
   (flycheck-grammarly-setup))
 (setq flycheck-grammarly-check-time 0.8)
@@ -1168,6 +1091,7 @@ ligatures
   (setq wolfram-program "/usr/local/bin/wolfram")
   (prependq! auto-mode-alist '(
                                ("\\.m\\'" . wolfram-mode)
+                               ("\\.fr\\'" . wolfram-mode)
                                ("\\.wl\\'" . wolfram-mode)
                                ("\\.wls\\'" . wolfram-mode))))
 
