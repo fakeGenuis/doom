@@ -300,7 +300,7 @@ add =vterm= entry
 (add-to-list '+doom-dashboard-menu-sections
              '("Open vterm"
                :icon (all-the-icons-octicon "terminal" :face 'doom-dashboard-menu-title)
-               :when (featurep! :term vterm)
+               :when (modulep! :term vterm)
                :face (:inherit (doom-dashboard-menu-title bold))
                :action +vterm/here))
 #+end_src
@@ -360,7 +360,7 @@ check code ligatures, *bold* and /italic/ enabled
 
 remove ~eww~ from popup buffer list
 #+begin_src emacs-lisp
-(when (featurep! :ui popup)
+(when (modulep! :ui popup)
   (set-popup-rule!
     "^\\*eww\\*"  ; `eww' (and used by dash docsets)
     :ignore t))
@@ -372,7 +372,7 @@ use ~+popup-mode~ to toggle popup mode globally.
 
 #+begin_src emacs-lisp :tangle no
 (use-package! treemacs
-  :when (featurep! :ui treemacs)
+  :when (modulep! :ui treemacs)
   :init
   (with-eval-after-load 'winum
     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
@@ -496,6 +496,12 @@ Disabling cursor movement when exiting insert mode
 (setq evil-move-cursor-back nil)
 #+end_src
 
+[[https://github.com/doomemacs/doomemacs/issues/6478][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...]]
+#+begin_src emacs-lisp :tangle no
+(after! evil
+  (evil-select-search-module 'evil-search-module 'isearch))
+#+end_src
+
 ** File Templates
 
 [[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
@@ -542,7 +548,7 @@ vc           ; version-control and Emacs, sitting in a tree
   )
 
 (use-package! ranger
-  :when (featurep! :emacs dired +ranger)
+  :when (modulep! :emacs dired +ranger)
   :after dired
   :custom
   (ranger-cleanup-eagerly t)
@@ -975,7 +981,7 @@ set -a 2install miktex texlab
 
 #+begin_src emacs-lisp
 (use-package! evil-tex
-  :when (featurep! :editor evil +everywhere)
+  :when (modulep! :editor evil +everywhere)
   :config
   (setq evil-tex-include-newlines-in-envs nil
         evil-tex-select-newlines-with-envs nil)
@@ -1056,7 +1062,7 @@ set -a 2install lua-language-server
 lsp support
 #+begin_src emacs-lisp
 (use-package! lua-mode
-  :when (featurep! :lang lua +lsp)
+  :when (modulep! :lang lua +lsp)
   :custom
   (lsp-clients-lua-language-server-bin "/usr/lib/lua-language-server/bin/lua-language-server")
   (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua"))
@@ -1168,7 +1174,7 @@ References
   (org-agenda-start-with-log-mode t)
   (org-log-done 'time)
   (org-log-into-drawer t)
-  (org-ellipsis "↴")
+  (org-ellipsis "⤵")
   (org-image-actual-width 400)
   (org-startup-with-inline-images t)
   (org-refile-targets '(("archive.org" :maxlevel . 1)))
@@ -1369,7 +1375,7 @@ everywhere                 ; don't leave emacs
 [[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
 #+begin_src emacs-lisp
 (use-package! elfeed
-  :when (featurep! :app rss)
+  :when (modulep! :app rss)
   :bind (:map elfeed-search-mode-map
          ("q" . +my/elfeed-save-db-and-bury))
   :custom
@@ -1399,7 +1405,7 @@ everywhere                 ; don't leave emacs
 
 (map! :leader
       (:prefix "o"
-       (:when (featurep! :app rss)
+       (:when (modulep! :app rss)
         :desc "elfeed"    "e" #'elfeed)))
 
 
