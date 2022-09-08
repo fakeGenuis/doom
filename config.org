@@ -1412,7 +1412,6 @@ everywhere                 ; don't leave emacs
 * Other packages
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! zotxt)
 (package! academic-phrases)
 
 (package! vlf)
@@ -1555,6 +1554,23 @@ currently buggy
      (right-fringe . 8)))
   :config
   (ivy-posframe-mode 1))
+#+end_src
+** zotxt
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! zotxt)
+#+end_src
+
+[[http://www.mkbehr.com/posts/a-research-workflow-with-zotero-and-org-mode/][A research workflow with Zotero and Org mode | mkbehr.com]]
+#+begin_src emacs-lisp
+(use-package zotxt
+  :hook (org-mode . (lambda () (org-zotxt-mode 1)))
+  :custom
+  (zotxt-default-bibliography-style "mkbehr-short")
+  :config
+  (map! (:map org-zotxt-mode-map
+         :desc "org-zotxt-insert-selected"
+         "C-c \" \"" (cmd!! #'org-zotxt-insert-reference-link '(4)))))
 #+end_src
 
 * Other configs
