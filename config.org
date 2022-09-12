@@ -35,7 +35,7 @@ chinese
 #+end_src
 
 =fcitx= input method
-#+begin_src fish
+#+begin_src fish :tangle no
 set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+end_src
 
@@ -179,6 +179,8 @@ end
 
 *** Doom font
 
+- [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
+
 #+begin_src emacs-lisp
 (setq +my/scale-factor
       (/ (string-to-number (shell-command-to-string "xdpyinfo | grep dimension | awk '{print $2}' | cut -d'x' -f2")) 720.0))
@@ -189,12 +191,12 @@ end
 (defun +my/font-size(size)
   (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
 
-(setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 13))
+(setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size 14.0)
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       ;; doom-unicode-font (font-spec :family "Twemoji")
-      doom-serif-font (font-spec :family "Rec Mono Casual" :size (+my/font-size 12))
-      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size (+my/font-size 11)))
+      doom-serif-font (font-spec :family "Rec Mono Casual" :size 13.0)
+      doom-variable-pitch-font (font-spec :family "Source Serif Pro" :size 13.0))
 #+end_src
 
 *** =all-the-icons= font
@@ -207,6 +209,8 @@ end
 
 *** =unicode=
 
+get current display font by =SPC h '=
+see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
 #+BEGIN_SRC elisp
 (after! unicode-fonts
   (dolist (unicode-block '("Mathematical Alphanumeric Symbols"
@@ -215,8 +219,10 @@ end
                            "Miscellaneous Mathematical Symbols-B"
                            "Miscellaneous Symbols"
                            "Miscellaneous Symbols and Arrows"
-                           "Miscellaneous Symbols and Pictographs"))
-      (push "DejaVu Math TeX Gyre" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+                           "Miscellaneous Symbols and Pictographs"
+                           "Letterlike Symbols"))
+      (push "DejaVu Math TeX Gyre" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  (push "MononokiLiga Nerd Font Mono" (cadr (assoc "Greek and Coptic" unicode-fonts-block-font-mapping))))
 #+END_SRC
 
 [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
@@ -230,43 +236,78 @@ end
 
 *** Chinese fonts
 
-[[https://emacs-china.org/t/doom-emacs/9628/9][doom emacs下中文字体的设置 - #9，来自 slack-py - Emacs-general - Emacs China]]
+- [[https://emacs.stackexchange.com/questions/68644/doom-emacs-setting-font-for-devanagari-characters][Doom Emacs - Setting Font for Devanagari characters - Emacs Stack Exchange]] 
+- [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]] 
+- [[https://emacs-china.org/t/doom-emacs/16809/7][doom emacs中文字体与默认字体冲突 - #7，来自 HepIsaac - Emacs-general - Emacs China]]
+- [[https://emacs-china.org/t/doom-emacs/9628/8][doom emacs下中文字体的设置 - #8，来自 RicardoM - Emacs-general - Emacs China]]
+- [[https://baohaojun.github.io/blog/2013/05/09/0-emacs-font-global-scaling.html][全局放大Emacs字体]]
+- [[https://baohaojun.github.io/blog/2012/12/19/perfect-emacs-chinese-font.html][狠狠地折腾了一把Emacs中文字体]]
+- [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs相关中文问题以及解决方案]]
+- [[https://github.com/doomemacs/doomemacs/issues/5092][doomemacs/doomemacs#5092 (invalid-read-syntax . "#") on running doom doctor]]
+
 #+begin_src emacs-lisp
-;; TODO resize cjk font with =C +=
-(defun +my/cjk-font(font-size)
+(defun +my/cjk-font()
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Sarasa Gothic SC" :size (+my/font-size font-size)))))
+                      (font-spec :family "Sarasa Gothic SC"))))
 
-(defun +my/better-font()
+;; set a rescale font to cjk charset fonts,
+;; so no explicit font size is needed
+(push '("更纱黑体 SC" . 0.85) face-font-rescale-alist)
+
+(defun +my/better-font (font-size)
   (interactive)
   (if (display-graphic-p)
       (progn
-        (custom-set-faces
-         `(mode-line ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
-         `(mode-line-inactive ((t (:font ,(font-spec :family "Comic Shanns" :size (+my/font-size 13))))))
-         `(font-lock-comment-face ((t (:font ,(font-spec :family "Rec Mono Casual" :size (+my/font-size 12)))))))
-        (+my/cjk-font 11))))
+        (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
+        (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
+        (set-face-font 'font-lock-comment-face (font-spec :family "Rec Mono Casual" :size (* 0.93 font-size)))
+        (+my/cjk-font))))
 
 (defun +my|init-font(frame)
   (with-selected-frame frame
     (if (display-graphic-p)
-        (+my/better-font))))
+        (+my/better-font 14))))
 
 (if (and (fboundp 'daemonp) (daemonp))
     (add-hook 'after-make-frame-functions #'+my|init-font)
-  (+my/better-font))
+  (add-hook 'doom-init-ui-hook (lambda () (+my/better-font 14))))
+(add-hook 'doom-load-theme-hook (lambda () (+my/better-font 14)))
 
 ;;https://emacs.stackexchange.com/a/47092
 ;; DONE restore ligature after exit big font mode
 (add-hook 'doom-big-font-mode-hook
           (lambda ()
             (if doom-big-font-mode
-                (add-hook 'doom-big-font-mode-hook #'+my/better-font)
-              (remove-hook 'doom-big-font-mode-hook #'+my/better-font))))
+                (progn
+                  (+my/better-font 22.5)
+                  (add-hook 'doom-big-font-mode-hook (lambda () (+my/better-font 14))))
+              (remove-hook 'doom-big-font-mode-hook (lambda () (+my/better-font 14))))))
 
-(add-hook 'writeroom-mode-enable-hook (lambda () (+my/cjk-font 17)))
-(add-hook 'writeroom-mode-disable-hook (lambda () (+my/cjk-font 11)))
+(add-hook 'writeroom-mode-enable-hook (lambda () (+my/better-font 21)))
+(add-hook 'writeroom-mode-disable-hook (lambda () (+my/better-font 14)))
+#+end_src
+
+*** Font scale
+
+- [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
+- [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
+- [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! emacs-gfs
+  :recipe (:host github
+           :repo "ndw/emacs-gfs"))
+#+end_src
+
+- [ ] display =text-scale-mode-amount= in mode-line
+#+begin_src emacs-lisp
+(use-package! emacs-gfs
+  :config
+  (setq gfs/default-face-height 140)
+  (setq gfs/resizeable-ignore-faces nil)
+  (define-key evil-normal-state-map (kbd "C--") 'gfs/shrink-faces)
+  (define-key evil-normal-state-map (kbd "C-=") 'gfs/magnify-faces))
 #+end_src
 
 ** Doom-dashboard
@@ -975,7 +1016,7 @@ markdown               ; writing docs for people to ignore
 
 ** Latex
 
-#+begin_src fish
+#+begin_src fish :tangle no
 set -a 2install miktex texlab
 #+end_src
 
