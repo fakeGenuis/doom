@@ -1634,6 +1634,14 @@ currently buggy
           (deferred:nextc it
             (lambda (path) path))))))
 
+  (defun +my/tilde-home-path (path)
+    "covert path starts with /home/$usr/ to '~'"
+    (interactive)
+    (let ((home (getenv "HOME")))
+      (if (string-prefix-p home path)
+          (string-join `("~" ,(string-remove-prefix home path)) "")
+        path)))
+
   (defun org-zotxt-copy-attachment-path ()
     "Open attachment of Zotero items linked at point.
   Opens with `org-open-file', see for more information about ARG."
@@ -1644,8 +1652,9 @@ currently buggy
           (org-zotxt-get-attachment-path)))
       (deferred:nextc it
         (lambda (path)
-          (kill-new path)
-          (message "%s send to system clipboard!" path)))))
+          (let ((new-path (+my/tilde-home-path path)))
+            (kill-new new-path)
+            (message "\"%s\" send to system clipboard!" new-path))))))
 
   (map! (:map org-zotxt-mode-map
          :desc "org-zotxt-insert-selected"
