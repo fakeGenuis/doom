@@ -253,7 +253,10 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 
 ;; set a rescale font to cjk charset fonts,
 ;; so no explicit font size is needed
-(push '("更纱黑体 SC" . 0.85) face-font-rescale-alist)
+(dolist (rescles '(("更纱黑体" . 0.85)
+                   ("Sarasa" . 0.85)
+                   ("Rec Mono Casual" . 0.97)))
+  (push rescles face-font-rescale-alist))
 
 (defun +my/better-font (font-size)
   (interactive)
@@ -261,7 +264,7 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
       (progn
         (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
         (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
-        (set-face-font 'font-lock-comment-face (font-spec :family "Rec Mono Casual" :size (* 0.93 font-size)))
+        (set-face-font 'font-lock-comment-face (font-spec :family "Rec Mono Casual" :size (+ 0.0 font-size)))
         (+my/cjk-font))))
 
 (defun +my|init-font(frame)
@@ -1250,9 +1253,11 @@ References
 #+begin_src emacs-lisp
 (use-package! org-noter
   :after org
+  :custom
+  (org-noter-doc-split-fraction '(0.75 . 0.25))
   :config
-  (org-noter-set-doc-split-fraction '(0.75 . 0.25))
-  )
+  (org-noter-set-doc-split-fraction '(0.75 . 0.25)))
+
 #+end_src
 
 *** org-roam
