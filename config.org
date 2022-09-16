@@ -191,12 +191,12 @@ end
 (defun +my/font-size(size)
   (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
 
-(setq doom-font (font-spec :family "MononokiLiga Nerd Font Mono" :size 14.0)
+(setq doom-font (font-spec :family "UbuntuLiga Nerd Font Mono" :size 14.3)
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       ;; doom-unicode-font (font-spec :family "Twemoji")
-      doom-serif-font (font-spec :family "Rec Mono Casual" :size 13.0)
-      doom-variable-pitch-font (font-spec :family "Source Serif Pro" :size 13.0))
+      doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0)
+      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 14.5))
 #+end_src
 
 *** =all-the-icons= font
@@ -222,7 +222,7 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
                            "Miscellaneous Symbols and Pictographs"
                            "Letterlike Symbols"))
       (push "DejaVu Math TeX Gyre" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-  (push "MononokiLiga Nerd Font Mono" (cadr (assoc "Greek and Coptic" unicode-fonts-block-font-mapping))))
+  (push "UbuntuLiga Nerd Font Mono" (cadr (assoc "Greek and Coptic" unicode-fonts-block-font-mapping))))
 #+END_SRC
 
 [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
@@ -249,13 +249,15 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 (defun +my/cjk-font()
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Sarasa Gothic SC"))))
+                      (font-spec :family "Kosefont JP"))))
 
 ;; set a rescale font to cjk charset fonts,
 ;; so no explicit font size is needed
+;; rescale doom-font cause bold font size != regular
 (dolist (rescles '(("更纱黑体" . 0.85)
                    ("Sarasa" . 0.85)
-                   ("Rec Mono Casual" . 0.97)))
+                   ("Rec Mono Casual" . 0.95)
+                   ("Kosefont JP" . 0.95)))
   (push rescles face-font-rescale-alist))
 
 (defun +my/better-font (font-size)
