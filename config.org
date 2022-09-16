@@ -591,7 +591,7 @@ Disabling cursor movement when exiting insert mode
 ** format
 
 #+begin_src fish
-set -a 2install prettier shfmt clang-format python-black
+set -a 2install prettier shfmt clang-format-static-bin python-black
 #+end_src
 
 ** Others
@@ -1381,7 +1381,7 @@ org-habit
 * Email
 
 #+begin_src fish
-set -a 2install isync mu mbsync
+set -a 2install isync mu
 #+end_src
 
 Example for initialing =mu= and =mbsync=
