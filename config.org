@@ -166,7 +166,7 @@ track current theme for later load
 ** Fonts
 
 #+begin_src fish
-set -a 2install ttf-{dejavu,recursive,sarasa-gothic,twemoji} nerd-fonts-{fira-code,mononoki,ubuntu-mono}
+set -a 2install ttf-{dejavu,recursive,sarasa-gothic,twemoji,symbola} nerd-fonts-fira-code
 
 # doom modeline font
 set COMICSHANNS_PATH "$HOME/.local/lib/commic_shanns"
@@ -180,6 +180,10 @@ end
 *** Doom font
 
 - [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
+
+#+begin_src fish
+set -a 2install ttf-{sarasa-gothic,symbola} adobe-source-serif-fonts
+#+end_src
 
 #+begin_src emacs-lisp
 (setq +my/scale-factor
@@ -208,6 +212,10 @@ end
 #+end_src
 
 *** =unicode=
+
+#+begin_src fish
+set -a 2install ttf-{dejavu,symbola} nerd-fonts-fira-code
+#+end_src
 
 get current display font by =SPC h '=
 see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
@@ -245,6 +253,10 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 - [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs相关中文问题以及解决方案]]
 - [[https://github.com/doomemacs/doomemacs/issues/5092][doomemacs/doomemacs#5092 (invalid-read-syntax . "#") on running doom doctor]]
 
+#+begin_src fish
+set -a 2install ttf-{kose-git,lxgw-wenkai,sarasa-gothic}
+#+end_src
+
 #+begin_src emacs-lisp
 (defun +my/cjk-font()
   (dolist (charset '(kana han cjk-misc))
@@ -259,7 +271,23 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
                    ("Rec Mono Casual" . 0.95)
                    ("Kosefont JP" . 0.95)))
   (push rescles face-font-rescale-alist))
+#+end_src
 
+*** other faces
+
+#+begin_src fish
+set -a 2install ttf-{recursive,twemoji}
+
+# doom modeline font
+set COMICSHANNS_PATH "$HOME/.local/lib/commic_shanns"
+fc-list | grep "comic shanns" &>/dev/null || begin
+    git clone https://github.com/shannpersand/comic-shanns.git "$COMICSHANNS_PATH"
+    cd "$COMICSHANNS_PATH" || exit 1
+    cp v2/* ~/.local/share/fonts
+end
+#+end_src
+
+#+begin_src emacs-lisp
 (defun +my/better-font (font-size)
   (interactive)
   (if (display-graphic-p)
