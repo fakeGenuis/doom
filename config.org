@@ -41,7 +41,7 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 
 ** Input Chinese
 
-[[https://emacs-china.org/t/topic/1271][Emacs GUI下不能输入中文 - Emacs-general - Emacs China]]
+[[https://emacs-china.org/t/topic/1271][Emacs GUI 下不能输入中文 - Emacs-general - Emacs China]]
 #+begin_src emacs-lisp :tangle no
 (use-package pyim
   :demand t
@@ -80,7 +80,7 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
   ;;(setq pyim-page-tooltip 'posframe)
   (setq pyim-page-tooltip 'popup)
 
-  ;; 选词框显示5个候选词
+  ;; 选词框显示 5 个候选词
   (setq pyim-page-length 5)
 
   :bind
@@ -165,24 +165,15 @@ track current theme for later load
 
 ** Fonts
 
-#+begin_src fish
-set -a 2install ttf-{dejavu,recursive,sarasa-gothic,twemoji,symbola} nerd-fonts-fira-code
-
-# doom modeline font
-set COMICSHANNS_PATH "$HOME/.local/lib/commic_shanns"
-fc-list | grep "comic shanns" &>/dev/null || begin
-    git clone https://github.com/shannpersand/comic-shanns.git "$COMICSHANNS_PATH"
-    cd "$COMICSHANNS_PATH" || exit 1
-    cp v2/* ~/.local/share/fonts
-end
-#+end_src
-
 *** Doom font
 
 - [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
 
 #+begin_src fish
-set -a 2install ttf-{sarasa-gothic,symbola} adobe-source-serif-fonts
+set -a 2install ttf-sarasa-ui-sc adobe-source-serif-fonts
+# for unicode/emoji font fallback
+set -a 2install quivira ttf-twemoji
+
 #+end_src
 
 #+begin_src emacs-lisp
@@ -200,7 +191,7 @@ set -a 2install ttf-{sarasa-gothic,symbola} adobe-source-serif-fonts
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       ;; doom-unicode-font (font-spec :family "Twemoji")
       doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0)
-      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 14.5))
+      doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 #+end_src
 
 *** =all-the-icons= font
@@ -214,7 +205,7 @@ set -a 2install ttf-{sarasa-gothic,symbola} adobe-source-serif-fonts
 *** =unicode=
 
 #+begin_src fish
-set -a 2install ttf-{dejavu,symbola} nerd-fonts-fira-code
+set -a 2install nerd-fonts-fira-code tex-gyre-math-fonts
 #+end_src
 
 get current display font by =SPC h '=
@@ -229,7 +220,7 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
                            "Miscellaneous Symbols and Arrows"
                            "Miscellaneous Symbols and Pictographs"
                            "Letterlike Symbols"))
-      (push "DejaVu Math TeX Gyre" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+      (push "TeX Gyre Termes Math" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   (push "UbuntuLiga Nerd Font Mono" (cadr (assoc "Greek and Coptic" unicode-fonts-block-font-mapping))))
 #+END_SRC
 
@@ -246,15 +237,15 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 
 - [[https://emacs.stackexchange.com/questions/68644/doom-emacs-setting-font-for-devanagari-characters][Doom Emacs - Setting Font for Devanagari characters - Emacs Stack Exchange]] 
 - [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]] 
-- [[https://emacs-china.org/t/doom-emacs/16809/7][doom emacs中文字体与默认字体冲突 - #7，来自 HepIsaac - Emacs-general - Emacs China]]
-- [[https://emacs-china.org/t/doom-emacs/9628/8][doom emacs下中文字体的设置 - #8，来自 RicardoM - Emacs-general - Emacs China]]
-- [[https://baohaojun.github.io/blog/2013/05/09/0-emacs-font-global-scaling.html][全局放大Emacs字体]]
-- [[https://baohaojun.github.io/blog/2012/12/19/perfect-emacs-chinese-font.html][狠狠地折腾了一把Emacs中文字体]]
-- [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs相关中文问题以及解决方案]]
+- [[https://emacs-china.org/t/doom-emacs/16809/7][doom emacs 中文字体与默认字体冲突 - #7，来自 HepIsaac - Emacs-general - Emacs China]]
+- [[https://emacs-china.org/t/doom-emacs/9628/8][doom emacs 下中文字体的设置 - #8，来自 RicardoM - Emacs-general - Emacs China]]
+- [[https://baohaojun.github.io/blog/2013/05/09/0-emacs-font-global-scaling.html][全局放大 Emacs 字体]]
+- [[https://baohaojun.github.io/blog/2012/12/19/perfect-emacs-chinese-font.html][狠狠地折腾了一把 Emacs 中文字体]]
+- [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
 - [[https://github.com/doomemacs/doomemacs/issues/5092][doomemacs/doomemacs#5092 (invalid-read-syntax . "#") on running doom doctor]]
 
 #+begin_src fish
-set -a 2install ttf-{kose-git,lxgw-wenkai,sarasa-gothic}
+set -a 2install ttf-kose-git
 #+end_src
 
 #+begin_src emacs-lisp
@@ -262,15 +253,6 @@ set -a 2install ttf-{kose-git,lxgw-wenkai,sarasa-gothic}
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family "Kosefont JP"))))
-
-;; set a rescale font to cjk charset fonts,
-;; so no explicit font size is needed
-;; rescale doom-font cause bold font size != regular
-(dolist (rescles '(("更纱黑体" . 0.85)
-                   ("Sarasa" . 0.85)
-                   ("Rec Mono Casual" . 0.95)
-                   ("Kosefont JP" . 0.95)))
-  (push rescles face-font-rescale-alist))
 #+end_src
 
 *** other faces
@@ -294,7 +276,7 @@ end
       (progn
         (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
         (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
-        (set-face-font 'font-lock-comment-face (font-spec :family "Rec Mono Casual" :size (+ 0.0 font-size)))
+        (set-face-font 'font-lock-comment-face (font-spec :family "Cascadia Code Cur" :size (+ 0.0 font-size)))
         (+my/cjk-font))))
 
 (defun +my|init-font(frame)
@@ -335,6 +317,15 @@ end
 
 - [ ] display =text-scale-mode-amount= in mode-line
 #+begin_src emacs-lisp
+;; set a rescale font to cjk charset fonts,
+;; so no explicit font size is needed
+;; rescale doom-font cause bold font size != regular
+(dolist (rescles '(("更纱黑体" . 0.85)
+                   ("Sarasa" . 0.85)
+                   ("Cascadia Code Cur" . 0.95)
+                   ("Kosefont JP" . 0.95)))
+  (push rescles face-font-rescale-alist))
+
 (use-package! emacs-gfs
   :config
   (setq gfs/default-face-height 140)
@@ -388,7 +379,7 @@ add =vterm= entry
 check code ligatures, *bold* and /italic/ enabled
 == <- -> <= => != == >= <== ==> === ?= :=
 
-[[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
+[[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读 org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
 #+begin_src emacs-lisp
 (with-eval-after-load "ligatures"
   (plist-put! +ligatures-extra-symbols
