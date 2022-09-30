@@ -1196,6 +1196,12 @@ ligatures
     :false "False"))
 #+end_src
 
+open with =mathematica= within emacs
+#+begin_src emacs-lisp
+(after! dirvish
+  (push '(("nb") "/usr/local/bin/mathematica" "%f") dirvish-open-with-programs))
+#+end_src
+
 ** python
 
 #+begin_src fish
