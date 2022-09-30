@@ -1129,8 +1129,11 @@ lsp support
 (use-package! lua-mode
   :when (modulep! :lang lua +lsp)
   :custom
-  (lsp-clients-lua-language-server-bin "/usr/lib/lua-language-server/bin/lua-language-server")
-  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua"))
+  (lsp-clients-lua-language-server-bin "/usr/bin/lua-language-server")
+  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua")
+  (lsp-clients-lua-language-server-args '("-E" "--logpath" "/tmp/lua-language-server"))
+  ;; (lsp-clients-lua-language-server-command '("lua-language-server" "-E"))
+  (lsp-clients-lua-language-server-command nil))
 #+end_src
 
 ligatures
