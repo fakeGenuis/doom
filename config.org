@@ -1377,6 +1377,11 @@ org-habit
   :config
   (add-to-list 'org-modules 'org-habit))
 #+end_src
+** css
+
+#+begin_src emacs-lisp
+(prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
+#+end_src
 
 * Email
 
