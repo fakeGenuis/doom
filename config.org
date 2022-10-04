@@ -1398,36 +1398,25 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 
 #+begin_src emacs-lisp :tangle init.el
 :email
-(mu4e +***REMOVED***)
+(mu4e +***REMOVED***
+      +org)
 #+end_src
 
 ** mu4e
 
 #+begin_src emacs-lisp
-(use-package mu4e
-  ;;:ensure nil
+(use-package! mu4e
   :defer 20
-  :config
-  (setq mu4e-update-interval 300)
-  (setq mu4e-maildir "~/.mail")
-  (setq mu4e-change-filenames-when-moving t)
-  (setq mu4e-attachment-dir "~/Downloads")
-
-  ;; enable inline images
-  (setq mu4e-view-show-images t)
+  :custom
+  (mu4e-update-interval 300)
+  (mu4e-change-filenames-when-moving t)
+  (mu4e-attachment-dir "~/Downloads")
   ;; every new email composition gets its own frame!
-  (setq mu4e-compose-in-new-frame t)
-
-  ;;(mu4e-compose-signature-auto-include nil)
-
-  (setq mu4e-use-fancy-chars t)
-  (setq mu4e-view-show-addresses t)
-  (setq mu4e-view-prefer-html t))
-
-  ;; (setq mu4e-context-policy 'pick-first)
-  ;; (setq mu4e-compose-context-policy nil))
+  (mu4e-compose-in-new-frame t)
+  (mu4e-use-fancy-chars t))
 #+end_src
 
+private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+begin_src emacs-lisp
 (load-in-doom-dir "mu4e.el")
 #+end_src
