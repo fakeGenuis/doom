@@ -163,6 +163,21 @@ track current theme for later load
 (add-variable-watcher 'doom-theme #'+my/save-theme)
 #+end_src
 
+** ewal
+
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! ewal)
+(package! ewal-doom-themes)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (use-package! ewal
+;;   :custom
+;;   (ewal-use-built-in-on-failure-p t))
+
+(use-package! ewal-doom-themes)
+#+end_src
+
 ** Fonts
 
 *** Doom font
