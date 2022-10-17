@@ -93,7 +93,7 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+begin_src emacs-lisp :tangle init.el
 :completion
 (company +childframe)
-(vertico +icons)
+(vertico +icons +childframe)
 #+end_src
 
 ** company
@@ -101,6 +101,24 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 =company-ispell= needs word dictionary
 #+begin_src fish
 set -a 2install words
+#+end_src
+
+** vertico
+
+#+begin_src emacs-lisp :tangle no
+;; Configure the display per command.
+;; Use a buffer with indices for imenu
+;; and a flat (Ido-like) menu for M-x.
+(setq vertico-multiform-commands
+      '((consult-imenu buffer indexed)
+        (execute-extended-command buffer)))
+
+;; Configure the display per completion category.
+;; Use the grid display for files and a buffer
+;; for the consult-grep commands.
+(setq vertico-multiform-categories
+      '((file grid)
+        (consult-grep buffer)))
 #+end_src
 
 * Display
