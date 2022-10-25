@@ -456,16 +456,19 @@ check code ligatures, *bold* and /italic/ enabled
 
 ** Popup
 
-remove ~eww~ from popup buffer list
+see ~display-buffer-alist~
 #+begin_src emacs-lisp
 (when (modulep! :ui popup)
   (set-popup-rules!
     '(("^\\*\\([Hh]elp\\|Apropos\\)"  ; help messages
        :ignore t)
       ("^\\*eww\\*"  ; `eww' (and used by dash docsets)
+       :ignore t)
+      ("^\\*\\(?:Wo\\)?Man "
+       :ignore t)
+      ("^\\*info\\*$"
        :ignore t))))
 #+end_src
-
 use ~+popup-mode~ to toggle popup mode globally.
 
 ** treemacs
