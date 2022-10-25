@@ -1286,6 +1286,7 @@ References
   (org-agenda-start-with-log-mode t)
   (org-log-done 'time)
   (org-log-into-drawer t)
+  (org-startup-numerated t)
   (org-ellipsis "⤵")
   (org-image-actual-width 400)
   (org-startup-with-inline-images t)
@@ -1300,6 +1301,7 @@ References
      ("publish" . ?P)
      ("batch" . ?b)
      ("idea" . ?i)))
+  (org-link-descriptive t)
 
   :config
   (map! :map org-mode-map
