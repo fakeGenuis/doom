@@ -434,15 +434,6 @@ check code ligatures, *bold* and /italic/ enabled
   (doom-modeline-persp-name t)
   (doom-modeline-persp-icon nil)
   (doom-modeline-workspace-name nil))
-
-;https://github.com/seagle0128/doom-modeline/issues/187
-(defun +my/modeline-h ()
-  "Calculate the actual char height of the mode-line."
-  (ceiling (+ (/ (+my/font-size 14) 2.0) 8.0)))
-  ;(if (equal (display-pixel-width) 3840)
-  ;    26 24)
-
-(advice-add #'doom-modeline--font-height :override #'+my/modeline-h)
 #+end_src
 
 [[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
