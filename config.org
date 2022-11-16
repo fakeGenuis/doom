@@ -615,7 +615,6 @@ set -a 2install prettier shfmt clang-format-static-bin python-black
 #+end_src
 
 ** Others
-
 About Parentheses
 #+begin_src emacs-lisp :tangle no
 (setq show-paren-style 'expression)
@@ -668,12 +667,12 @@ vc           ; version-control and Emacs, sitting in a tree
 #+end_src
 
 ** Dired
-
 #+begin_src emacs-lisp
 (use-package dired
   :custom
   (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
+  (dired-clean-confirm-killing-deleted-buffers nil)
   (dired-dwim-target t)
   ;; Make sure to use the long name of flags when exists
   ;; eg. use "--almost-all" instead of "-A"
@@ -704,16 +703,11 @@ vc           ; version-control and Emacs, sitting in a tree
 #+end_src
 
 ** Dirvish
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! dirvish)
 #+end_src
 
 #+begin_src emacs-lisp
-(setq +my/lineh (+my/modeline-h))
-(setq dirvish-mode-line-height `(,+my/lineh . ,+my/lineh))
-(setq dirvish-header-line-height `(,+my/lineh . ,+my/lineh))
-
 (use-package dirvish
   :init
   (dirvish-override-dired-mode)
@@ -1241,7 +1235,6 @@ set -a 2install python-{pytest,nose,pyflakes,isort,lsp-server}
 #+end_src
 
 ** shell
-
 #+begin_src fish
 set -a 2install shellcheck-bin bash-language-server
 #+end_src
@@ -1409,9 +1402,13 @@ org-habit
   (add-to-list 'org-modules 'org-habit))
 #+end_src
 ** css
-
 #+begin_src emacs-lisp
 (prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
+#+end_src
+
+** yaml
+#+begin_src fish
+set -a 2install yaml-language-server
 #+end_src
 
 * Email
