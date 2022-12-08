@@ -711,7 +711,9 @@ vc           ; version-control and Emacs, sitting in a tree
 (use-package dirvish
   :init
   (dirvish-override-dired-mode)
+  (dirvish-side-follow-mode)
   :custom
+  (dirvish-side-width 25)
   (dirvish-reuse-session t)
   ;; TODO fix line height
   (dirvish-quick-access-entries
@@ -736,7 +738,8 @@ vc           ; version-control and Emacs, sitting in a tree
   (map!
    (:leader
     :prefix "o"
-    :desc "dirvish"    "i" #'dirvish)
+    :desc "dirvish"    "i" #'dirvish
+    :desc "dirvish-side"    "s" #'dirvish-side)
    "C-c f" #'dirvish-fd
    :map dired-mode-map
    "TAB" #'dirvish-toggle-subtree
