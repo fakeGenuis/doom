@@ -1305,6 +1305,35 @@ References
   (advice-add 'org-refile :after 'org-save-all-org-buffers))
 #+end_src
 
+*** unfold search
+[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...]]
+#+begin_src emacs-lisp
+(after! org-fold-core
+
+  (defun org-show-current-heading-tidily ()
+    (interactive)  ;Inteactive
+    "Show next entry, keeping other entries closed."
+    (if (save-excursion (end-of-line) (outline-invisible-p))
+        (progn (org-show-entry) (show-children))
+      (setq-local my:current_line (line-number-at-pos))
+      (outline-back-to-heading)
+      (unless (and (bolp) (org-on-heading-p))
+        (org-up-heading-safe)
+        (hide-subtree)
+        (error "Boundary reached"))
+      (org-overview)
+      (org-reveal t)
+      (org-show-entry)
+      (show-children)
+      (goto-line my:current_line)))
+
+  (defun qw/search-buffer ()
+    (interactive)
+    (org-fold-show-all)
+    (+default/search-buffer)
+    (org-show-current-heading-tidily)))
+#+end_src
+
 *** org-noter
 
 #+begin_src emacs-lisp
