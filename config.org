@@ -1103,23 +1103,26 @@ https://github.com/hlissner/doom-emacs/issues/5672
 (package! math-preview)
 #+end_src
 
+#+begin_src fish
+paru -S --needed --noconfirm npm
+git clone https://gitlab.com/matsievskiysv/math-preview ~/.local/lib
+cd ~/.local/lib/math-preview && npm i
+#+end_src
+
 preview latex formulas
 #+begin_src emacs-lisp
 (use-package! math-preview
   :custom
-  (math-preview-marks '(("\\begin{equation}" . "\\end{equation}")
-                        ("\\begin{equation*}" . "\\end{equation*}")
-                        ("\\[" . "\\]")
-                        ("\\(" . "\\)")
-                        ("$$" . "$$")
-                        ("$" . "$")))
-  (math-preview-preprocess-functions '((lambda (s)
-                                         (concat "{\\color{white}" s "}")))))
-
-(autoload 'latex-math-preview-expression "latex-math-preview" nil t)
-(autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
-(autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
-(autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
+  (math-preview-command "~/.local/lib/math-preview/math-preview.js")
+  (math-preview-tex-marks '(("\\begin{equation}" "\\end{equation}")
+                            ("\\begin{equation*}" "\\end{equation*}")
+                            ("\\begin{align}" "\\end{align}")
+                            ("\\begin{align*}" "\\end{align*}")
+                            ("\\[" "\\]")
+                            ("\\(" "\\)")
+                            ("$$" "$$"))))
+  ;; (math-preview-preprocess-functions '((lambda (s)
+  ;;                                        (concat "{\\color{white}" s "}")))))
 #+end_src
 
 *** Others
