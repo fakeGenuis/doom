@@ -218,13 +218,12 @@ set -a 2install quivira ttf-twemoji
 
 (defun +my/font-size(size)
   (ceiling (* (if +my/is-laptop 1.15 1) size +my/scale-factor)))
-
-(setq doom-font (font-spec :family "UbuntuLiga Nerd Font Mono" :size 14.3)
+(setq doom-font (font-spec :family "mononokiLiga Nerd Font Mono" :size 13.0)
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       ;; doom-unicode-font (font-spec :family "Twemoji")
-      doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0)
-      doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
+      doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
+      ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 #+end_src
 
 *** =all-the-icons= font
@@ -241,10 +240,12 @@ set -a 2install quivira ttf-twemoji
 set -a 2install nerd-fonts-fira-code tex-gyre-math-fonts
 #+end_src
 
+- doom way of change =unicode= font
 get current display font by =SPC h '=
 see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
 #+BEGIN_SRC elisp
 (after! unicode-fonts
+  (push "UbuntuLiga Nerd Font Mono" (cadr (assoc "Greek and Coptic" unicode-fonts-block-font-mapping)))
   (dolist (unicode-block '("Mathematical Alphanumeric Symbols"
                            "Mathematical Operators"
                            "Miscellaneous Mathematical Symbols-A"
@@ -253,10 +254,11 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
                            "Miscellaneous Symbols and Arrows"
                            "Miscellaneous Symbols and Pictographs"
                            "Letterlike Symbols"))
-      (push "TeX Gyre Termes Math" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-  (push "UbuntuLiga Nerd Font Mono" (cadr (assoc "Greek and Coptic" unicode-fonts-block-font-mapping))))
+      (push "TeX Gyre Termes Math" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+
 #+END_SRC
 
+- old school way of change =unicode= font
 [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
 #+begin_src emacs-lisp :tangle no
 (defun +my/ligature-font ()
@@ -291,49 +293,18 @@ set -a 2install ttf-kose-git
 *** other faces
 
 #+begin_src fish
-set -a 2install ttf-{recursive,twemoji}
-
-# doom modeline font
-set COMICSHANNS_PATH "$HOME/.local/lib/commic_shanns"
-fc-list | grep "comic shanns" &>/dev/null || begin
-    git clone https://github.com/shannpersand/comic-shanns.git "$COMICSHANNS_PATH"
-    cd "$COMICSHANNS_PATH" || exit 1
-    cp v2/* ~/.local/share/fonts
-end
+set -a 2install ttf-{recursive,twemoji,comic-shanns-v2}
 #+end_src
 
 #+begin_src emacs-lisp
 (defun +my/better-font (font-size)
-  (interactive)
+  (interactive "N")
   (if (display-graphic-p)
       (progn
-        (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
-        (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
+        (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 1.0 font-size)))
+        (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 1.0 font-size)))
         (set-face-font 'font-lock-comment-face (font-spec :family "Cascadia Code Cur" :size (+ 0.0 font-size)))
         (+my/cjk-font))))
-
-(defun +my|init-font(frame)
-  (with-selected-frame frame
-    (if (display-graphic-p)
-        (+my/better-font 14))))
-
-(if (and (fboundp 'daemonp) (daemonp))
-    (add-hook 'after-make-frame-functions #'+my|init-font)
-  (add-hook 'doom-init-ui-hook (lambda () (+my/better-font 14))))
-(add-hook 'doom-load-theme-hook (lambda () (+my/better-font 14)))
-
-;;https://emacs.stackexchange.com/a/47092
-;; DONE restore ligature after exit big font mode
-(add-hook 'doom-big-font-mode-hook
-          (lambda ()
-            (if doom-big-font-mode
-                (progn
-                  (+my/better-font 22.5)
-                  (add-hook 'doom-big-font-mode-hook (lambda () (+my/better-font 14))))
-              (remove-hook 'doom-big-font-mode-hook (lambda () (+my/better-font 14))))))
-
-(add-hook 'writeroom-mode-enable-hook (lambda () (+my/better-font 21)))
-(add-hook 'writeroom-mode-disable-hook (lambda () (+my/better-font 14)))
 #+end_src
 
 *** Font scale
@@ -353,18 +324,55 @@ end
 ;; set a rescale font to cjk charset fonts,
 ;; so no explicit font size is needed
 ;; rescale doom-font cause bold font size != regular
-(dolist (rescles '(("更纱黑体" . 0.85)
-                   ("Sarasa" . 0.85)
-                   ("Cascadia Code Cur" . 0.95)
-                   ("Kosefont JP" . 0.95)))
-  (push rescles face-font-rescale-alist))
+(dolist (rescales '(("Ubuntu" . 1.05)
+                    ("mononoki" . 1.00)
+                    ("Cascadia" . 0.95)
+                    ("Kosefont" . 1.10)
+                    ("小濑字体" . 1.10)
+                    ))
+  (push rescales face-font-rescale-alist))
 
 (use-package! emacs-gfs
+  :custom
+  (gfs/default-face-height 140)
+  (gfs/resizeable-ignore-faces nil)
   :config
-  (setq gfs/default-face-height 140)
-  (setq gfs/resizeable-ignore-faces nil)
   (define-key evil-normal-state-map (kbd "C--") 'gfs/shrink-faces)
   (define-key evil-normal-state-map (kbd "C-=") 'gfs/magnify-faces))
+#+end_src
+
+*** Hooks
+Visual effect test
+#+begin_src python :tangle no
+  1234567890-+abcdedfghijkl
+# 1234567890-+abcdedfghijkl
+# 12345然后这是中文对齐jkl
+#+end_src
+
+#+begin_src emacs-lisp
+(defun +my|init-font (&optional frame)
+  (if frame
+    (with-selected-frame frame
+      (+my/better-font 14.3))
+    (+my/better-font 14.3)))
+
+(if (and (fboundp 'daemonp) (daemonp))
+    (add-hook 'after-make-frame-functions #'+my|init-font)
+  (add-hook 'doom-init-ui-hook #'+my|init-font))
+(add-hook 'doom-load-theme-hook #'+my|init-font)
+
+;;https://emacs.stackexchange.com/a/47092
+;; DONE restore ligature after exit big font mode
+(add-hook 'doom-big-font-mode-hook
+          (lambda ()
+            (if doom-big-font-mode
+                (progn
+                  (+my/better-font 22.0)
+                  (add-hook 'doom-big-font-mode-hook #'+my|init-font))
+              (remove-hook 'doom-big-font-mode-hook #'+my|init-font))))
+
+(add-hook 'writeroom-mode-enable-hook (lambda () (+my/better-font 20.5)))
+(add-hook 'writeroom-mode-disable-hook #'+my|init-font)
 #+end_src
 
 ** Doom-dashboard
