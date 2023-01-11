@@ -593,18 +593,6 @@ Disabling cursor movement when exiting insert mode
   (evil-select-search-module 'evil-search-module 'isearch))
 #+end_src
 
-** File Templates
-
-[[https://github.com/hlissner/doom-emacs/issues/2134][hlissner/doom-emacs#2134 How to create files using the file-templates module?]]
-#+begin_src emacs-lisp :tangle no
-(after! yasnippet
-  :config
-  ;; (setq +file-templates-dir "~/.config/doom/templates/")
-  (set-file-template! "/leetcode/.+\\.cpp$"
-    ;; :when +file-templates-in-emacs-dirs-p
-    :trigger "__leetcode.cpp" :mode 'c++-mode))
-#+end_src
-
 ** format
 
 #+begin_src fish
