@@ -443,6 +443,9 @@ check code ligatures, *bold* and /italic/ enabled
 #+end_src
 
 ** Popup
+#+begin_src emacs-lisp
+(setq split-width-threshold 120)
+#+end_src
 
 see ~display-buffer-alist~
 #+begin_src emacs-lisp
