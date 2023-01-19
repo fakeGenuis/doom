@@ -3,7 +3,6 @@
 #+PROPERTY: header-args:fish :tangle install.fish :results none :shebang "#!/usr/bin/fish" :file-mode (identity #o755)
 
 * Info
-
 requirements of =doom emacs=
 #+begin_src fish
 set -a 2install ripgrep fd
@@ -28,7 +27,6 @@ set -a 2install ripgrep fd
 #+end_src
 
 * Input
-
 #+begin_src emacs-lisp :tangle init.el
 :input
 chinese
@@ -40,7 +38,6 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+end_src
 
 ** Input Chinese
-
 [[https://emacs-china.org/t/topic/1271][Emacs GUI 下不能输入中文 - Emacs-general - Emacs China]]
 #+begin_src emacs-lisp :tangle no
 (use-package pyim
@@ -89,7 +86,6 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+end_src
 
 * Completion
-
 #+begin_src emacs-lisp :tangle init.el
 :completion
 (company +childframe)
@@ -97,14 +93,12 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+end_src
 
 ** company
-
 =company-ispell= needs word dictionary
 #+begin_src fish
 set -a 2install words
 #+end_src
 
 ** vertico
-
 #+begin_src emacs-lisp :tangle no
 ;; Configure the display per command.
 ;; Use a buffer with indices for imenu
@@ -122,7 +116,6 @@ set -a 2install words
 #+end_src
 
 * Display
-
 #+begin_src emacs-lisp :tangle init.el
 :ui
 doom                     ; what makes DOOM look the way it does
@@ -145,7 +138,6 @@ zen                      ; distraction-free coding or writing
 *The order of modules in above list make sense, so don't put them into subsections.*
 
 ** Themes
-
 restore last selected theme
 #+begin_src emacs-lisp
 (defun load-in-doom-dir (file-name)
@@ -182,7 +174,6 @@ track current theme for later load
 #+end_src
 
 ** ewal
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! ewal-doom-themes)
 #+end_src
@@ -197,9 +188,7 @@ emacs-client -e "(load-theme 'ewal-doom-themes t)"
 #+end_src
 
 ** Fonts
-
 *** Doom font
-
 #+begin_src fish
 set -a 2install ttf-sarasa-ui-sc adobe-source-serif-fonts
 # for unicode/emoji font fallback
@@ -217,7 +206,6 @@ set -a 2install quivira ttf-twemoji
 #+end_src
 
 *** =all-the-icons= font
-
 #+begin_src emacs-lisp
 (use-package all-the-icons
   :custom
@@ -225,7 +213,6 @@ set -a 2install quivira ttf-twemoji
 #+end_src
 
 *** =unicode=
-
 #+begin_src fish
 set -a 2install nerd-fonts-fira-code tex-gyre-math-fonts
 #+end_src
@@ -259,8 +246,7 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 #+end_src
 
 *** Chinese fonts
-
-- [[https://emacs.stackexchange.com/questions/68644/doom-emacs-setting-font-for-devanagari-characters][Doom Emacs - Setting Font for Devanagari characters - Emacs Stack Exchange]] 
+- [[https://emacs.stackexchange.com/questions/68644/doom-emacs-setting-font-for-devanagari-characters][Doom Emacs - Setting Font for Devanagari characters - Emacs Stack Exchange]]
 - [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]] 
 - [[https://emacs-china.org/t/doom-emacs/16809/7][doom emacs 中文字体与默认字体冲突 - #7，来自 HepIsaac - Emacs-general - Emacs China]]
 - [[https://emacs-china.org/t/doom-emacs/9628/8][doom emacs 下中文字体的设置 - #8，来自 RicardoM - Emacs-general - Emacs China]]
@@ -281,7 +267,6 @@ set -a 2install ttf-kose-git
 #+end_src
 
 *** other faces
-
 #+begin_src fish
 set -a 2install ttf-{recursive,twemoji,comic-shanns-v2}
 #+end_src
@@ -298,7 +283,6 @@ set -a 2install ttf-{recursive,twemoji,comic-shanns-v2}
 #+end_src
 
 *** Font scale
-
 - [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
 - [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
 - [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
@@ -366,7 +350,6 @@ Visual effect test
 #+end_src
 
 ** Doom-dashboard
-
 References
 - [[https://discourse.doomemacs.org/t/how-to-change-your-splash-screen/57][How to change your splash screen - Configuration - Doom Emacs Discourse]]
 - [[https://stackoverflow.com/a/25158644][elisp - Read from a file into a Emacs lisp list - Stack Overflow]]
@@ -406,7 +389,6 @@ add =vterm= entry
 #+end_src
 
 ** Ligatures
-
 check code ligatures, *bold* and /italic/ enabled
 == <- -> <= => != == >= <== ==> === ?= :=
 
@@ -463,7 +445,6 @@ see ~display-buffer-alist~
 use ~+popup-mode~ to toggle popup mode globally.
 
 ** treemacs
-
 #+begin_src emacs-lisp :tangle no
 (use-package! treemacs
   :when (modulep! :ui treemacs)
@@ -502,7 +483,6 @@ use ~+popup-mode~ to toggle popup mode globally.
 #+end_src
 
 ** tab bar
-
 #+begin_src emacs-lisp :tangle no
 (use-package centaur-tabs
   :custom
@@ -529,7 +509,6 @@ use ~+popup-mode~ to toggle popup mode globally.
 #+end_src
 
 ** Others
-
 Frame size
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(height . 40))
@@ -565,7 +544,6 @@ Line numbers
 #+end_src
 
 * Editing
-
 #+begin_src emacs-lisp :tangle init.el
 :editor
 (evil +everywhere); come to the dark side, we have cookies
@@ -579,7 +557,6 @@ word-wrap         ; soft wrapping with language-aware indent
 #+end_src
 
 ** Evil
-
 [[https://emacs.stackexchange.com/questions/28135/in-evil-mode-how-can-i-prevent-adding-to-the-kill-ring-when-i-yank-text-visual][In Evil mode, how can I prevent adding to the kill ring when I yank text, vis...]]
 #+begin_src emacs-lisp
 (setq-default evil-kill-on-visual-paste nil)
@@ -597,7 +574,6 @@ Disabling cursor movement when exiting insert mode
 #+end_src
 
 ** format
-
 #+begin_src fish
 set -a 2install prettier shfmt clang-format-static-bin python-black
 #+end_src
@@ -609,7 +585,6 @@ About Parentheses
 #+end_src
 
 * Emacs
-
 #+begin_src emacs-lisp :tangle init.el
 :emacs
 electric     ; smarter, keyword-based electric-indent
@@ -619,7 +594,6 @@ vc           ; version-control and Emacs, sitting in a tree
 #+end_src
 
 ** dired-ranger
-
 #+begin_src emacs-lisp :tangle no
 (use-package! dired
   :config
@@ -752,7 +726,6 @@ vc           ; version-control and Emacs, sitting in a tree
 #+end_src
 
 * Term
-
 #+begin_src fish
 set -a 2install fish libvterm
 #+end_src
@@ -763,7 +736,6 @@ vterm ; the best terminal emulation in Emacs
 #+end_src
 
 ** =vterm=
-
 #+begin_src emacs-lisp
 (defun +my/vterm-switch ()
   "Switch to vterm buffer in `Term' workspace.
@@ -823,14 +795,12 @@ If no vterm buffer in `Term' workspace, create it."
 #+end_src
 
 ** Colored output issues
-
-https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues
+[[https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues][Emacs - ArchWiki]]
 #+begin_src emacs-lisp :tangle no
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+end_src
 
 ** fish shell
-
 #+begin_src emacs-lisp
 (when (and (executable-find "fish")
            (require 'fish-completion nil t))
@@ -852,7 +822,6 @@ ligatures
 #+end_src
 
 * Checkers
-
 #+begin_src emacs-lisp :tangle init.el
 :checkers
 syntax           ; tasing you for every semicolon you forget
@@ -862,13 +831,11 @@ grammar          ; tasing grammar mistake every you make
 #+end_src
 
 ** Spell checker
-
 #+begin_src fish
 set -a 2install aspell aspell-en
 #+end_src
 
 ** grammar
-
 #+begin_src fish
 set -a 2install languagetool
 #+end_src
@@ -880,7 +847,6 @@ disable annoying =writegood-mode=
 #+end_src
 
 ** KILL =proselint=
-
 #+begin_src fish :tangle no
 pip install proselint
 #+end_src
@@ -903,7 +869,6 @@ pip install proselint
 #+end_src
 
 ** =grammarly=
-
 #+begin_src emacs-lisp :tangle no
 (package! flycheck-grammarly)
 #+end_src
@@ -915,7 +880,6 @@ pip install proselint
 #+end_src
 
 * Tools
-
 #+begin_src emacs-lisp :tangle init.el
 :tools
 biblio          ; Writes a PhD for you (citation needed)
@@ -934,7 +898,6 @@ upload          ; map local to remote projects via ssh/ftp
 #+end_src
 
 ** pdf-tools
-
 default pdf viewer in emacs
 [[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
 #+begin_src emacs-lisp
@@ -954,19 +917,16 @@ default pdf viewer in emacs
 #+end_src
 
 ** =editorconfig=
-
 #+begin_src fish :tangle install.fish
 set -a 2install emacs-editorconfig-git
 #+end_src
 
 ** lookup
-
 #+begin_src fish
 set -a 2install sqlite wordnet-cli
 #+end_src
 
 ** lsp
-
 [[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
 #+begin_src emacs-lisp
 (use-package lsp-ui :commands lsp-ui-mode
@@ -998,7 +958,6 @@ set -a 2install sqlite wordnet-cli
 #+end_src
 
 ** magit
-
 [[https://github.com/TheLocehiliosan/yadm][GitHub - TheLocehiliosan/yadm: Yet Another Dotfiles Manager]]
 [[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
 
@@ -1026,7 +985,6 @@ set -a 2install sqlite wordnet-cli
 can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
 
 * Lang
-
 #+begin_src emacs-lisp :tangle init.el
 :lang
 (cc +lsp)              ; C/C++/Obj-C madness
@@ -1053,7 +1011,6 @@ markdown               ; writing docs for people to ignore
 #+end_src
 
 ** Latex
-
 #+begin_src fish :tangle no
 set -a 2install miktex texlab
 #+end_src
@@ -1068,7 +1025,6 @@ set -a 2install miktex texlab
 #+end_src
 
 *** =cdlatex=
-
 #+begin_src emacs-lisp
 (use-package! cdlatex
   :config
@@ -1077,16 +1033,14 @@ set -a 2install miktex texlab
 #+end_src
 
 *** =lsp=
-
 word completion along with =(:lang (latex +lsp))=
 see =company-backends= variable docs
-https://github.com/hlissner/doom-emacs/issues/5672
+[[https://github.com/hlissner/doom-emacs/issues/5672][set-company-backend! appending instead of prepending · Issue #5672 · doomemac...]]
 #+begin_src emacs-lisp
 (setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
 #+end_src
 
 *** math preview
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! math-preview)
 #+end_src
@@ -1114,7 +1068,6 @@ preview latex formulas
 #+end_src
 
 *** Others
-
 clean intermediate files
 #+begin_src emacs-lisp
 (eval-after-load 'latex
@@ -1136,7 +1089,6 @@ add =XeTeX= mode in =TeX/LaTeX=
 #+end_src
 
 ** lua
-
 #+begin_src fish
 set -a 2install lua-language-server
 #+end_src
@@ -1168,7 +1120,6 @@ ligatures
 #+end_src
 
 ** wolfram
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! wolfram-mode)
 #+end_src
@@ -1223,7 +1174,6 @@ open with =mathematica= within emacs
 #+end_src
 
 ** python
-
 #+begin_src fish
 set -a 2install python-{pytest,nose,pyflakes,isort,lsp-server}
 #+end_src
@@ -1234,7 +1184,6 @@ set -a 2install shellcheck-bin bash-language-server
 #+end_src
 
 ** org
-
 #+begin_src fish
 set -a 2install gnuplot
 #+end_src
@@ -1326,7 +1275,6 @@ References
 #+end_src
 
 *** org-noter
-
 #+begin_src emacs-lisp
 (use-package! org-noter
   :after org
@@ -1338,7 +1286,6 @@ References
 #+end_src
 
 *** org-roam
-
 #+begin_src emacs-lisp
 (use-package! org-roam
   :after org
@@ -1355,7 +1302,6 @@ References
 #+end_src
 
 *** org-pandoc-import
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-pandoc-import
   :recipe (:host github
@@ -1368,7 +1314,6 @@ References
 #+end_src
 
 *** Color ~shell~ block output
-
 [[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package cl-lib
@@ -1390,7 +1335,6 @@ References
 #+END_SRC
 
 *** others
-
 org-src
 [[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
 #+begin_src emacs-lisp
@@ -1424,6 +1368,7 @@ org-habit
   :config
   (add-to-list 'org-modules 'org-habit))
 #+end_src
+
 ** css
 #+begin_src emacs-lisp
 (prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
@@ -1435,7 +1380,6 @@ set -a 2install yaml-language-server
 #+end_src
 
 * Email
-
 #+begin_src fish
 set -a 2install isync mu
 #+end_src
@@ -1454,7 +1398,6 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
 ** mu4e
-
 #+begin_src emacs-lisp
 (use-package! mu4e
   :defer 20
@@ -1474,7 +1417,6 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+end_src
 
 *** alert
-
 #+begin_src emacs-lisp :tangle no
 (use-package mu4e-alert
   :after mu4e
@@ -1484,7 +1426,6 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+end_src
 
 * App
-
 #+begin_src emacs-lisp :tangle init.el
 :app
 calendar
@@ -1493,7 +1434,6 @@ everywhere                 ; don't leave emacs
 #+end_src
 
 ** =elfeed=
-
 [[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
 #+begin_src emacs-lisp
 (use-package! elfeed
@@ -1523,11 +1463,9 @@ everywhere                 ; don't leave emacs
     (elfeed-db-save)
     (quit-window)))
 
-
 (map! :leader
       (:prefix "o"
        :desc "elfeed"    "e" #'elfeed))
-
 
 (use-package! elfeed-goodies
   :after elfeed
@@ -1536,7 +1474,6 @@ everywhere                 ; don't leave emacs
 #+end_src
 
 * Other packages
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! academic-phrases)
 
@@ -1563,7 +1500,6 @@ The return value is the new value of LIST-VAR."
 #+end_src
 
 ** keycast
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! keycast)
 #+end_src
@@ -1583,7 +1519,6 @@ The return value is the new value of LIST-VAR."
 #+end_src
 
 ** projectile
-
 [[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
 #+begin_src emacs-lisp
 (use-package! projectile
@@ -1598,7 +1533,6 @@ The return value is the new value of LIST-VAR."
 #+end_src
 
 ** shrface
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! shrface)
 #+end_src
@@ -1621,7 +1555,6 @@ The return value is the new value of LIST-VAR."
 #+end_src
 
 ** pomm
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! pomm)
 #+end_src
@@ -1632,7 +1565,6 @@ The return value is the new value of LIST-VAR."
 #+end_src
 
 ** screenshot
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! screenshot
   :recipe (:host github :repo "yangsheng6810/screenshot"))
@@ -1644,7 +1576,6 @@ currently buggy
 #+end_src
 
 ** tldr
-
 #+begin_src emacs-lisp :tangle packages.el
 (package! tldr)
 #+end_src
@@ -1656,7 +1587,6 @@ currently buggy
 #+end_src
 
 ** leetcode
-
 #+begin_src emacs-lisp :tangle no
 (use-package leetcode
   :costum
@@ -1666,7 +1596,6 @@ currently buggy
 #+end_src
 
 ** ivy-posframe
-
 #+begin_src emacs-lisp :tangle no
 (use-package ivy-posframe
   :custom
@@ -1681,8 +1610,8 @@ currently buggy
   :config
   (ivy-posframe-mode 1))
 #+end_src
-** zotxt
 
+** zotxt
 #+begin_src emacs-lisp :tangle packages.el
 (package! zotxt)
 #+end_src
@@ -1743,7 +1672,6 @@ currently buggy
 #+end_src
 
 * Other configs
-
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp :tangle no
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -1770,7 +1698,6 @@ currently buggy
 #+end_src
 
 * End
-
 #+begin_src fish
 paru -S --needed --noconfirm $2install
 #+end_src
