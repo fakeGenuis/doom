@@ -1716,3 +1716,9 @@ tty                        ; improve the terminal Emacs experience
 literate
 (default +bindings +smartparens))
 #+end_src
+
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Eval expression"       ":"    #'pp-eval-expression
+      :desc "M-x"                   ";"    #'execute-extended-command)
+#+end_src
