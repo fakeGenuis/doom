@@ -1680,9 +1680,9 @@ currently buggy
 ** proxy
 #+begin_src emacs-lisp
 (setq url-proxy-services
-   '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
-     ("http" . "localhost:8889")
-     ("https" . "localhost:8889")))
+   `(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
+     ("http" . ,(getenv "ALL_PROXY"))
+     ("https" . ,(getenv "ALL_PROXY"))))
 #+end_src
 
 ** reverse words
