@@ -99,20 +99,18 @@ set -a 2install words
 #+end_src
 
 ** vertico
-#+begin_src emacs-lisp :tangle no
-;; Configure the display per command.
-;; Use a buffer with indices for imenu
-;; and a flat (Ido-like) menu for M-x.
-(setq vertico-multiform-commands
-      '((consult-imenu buffer indexed)
-        (execute-extended-command buffer)))
-
-;; Configure the display per completion category.
-;; Use the grid display for files and a buffer
-;; for the consult-grep commands.
-(setq vertico-multiform-categories
-      '((file grid)
-        (consult-grep buffer)))
+[[https://github.com/tumashu/vertico-posframe/issues/16][tumashu/vertico-posframe#16 Disable vertico-posframe when Emacs runs in terminal]]
+#+begin_src emacs-lisp
+(use-package! vertico-posframe
+  :hook (vertico-mode . vertico-multiform-mode)
+  :config
+  (remove-hook 'vertico-mode #'vertico-posframe-mode)
+  (setq vertico-multiform-commands
+      '((consult-line
+         posframe
+         (vertico-posframe-fallback-mode . vertico-buffer-mode))
+        (t posframe)))
+  )
 #+end_src
 
 * Display
