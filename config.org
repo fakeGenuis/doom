@@ -1369,6 +1369,15 @@ org-habit
   (add-to-list 'org-modules 'org-habit))
 #+end_src
 
+org-format
+#+begin_src emacs-lisp
+(load "~/org/org-format/org-format.el")
+(use-package! org-format
+  :config
+  (map! :map org-mode-map
+        :localleader
+        "F" #'org-format-buffer))
+#+end_src
 ** css
 #+begin_src emacs-lisp
 (prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
