@@ -214,7 +214,7 @@ set -a 2install quivira ttf-twemoji
 
 *** =unicode=
 #+begin_src fish
-set -a 2install nerd-fonts-fira-code tex-gyre-math-fonts
+set -a 2install ttf-firacode-nerd tex-gyre-math-fonts
 #+end_src
 
 - doom way of change =unicode= font
@@ -509,12 +509,6 @@ use ~+popup-mode~ to toggle popup mode globally.
 #+end_src
 
 ** Others
-Frame size
-#+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(height . 40))
-(add-to-list 'default-frame-alist '(width . 120))
-#+end_src
-
 Transparency
 #+begin_src emacs-lisp
 (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
@@ -926,6 +920,10 @@ set -a 2install emacs-editorconfig-git
 set -a 2install sqlite wordnet-cli
 #+end_src
 
+#+begin_src emacs-lisp
+(add-to-list '+lookup-provider-url-alist '("Brave" "https://search.brave.com/search?q=%s"))
+#+end_src
+
 ** lsp
 [[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
 #+begin_src emacs-lisp
@@ -1216,6 +1214,7 @@ References
   (org-startup-numerated t)
   (org-ellipsis "⤵")
   (org-image-actual-width 400)
+  (org-duration-format '((special . h:mm)))
   (org-startup-with-inline-images t)
   (org-refile-targets '(("archive.org" :maxlevel . 1)))
   (org-tag-alist
@@ -1378,6 +1377,12 @@ org-format
         :localleader
         "F" #'org-format-buffer))
 #+end_src
+
+remove org Fancy Priorities
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-fancy-priorities :disable t)
+#+end_src
+
 ** css
 #+begin_src emacs-lisp
 (prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
@@ -1587,12 +1592,6 @@ currently buggy
 ** tldr
 #+begin_src emacs-lisp :tangle packages.el
 (package! tldr)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! tldr
-  :custom
-  (tldr-enabled-categories '("common" "linux" "osx" "sunos")))
 #+end_src
 
 ** leetcode
