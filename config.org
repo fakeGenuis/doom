@@ -1658,8 +1658,8 @@ currently buggy
 #+begin_src emacs-lisp
 (setq url-proxy-services
    `(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
-     ("http" . ,(getenv "ALL_PROXY"))
-     ("https" . ,(getenv "ALL_PROXY"))))
+     ("http" . ,(shell-command-to-string "echo -n $ALL_PROXY"))
+     ("https" . ,(shell-command-to-string "echo -n $ALL_PROXY"))))
 #+end_src
 
 ** reverse words
