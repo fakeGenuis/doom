@@ -1691,5 +1691,6 @@ literate
 #+begin_src emacs-lisp
 (map! :leader
       :desc "Eval expression"       ":"    #'pp-eval-expression
-      :desc "M-x"                   ";"    #'execute-extended-command)
+      :desc "M-x"                   ";"    #'execute-extended-command
+      :desc "Org agenda"            "A"    #'org-agenda)
 #+end_src
