@@ -1215,16 +1215,6 @@ References
   (org-duration-format '((special . h:mm)))
   (org-startup-with-inline-images t)
   (org-refile-targets '(("archive.org" :maxlevel . 1)))
-  (org-tag-alist
-   '((:startgroup)
-     ;; Put mutually exclusive tags here
-     (:endgroup)
-     ("@home" . ?H)
-     ("@work" . ?W)
-     ("agenda" . ?a)
-     ("publish" . ?P)
-     ("batch" . ?b)
-     ("idea" . ?i)))
   (org-link-descriptive t)
 
   :config
@@ -1449,35 +1439,16 @@ everywhere                 ; don't leave emacs
 [[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
 #+begin_src emacs-lisp
 (use-package! elfeed
-  :bind (:map elfeed-search-mode-map
-              ("q" . +my/elfeed-save-db-and-bury))
   :custom
   (elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/"))
   (elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/"))
   ;; (elfeed-search-filter "@1-month-ago +unread")
   (rmh-elfeed-org-files (list "~/org/elfeed.org"))
   :config
-  ;; (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-
-  ;;functions to support syncing .elfeed between machines
-  ;;makes sure elfeed reads index from disk before launching
-  (defun +my/elfeed-load-db-and-open ()
-    "Wrapper to load the elfeed db from disk before opening"
-    (interactive)
-    (elfeed-db-load)
-    (elfeed)
-    (elfeed-search-update--force))
-
-  ;;write to disk when quiting
-  (defun +my/elfeed-save-db-and-bury ()
-    "Wrapper to save the elfeed db to disk before burying buffer"
-    (interactive)
-    (elfeed-db-save)
-    (quit-window)))
-
-(map! :leader
-      (:prefix "o"
-       :desc "elfeed"    "e" #'elfeed))
+  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+  (map! :leader
+        (:prefix "o"
+         :desc "elfeed"    "e" #'elfeed)))
 
 (use-package! elfeed-goodies
   :after elfeed
