@@ -1134,22 +1134,6 @@ ligatures
                                ("\\.wls\\'" . wolfram-mode))))
 
 (setq wolfram-path "~/.Mathematica/Applications")
-
-(after! lsp
-  (add-to-list 'lsp-language-id-configuration '(wolfram-mode . "Mathematica"))
-
-  (lsp-register-client
-   (make-lsp-client :language-id 'wolfram
-                    :new-connection (lsp-tcp-server-command
-                                     (lambda (port)
-                                       `("wolfram" ;; or "wolframscript"
-                                         "-script" ;; or "-file"
-                                         "~/softwares/lsp-wl/init.wls"
-                                         ,(concat
-                                           "--socket="
-                                           (number-to-string port)))))
-                    :major-modes '(wolfram-mode)
-                    :server-id 'lsp-wl)))
 #+end_src
 
 ligatures
@@ -1158,7 +1142,7 @@ ligatures
   (set-ligatures! 'wolfram-mode
     :and "&&"
     :or "||"
-    :not "not"
+    :not "!"
     :true "True"
     :false "False"))
 #+end_src
@@ -1364,6 +1348,11 @@ org-format
   (map! :map org-mode-map
         :localleader
         "F" #'org-format-buffer))
+#+end_src
+
+org-wolfram
+#+begin_src emacs-lisp
+(load "~/lib/org-wolfram/org-wolfram.el")
 #+end_src
 
 remove org Fancy Priorities
