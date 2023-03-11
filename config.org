@@ -783,7 +783,9 @@ If no vterm buffer in `Term' workspace, create it."
   ;;             (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch
   ;;                  (buffer-face-mode t))))
   (define-key vterm-mode-map (kbd "M-q") #'vterm-send-escape)
-  (define-key vterm-mode-map [ (control return) ] #'+my/vterm-cd-project-root))
+  (define-key vterm-mode-map [ (control return) ] #'+my/vterm-cd-project-root)
+  (dolist (num (number-sequence 0 9))
+      (define-key vterm-mode-map (kbd (format "M-%d" num)) nil)))
 #+end_src
 
 ** Colored output issues
