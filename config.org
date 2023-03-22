@@ -205,9 +205,8 @@ set -a 2install quivira ttf-twemoji
 
 *** =all-the-icons= font
 #+begin_src emacs-lisp
-(use-package all-the-icons
-  :custom
-  (all-the-icons-scale-factor 0.9))
+(after! all-the-icons
+  (setq all-the-icons-scale-factor 0.9))
 #+end_src
 
 *** =unicode=
@@ -230,7 +229,6 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
                            "Miscellaneous Symbols and Pictographs"
                            "Letterlike Symbols"))
       (push "TeX Gyre Termes Math" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
-
 #+END_SRC
 
 - old school way of change =unicode= font
@@ -300,17 +298,17 @@ set -a 2install ttf-{recursive,twemoji,comic-shanns-v2}
                     ("mononoki" . 1.00)
                     ("Cascadia" . 0.95)
                     ("Kosefont" . 1.10)
-                    ("小濑字体" . 1.10)
-                    ))
+                    ("小濑字体" . 1.10)))
   (push rescales face-font-rescale-alist))
 
 (use-package! emacs-gfs
-  :custom
-  (gfs/default-face-height 140)
-  (gfs/resizeable-ignore-faces nil)
   :config
-  (define-key evil-normal-state-map (kbd "C--") 'gfs/shrink-faces)
-  (define-key evil-normal-state-map (kbd "C-=") 'gfs/magnify-faces))
+  (setq gfs/default-face-height 140)
+  (setq gfs/resizeable-ignore-faces nil)
+  :bind
+  (:map evil-normal-state-map
+        ("C--" . gfs/shrink-faces)
+        ("C-=" . gfs/magnify-faces)))
 #+end_src
 
 *** Hooks
@@ -368,8 +366,7 @@ References
 
 (let ((splash-file-name (expand-file-name "splash" doom-private-dir)))
   (if (file-exists-p splash-file-name)
-    (setq +doom-dashboard-ascii-banner-fn (lambda () (my-weebery-is-always-greater splash-file-name)))
-    ))
+    (setq +doom-dashboard-ascii-banner-fn (lambda () (my-weebery-is-always-greater splash-file-name)))))
 #+end_src
 
 add =vterm= entry
@@ -400,17 +397,14 @@ check code ligatures, *bold* and /italic/ enabled
 
 ** Doom-modeline
 #+begin_src emacs-lisp
-(use-package! doom-modeline
-  :hook (after-init . doom-modeline-mode)
-
-  :custom
+(after! doom-modeline
   ;; The limit of the window width.
   ;; If `window-width' is smaller than the limit, some information won't be displayed.
-  (doom-modeline-window-width-limit fill-column)
-  (doom-modeline-enable-word-count nil)
-  (doom-modeline-persp-name t)
-  (doom-modeline-persp-icon nil)
-  (doom-modeline-workspace-name nil))
+  (setq doom-modeline-window-width-limit fill-column)
+  (setq doom-modeline-enable-word-count nil)
+  (setq doom-modeline-persp-name t)
+  (setq doom-modeline-persp-icon nil)
+  (setq doom-modeline-workspace-name nil))
 #+end_src
 
 [[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
@@ -502,8 +496,8 @@ use ~+popup-mode~ to toggle popup mode globally.
   :bind
   (:map evil-normal-state-map
    ("g t" . centaur-tabs-forward)
-   ("g T" . centaur-tabs-backward))
-  )
+   ("g T" . centaur-tabs-backward)))
+  
 #+end_src
 
 ** Others
@@ -526,8 +520,7 @@ Transparency
 
 (map! :leader
       (:prefix "t"
-       :desc "Toggle transparency"    "T" #'toggle-transparency
-       ))
+       :desc "Toggle transparency"    "T" #'toggle-transparency))
 #+end_src
 
 Line numbers
@@ -551,15 +544,13 @@ word-wrap         ; soft wrapping with language-aware indent
 ** Evil
 [[https://emacs.stackexchange.com/questions/28135/in-evil-mode-how-can-i-prevent-adding-to-the-kill-ring-when-i-yank-text-visual][In Evil mode, how can I prevent adding to the kill ring when I yank text, vis...]]
 #+begin_src emacs-lisp
-(setq-default evil-kill-on-visual-paste nil)
+(after! evil
+  (setq evil-kill-on-visual-paste nil)
+  ;; Disabling cursor movement when exiting insert mode
+  (setq evil-move-cursor-back nil))
 #+end_src
 
-Disabling cursor movement when exiting insert mode
-#+begin_src emacs-lisp
-(setq evil-move-cursor-back nil)
-#+end_src
-
-[[https://github.com/doomemacs/doomemacs/issues/6478][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...]]
+[[https://github.com/doomemacs/doomemacs/issues/6478][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
 #+begin_src emacs-lisp :tangle no
 (after! evil
   (evil-select-search-module 'evil-search-module 'isearch))
@@ -591,9 +582,8 @@ vc           ; version-control and Emacs, sitting in a tree
   :config
   ;; https://github.com/jtbm37/all-the-icons-dired/pull/39/
   (setq all-the-icons-dired-monochrome nil)
-  (setq all-the-icons-dired-mode t)
-  )
-
+  (setq all-the-icons-dired-mode t))
+  
 (use-package! ranger
   :when (modulep! :emacs dired +ranger)
   :after dired
@@ -616,13 +606,14 @@ vc           ; version-control and Emacs, sitting in a tree
   (map! :leader
         (:prefix "o"
          :desc "ranger"    "r" #'ranger
-         :desc "REPL"    "R" #'+eval/open-repl-other-window))
-  )
+         :desc "REPL"    "R" #'+eval/open-repl-other-window)))
+  
 #+end_src
 
 ** Dired
 #+begin_src emacs-lisp
-(use-package dired
+(use-package! dired
+  :commands dired-jump
   :custom
   (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
@@ -648,8 +639,7 @@ vc           ; version-control and Emacs, sitting in a tree
 
 (use-package dired-x
   ;; Enable dired-omit-mode by default
-  :hook
-  (dired-mode . dired-omit-mode)
+  :hook (dired-mode . dired-omit-mode)
   :config
   ;; Make dired-omit-mode hide all "dotfiles"
   (setq dired-omit-files
@@ -760,21 +750,16 @@ If no vterm buffer in `Term' workspace, create it."
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! vterm
-  :custom
-  (vterm-shell "/usr/bin/fish")
-  (vterm-buffer-name-string "vterm %s")
-  (vterm-kill-buffer-on-exit t)
-  (vterm-ignore-blink-cursor nil)
-  (vterm-max-scrollback 10000)
-  :config
+(after! vterm
+  (setq vterm-shell "/usr/bin/fish"
+        vterm-buffer-name-string "vterm %s"
+        vterm-ignore-blink-cursor nil)
   (map! :leader
         (:prefix "o"
          ;; default to vterm at current file directory
          ;; `C-Return' to project root
          :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
-         :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
-  (map! :leader
+         :desc "Open vterm here" "T" (cmd!! #'+vterm/here t))
         (:prefix "b"
          :desc "Switch to vterm buffer" "v" #'+my/vterm-switch))
   ;; TODO fixed-pitch in bpytop like
@@ -1018,20 +1003,15 @@ set -a 2install miktex texlab
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! evil-tex
-  :when (modulep! :editor evil +everywhere)
-  :config
+(after! evil-tex
   (setq evil-tex-include-newlines-in-envs nil
-        evil-tex-select-newlines-with-envs nil)
-  )
+        evil-tex-select-newlines-with-envs nil))
 #+end_src
 
 *** =cdlatex=
 #+begin_src emacs-lisp
-(use-package! cdlatex
-  :config
-  (map! :map cdlatex-mode-map
-    :i "TAB" #'cdlatex-tab))
+(map! :after cdlatex :map cdlatex-mode-map
+  :i "TAB" #'cdlatex-tab)
 #+end_src
 
 *** =lsp=
@@ -1072,10 +1052,10 @@ preview latex formulas
 *** Others
 clean intermediate files
 #+begin_src emacs-lisp
-(eval-after-load 'latex
-  '(setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
-         LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
-         Tex-clean-confirm nil))
+(after! latex
+  (setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
+        LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
+        TeX-clean-confirm nil))
 #+end_src
 
 add =XeTeX= mode in =TeX/LaTeX=
@@ -1097,19 +1077,17 @@ set -a 2install lua-language-server
 
 lsp support
 #+begin_src emacs-lisp
-(use-package! lua-mode
-  :when (modulep! :lang lua +lsp)
-  :custom
-  (lsp-clients-lua-language-server-bin "/usr/bin/lua-language-server")
-  (lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua")
-  (lsp-clients-lua-language-server-args '("-E" "--logpath" "/tmp/lua-language-server"))
+(after! lua-mode
+  (setq lsp-clients-lua-language-server-bin "/usr/bin/lua-language-server")
+  (setq lsp-clients-lua-language-server-main-location "/usr/lib/lua-language-server/bin/main.lua")
+  (setq lsp-clients-lua-language-server-args '("-E" "--logpath" "/tmp/lua-language-server"))
   ;; (lsp-clients-lua-language-server-command '("lua-language-server" "-E"))
-  (lsp-clients-lua-language-server-command nil))
+  (setq lsp-clients-lua-language-server-command nil))
 #+end_src
 
 ligatures
 #+begin_src emacs-lisp
-(with-eval-after-load "ligatures"
+(after! lua-mode
   (set-ligatures! 'lua-mode
     :def "function"
     :return "return"
@@ -1129,34 +1107,34 @@ ligatures
 #+begin_src emacs-lisp
 ;; last update was 5 years ago
 (use-package! wolfram-mode
+  :mode ("\\.m\\'" "\\.fr\\'" "\\.wls?\\'")
+  :interpreter "wolframscript"
+  :commands (wolfram-mode run-wolfram)
   :config
-  (autoload 'wolfram-mode "wolfram-mode" nil t)
-  (autoload 'run-wolfram "wolfram-mode" nil t)
   (setq wolfram-program "/usr/local/bin/wolfram")
-  (prependq! auto-mode-alist '(
-                               ("\\.m\\'" . wolfram-mode)
-                               ("\\.fr\\'" . wolfram-mode)
-                               ("\\.wl\\'" . wolfram-mode)
-                               ("\\.wls\\'" . wolfram-mode))))
-
-(setq wolfram-path "~/.Mathematica/Applications")
-#+end_src
-
-ligatures
-#+begin_src emacs-lisp
-(with-eval-after-load "ligatures"
+  (setq wolfram-path "~/.Mathematica/Applications")
+  ;; ligatures
   (set-ligatures! 'wolfram-mode
     :and "&&"
     :or "||"
     :not "!"
     :true "True"
-    :false "False"))
+    :false "False")
+  ;; open .nb file with mathematica from dirvish
+  (after! dirvish
+    (push '(("nb") "/usr/local/bin/mathematica" "%f") dirvish-open-with-programs)))
 #+end_src
 
-open with =mathematica= within emacs
+org-wolfram
 #+begin_src emacs-lisp
-(after! dirvish
-  (push '(("nb") "/usr/local/bin/mathematica" "%f") dirvish-open-with-programs))
+(use-package! org-wolfram
+  :load-path "~/lib/org-wolfram/"
+  :commands org-wolfram-mode)
+#+end_src
+
+wolfram-format
+#+begin_src emacs-lisp
+(load "~/lib/wolframFormatter/wolfram-format.el")
 #+end_src
 
 ** python
@@ -1193,40 +1171,38 @@ References
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! org
-  :custom
-  (org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal")))
-  (org-agenda-start-with-log-mode t)
-  (org-log-done 'time)
-  (org-log-into-drawer t)
-  (org-startup-numerated t)
-  (org-ellipsis "⤵")
-  (org-image-actual-width 400)
-  (org-duration-format '((special . h:mm)))
-  (org-startup-with-inline-images t)
-  (org-refile-targets '(("archive.org" :maxlevel . 1)))
-  (org-link-descriptive t)
+(setq org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal"))
+      org-agenda-start-with-log-mode t
+      org-log-done 'time
+      org-log-into-drawer t
+      org-startup-numerated t
+      org-ellipsis "⤵"
+      org-image-actual-width 400
+      org-duration-format '((special . h:mm))
+      org-startup-with-inline-images t
+      org-refile-targets '(("archive.org" :maxlevel . 1))
+      org-link-descriptive t)
 
-  :config
-  (map! :map org-mode-map
-        :localleader
-        "y" #'org-copy-link-url)
-  (load-in-doom-dir "org-capture-templates.el")
+(load-in-doom-dir "org-capture-templates.el")
+#+end_src
 
+#+begin_src emacs-lisp
+(after! org
   ;;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
   ;; display inline images
   (org-display-inline-images)
-
   ;; Save Org buffers after refiling!
-  (advice-add 'org-refile :after 'org-save-all-org-buffers))
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+  (map! :map org-mode-map
+        :localleader
+        "y" #'org-copy-link-url))
 #+end_src
 
 *** unfold search
-[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...]]
+[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
 #+begin_src emacs-lisp
 (after! org-fold-core
-
   (defun org-show-current-heading-tidily ()
     (interactive)  ;Inteactive
     "Show next entry, keeping other entries closed."
@@ -1253,29 +1229,17 @@ References
 
 *** org-noter
 #+begin_src emacs-lisp
-(use-package! org-noter
-  :after org
-  :custom
-  (org-noter-doc-split-fraction '(0.75 . 0.25))
-  :config
+(after! org-noter
   (org-noter-set-doc-split-fraction '(0.75 . 0.25)))
-
 #+end_src
 
 *** org-roam
 #+begin_src emacs-lisp
-(use-package! org-roam
-  :after org
-  :init
-  (setq org-roam-directory (file-truename "~/org/roam")
-        org-roam-v2-ack t)
-  :custom
-  (org-roam-dailies-capture-templates
+(after! org-roam
+  (setq org-roam-directory (file-truename "~/org/roam"))
+  (setq org-roam-dailies-capture-templates
    '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
-      :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
-  :config
-  (require 'org-roam-dailies)
-  )
+      :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
 #+end_src
 
 *** org-pandoc-import
@@ -1287,7 +1251,9 @@ References
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! org-pandoc-import :after org)
+(use-package! org-pandoc-import
+  :defer t
+  :after org)
 #+end_src
 
 *** Color ~shell~ block output
@@ -1348,17 +1314,13 @@ org-habit
 
 org-format
 #+begin_src emacs-lisp
-(load "~/org/org-format/org-format.el")
 (use-package! org-format
+  :commands org-format-buffer
+  :load-path "~/org/org-format/"
   :config
   (map! :map org-mode-map
         :localleader
         "F" #'org-format-buffer))
-#+end_src
-
-org-wolfram
-#+begin_src emacs-lisp
-(load "~/lib/org-wolfram/org-wolfram.el")
 #+end_src
 
 remove org Fancy Priorities
@@ -1396,21 +1358,20 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 
 ** mu4e
 #+begin_src emacs-lisp
-(use-package! mu4e
-  :defer 20
-  :custom
-  (mu4e-update-interval 300)
-  (mu4e-split-view 'vertical)
-  (mu4e-change-filenames-when-moving t)
-  (mu4e-attachment-dir "~/Downloads")
-  ;; every new email composition gets its own frame!
-  (mu4e-compose-in-new-frame t)
-  (mu4e-use-fancy-chars t))
+(setq-default mu4e-update-interval 300)
+(after! mu4e
+  (setq mu4e-split-view 'vertical
+        mu4e-change-filenames-when-moving t
+        mu4e-attachment-dir "~/Downloads"
+        ;; every new email composition gets its own frame!
+        mu4e-compose-in-new-frame t
+        mu4e-use-fancy-chars t))
 #+end_src
 
 private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+begin_src emacs-lisp
-(load-in-doom-dir "mu4e.el")
+(after! mu4e
+  (load-in-doom-dir "mu4e.el"))
 #+end_src
 
 *** alert
@@ -1433,21 +1394,17 @@ everywhere                 ; don't leave emacs
 ** =elfeed=
 [[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
 #+begin_src emacs-lisp
-(use-package! elfeed
-  :custom
-  (elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/"))
-  (elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/"))
-  ;; (elfeed-search-filter "@1-month-ago +unread")
-  (rmh-elfeed-org-files (list "~/org/elfeed.org"))
-  :config
+(after! elfeed
   (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+  (setq elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/")
+        elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/")
+        ;; elfeed-search-filter "@1-month-ago +unread"
+        rmh-elfeed-org-files (list "~/org/elfeed.org"))
   (map! :leader
         (:prefix "o"
          :desc "elfeed"    "e" #'elfeed)))
 
-(use-package! elfeed-goodies
-  :after elfeed
-  :config
+(after! elfeed-goodies
   (setq elfeed-goodies/entry-pane-size 0.5))
 #+end_src
 
@@ -1458,7 +1415,6 @@ everywhere                 ; don't leave emacs
 (package! vlf)
 
 (package! inherit-org :recipe (:host github :repo "chenyanming/inherit-org"))
-
 #+end_src
 
 [[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
@@ -1484,7 +1440,8 @@ The return value is the new value of LIST-VAR."
 
 [[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
 #+begin_src emacs-lisp
-(use-package keycast
+(use-package! keycast
+  :hook doom-after-init
   :config
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
@@ -1493,21 +1450,19 @@ The return value is the new value of LIST-VAR."
         (add-hook 'pre-command-hook 'keycast--update t)
       (remove-hook 'pre-command-hook 'keycast--update)))
   (add-to-list 'global-mode-string '("" keycast-mode-line)))
-(keycast-mode) ;; or run keycast-mode by demand
 #+end_src
 
 ** projectile
 [[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
 #+begin_src emacs-lisp
-(use-package! projectile
-  :custom
-  (projectile-indexing-method 'alien)
-  (projectile-sort-order 'recently-active)
-  (projectile-file-exists-remote-cache-expire (* 10 60))
-  (projectile-track-known-projects-automatically nil)
-  ;(projectile-require-project-root t)
-  (projectile-auto-discover t))
-  ;; (projectile-file-exists-local-cache-expire (* 5 60)))
+(after! projectile
+  (setq projectile-indexing-method 'alien
+        projectile-sort-order 'recently-active
+        projectile-file-exists-remote-cache-expire (* 10 60)
+        projectile-track-known-projects-automatically nil
+        ;; projectile-require-project-root t
+        projectile-auto-discover t))
+        ;; (projectile-file-exists-local-cache-expire (* 5 60)))
 #+end_src
 
 ** shrface
@@ -1517,19 +1472,12 @@ The return value is the new value of LIST-VAR."
 
 #+begin_src emacs-lisp
 (use-package shrface
-  :defer t
+  :hook eww-after-render-hook
   :config
   (shrface-basic)
   (shrface-trial)
   (shrface-default-keybindings) ; setup default keybindings
   (setq shrface-href-versatile t))
-
-(use-package eww
-  :defer t
-  :init
-  (add-hook 'eww-after-render-hook #'shrface-mode)
-  :config
-  (require 'shrface))
 #+end_src
 
 ** pomm
@@ -1539,7 +1487,7 @@ The return value is the new value of LIST-VAR."
 
 #+begin_src emacs-lisp
 (use-package pomm
-  :commands (pomm))
+  :commands pomm)
 #+end_src
 
 ** screenshot
@@ -1592,9 +1540,8 @@ currently buggy
 #+begin_src emacs-lisp
 (use-package zotxt
   :hook (org-mode . (lambda () (org-zotxt-mode 1)))
-  :custom
-  (zotxt-default-bibliography-style "mkbehr-short")
   :config
+  (setq zotxt-default-bibliography-style "mkbehr-short")
 
   (defun org-zotxt-get-attachment-path ()
     "Get attachment file path"
