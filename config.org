@@ -109,8 +109,7 @@ set -a 2install words
       '((consult-line
          posframe
          (vertico-posframe-fallback-mode . vertico-buffer-mode))
-        (t posframe)))
-  )
+        (t posframe))))
 #+end_src
 
 * Display
@@ -780,15 +779,9 @@ If no vterm buffer in `Term' workspace, create it."
 #+end_src
 
 ** fish shell
-#+begin_src emacs-lisp
-(when (and (executable-find "fish")
-           (require 'fish-completion nil t))
-  (global-fish-completion-mode))
-#+end_src
-
 ligatures
 #+begin_src emacs-lisp
-(with-eval-after-load "ligatures"
+(after! fish-mode
   (set-ligatures! 'fish-mode
     :def "function"
     :return "return"
@@ -880,10 +873,13 @@ upload          ; map local to remote projects via ssh/ftp
 default pdf viewer in emacs
 [[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
 #+begin_src emacs-lisp
+;; overwrite doom's fit-page
 (use-package! pdf-tools
-  :custom
-  (pdf-view-display-size 'fit-width)
-  (+latex-viewers '(pdf-tools evince okular)))
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (setq-default pdf-view-display-size 'fit-width)
+  (setq +latex-viewers '(pdf-tools evince okular)))
 
 ;; to use pdfview with auctex
 (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
@@ -951,22 +947,22 @@ set -a 2install sqlite wordnet-cli
 ~tramp~ from ~Melpa~ buggy, install it from ~aur~.
 #+begin_src emacs-lisp
 (use-package! tramp
-  :config
-  ;; (setenv "SHELL" "/bin/bash")
-  (add-to-list 'tramp-methods
-               '("yadm"
-                 (tramp-remote-shell "/bin/bash")
-                 (tramp-remote-shell-args ("-c"))
-                 (tramp-login-program "yadm")
-                 (tramp-login-args (("enter")))))
-                 ;; (tramp-login-env (("SHELL") ("/bin/bash")))))
-
+  :commands yadm-status
+  :init
   (defun yadm-status ()
     (interactive)
     (magit-status "/yadm::"))
   (map! :leader
         (:prefix "g"
-         :desc "yadm-status" "a" #'yadm-status)))
+         :desc "yadm-status" "a" #'yadm-status))
+  :config
+  (add-to-list 'tramp-methods
+               '("yadm"
+                 (tramp-remote-shell "/bin/bash")
+                 (tramp-remote-shell-args ("-c"))
+                 (tramp-login-program "yadm")
+                 (tramp-login-args (("enter"))))))
+                 ;; (tramp-login-env (("SHELL") ("/bin/bash")))))
 #+end_src
 
 can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
