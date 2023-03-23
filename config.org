@@ -37,54 +37,6 @@ chinese
 set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+end_src
 
-** Input Chinese
-[[https://emacs-china.org/t/topic/1271][Emacs GUI 下不能输入中文 - Emacs-general - Emacs China]]
-#+begin_src emacs-lisp :tangle no
-(use-package pyim
-  :demand t
-  :config
-  ;; 激活 basedict 拼音词库，五笔用户请继续阅读 README
-  (use-package pyim-basedict
-    :config (pyim-basedict-enable))
-
-  (setq default-input-method "pyim")
-
-  ;; 我使用全拼
-  (setq pyim-default-scheme 'quanpin)
-
-  ;; 设置 pyim 探针设置，这是 pyim 高级功能设置，可以实现 *无痛* 中英文切换 :-)
-  ;; 我自己使用的中英文动态切换规则是：
-  ;; 1. 光标只有在注释里面时，才可以输入中文。
-  ;; 2. 光标前是汉字字符时，才能输入中文。
-  ;; 3. 使用 M-j 快捷键，强制将光标前的拼音字符串转换为中文。
-  (setq-default pyim-english-input-switch-functions
-                '(pyim-probe-dynamic-english
-                  pyim-probe-isearch-mode
-                  pyim-probe-program-mode
-                  pyim-probe-org-structure-template))
-
-  (setq-default pyim-punctuation-half-width-functions
-                '(pyim-probe-punctuation-line-beginning
-                  pyim-probe-punctuation-after-punctuation))
-
-  ;; 开启拼音搜索功能
-  (pyim-isearch-mode 1)
-
-  ;; 使用 popup-el 来绘制选词框, 如果用 emacs26, 建议设置
-  ;; 为 'posframe, 速度很快并且菜单不会变形，不过需要用户
-  ;; 手动安装 posframe 包。
-  ;;(setq eim-use-tooltip nil)
-  ;;(setq pyim-page-tooltip 'posframe)
-  (setq pyim-page-tooltip 'popup)
-
-  ;; 选词框显示 5 个候选词
-  (setq pyim-page-length 5)
-
-  :bind
-  (("M-j" . pyim-convert-string-at-point) ;与 pyim-probe-dynamic-english 配合
-   ("C-;" . pyim-delete-word-from-personal-buffer)))
-#+end_src
-
 * Completion
 #+begin_src emacs-lisp :tangle init.el
 :completion
@@ -435,70 +387,6 @@ see ~display-buffer-alist~
 #+end_src
 use ~+popup-mode~ to toggle popup mode globally.
 
-** treemacs
-#+begin_src emacs-lisp :tangle no
-(use-package! treemacs
-  :when (modulep! :ui treemacs)
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  (setq treemacs-no-load-time-warnings t)
-  :config
-  (setq treemacs-width 17)
-  (setq treemacs-project-follow-cleanup t)
-  ;; (setq treemacs-user-mode-line-format t)
-  ;; https://github.com/hlissner/doom-emacs/issues/1551
-  ;; doom-themes-treemacs-enable-variable-pitch nil
-
-  ;; https://github.com/Alexander-Miller/treemacs/issues/486)
-  ;; (dolist (face '(treemacs-root-face
-  ;;                 treemacs-git-unmodified-face
-  ;;                 treemacs-git-modified-face
-  ;;                 treemacs-git-renamed-face
-  ;;                 treemacs-git-ignored-face
-  ;;                 treemacs-git-untracked-face
-  ;;                 treemacs-git-added-face
-  ;;                 treemacs-git-conflict-face
-  ;;                 treemacs-directory-face
-  ;;                 treemacs-directory-collapsed-face
-  ;;                 treemacs-file-face
-  ;;                 treemacs-tags-face))
-  ;;  (set-face-attribute face nil :family "Comic Shanns" :height (+ 80 (+my/font-size 20))))
-  (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t)
-  (treemacs-fringe-indicator-mode 'always)
-  (treemacs-git-mode 'extended))
-
-(use-package treemacs-all-the-icons
-  :after (treemacs all-the-icons))
-#+end_src
-
-** tab bar
-#+begin_src emacs-lisp :tangle no
-(use-package centaur-tabs
-  :custom
-  (centaur-tabs-style "box")
-  (centaur-tabs-height 26)
-  (centaur-tabs-set-icons t)
-  ;; (centaur-tabs-plain-icons t)
-  (centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-set-bar 'left)
-  (centaur-tabs-set-modified-marker t)
-  :config
-  (centaur-tabs-headline-match)
-  (centaur-tabs-mode t)
-  :hook
-  (+doom-dashboard-mode . centaur-tabs-local-mode)
-  (ranger-mode-hook . centaur-tabs-local-mode)
-  (calendar-mode . centaur-tabs-local-mode)
-  (org-agenda-mode . centaur-tabs-local-mode)
-  :bind
-  (:map evil-normal-state-map
-   ("g t" . centaur-tabs-forward)
-   ("g T" . centaur-tabs-backward)))
-  
-#+end_src
-
 ** Others
 Transparency
 #+begin_src emacs-lisp
@@ -640,8 +528,8 @@ Additional syntax highlighting for dired
   (dirvish-side-width 25)
   ;; (dirvish-reuse-session nil)
   ;; TODO fix line height
-  (dirvish-header-line-height '(25 . 25))
-  (dirvish-mode-line-height '(25 . 25))
+  (dirvish-header-line-height '(20 . 37))
+  (dirvish-mode-line-height '(20 . 37))
   (dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
@@ -793,39 +681,6 @@ disable annoying =writegood-mode=
 #+begin_src emacs-lisp :tangle packages.el
 (package! writegood-mode
   :disable t)
-#+end_src
-
-** KILL =proselint=
-#+begin_src fish :tangle no
-pip install proselint
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(package! flymake-proselint)
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(use-package! flycheck
-  :config
-  (flycheck-define-checker proselint
-      "Flycheck checker using Proselint.
-
-  See URL `http://proselint.com/'."
-      :command ("proselint" "--json" "-")
-      :standard-input t
-      :error-parser flycheck-proselint-parse-errors
-      :modes (text-mode org-mode latex-mode LaTeX-mode markdown-mode gfm-mode message-mode)))
-#+end_src
-
-** =grammarly=
-#+begin_src emacs-lisp :tangle no
-(package! flycheck-grammarly)
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(with-eval-after-load 'flycheck
-  (flycheck-grammarly-setup))
-(setq flycheck-grammarly-check-time 0.8)
 #+end_src
 
 * Tools
@@ -1270,27 +1125,12 @@ org-ref
 (use-package org-ref)
 #+end_src
 
-org-deft
-#+begin_src emacs-lisp :tangle no
-(setq deft-directory "~/org")
-(setq deft-default-extension "org")
-#+end_src
-
-org-habit
-#+begin_src emacs-lisp
-(use-package! org-habit
-  :custom
-  (org-habit-graph-column 60)
-  :config
-  (add-to-list 'org-modules 'org-habit))
-#+end_src
-
 org-format
 #+begin_src emacs-lisp
 (use-package! org-format
   :commands org-format-buffer
   :load-path "~/org/org-format/"
-  :config
+  :init
   (map! :map org-mode-map
         :localleader
         "F" #'org-format-buffer))
@@ -1345,15 +1185,6 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+begin_src emacs-lisp
 (after! mu4e
   (load-in-doom-dir "mu4e.el"))
-#+end_src
-
-*** alert
-#+begin_src emacs-lisp :tangle no
-(use-package mu4e-alert
-  :after mu4e
-  :hook ((after-init . mu4e-alert-enable-mode-line-display)
-         (after-init . mu4e-alert-enable-notifications))
-  :config (mu4e-alert-set-default-style 'libnotify))
 #+end_src
 
 * App
@@ -1477,31 +1308,6 @@ currently buggy
 ** tldr
 #+begin_src emacs-lisp :tangle packages.el
 (package! tldr)
-#+end_src
-
-** leetcode
-#+begin_src emacs-lisp :tangle no
-(use-package leetcode
-  :costum
-  (leetcode-prefer-language "cpp")
-  (leetcode-save-solutions t)
-  (leetcode-directory "~/Coding/leetcode"))
-#+end_src
-
-** ivy-posframe
-#+begin_src emacs-lisp :tangle no
-(use-package ivy-posframe
-  :custom
-  (ivy-posframe-display-functions-alist
-   '((swiper          . ivy-display-function-fallback)
-     (complete-symbol . ivy-posframe-display-at-point)
-     (counsel-M-x     . ivy-posframe-display-at-frame-top-center)
-     (t               . ivy-posframe-display)))
-  (ivy-posframe-parameters
-   '((left-fringe . 8)
-     (right-fringe . 8)))
-  :config
-  (ivy-posframe-mode 1))
 #+end_src
 
 ** zotxt
