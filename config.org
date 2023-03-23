@@ -1275,13 +1275,27 @@ The return value is the new value of LIST-VAR."
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package shrface
+(use-package! shrface
   :hook eww-after-render-hook
+  :commands request-url-as-org
   :config
   (shrface-basic)
   (shrface-trial)
   (shrface-default-keybindings) ; setup default keybindings
-  (setq shrface-href-versatile t))
+  (setq shrface-href-versatile t)
+
+  (defun request-url-as-org (url)
+    (interactive "sRequest url: ")
+    (require 'shrface)
+    (require 'request)
+    (setq-local shrface-request-url url)
+    (request url
+      :parser 'buffer-string
+      :headers '(("User-Agent" . "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36"))
+      :sync nil
+      :success (cl-function
+                (lambda (&key data &allow-other-keys)
+                  (shrface-html-export-as-org data))))))
 #+end_src
 
 ** pomm
