@@ -1314,9 +1314,12 @@ The return value is the new value of LIST-VAR."
   :recipe (:host github :repo "yangsheng6810/screenshot"))
 #+end_src
 
-currently buggy
-#+begin_src emacs-lisp :tangle no
-(use-package screenshot)
+#+begin_src emacs-lisp
+(use-package! screenshot
+  :commands screenshot
+  :init
+  (map! (:leader :prefix "o"
+         :desc "sreenshot within emacs" "S" #'screenshot)))
 #+end_src
 
 ** tldr
