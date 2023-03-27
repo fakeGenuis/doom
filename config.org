@@ -120,6 +120,7 @@ track current theme for later load
     (message "Switch to theme: %s" new-theme)))
 
 (add-variable-watcher 'doom-theme #'+my/save-theme)
+(add-hook 'doom-load-them-hook #'+my/save-theme)
 #+end_src
 
 ** ewal
@@ -149,7 +150,7 @@ set -a 2install quivira ttf-twemoji
 (setq doom-font (font-spec :family "mononokiLiga Nerd Font Mono" :size 13.0)
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
-      ;; doom-unicode-font (font-spec :family "Twemoji")
+      doom-unicode-font doom-font
       doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
       ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 #+end_src
@@ -170,16 +171,7 @@ get current display font by =SPC h '=
 see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
 #+BEGIN_SRC elisp
 (after! unicode-fonts
-  (push "UbuntuLiga Nerd Font Mono" (cadr (assoc "Greek and Coptic" unicode-fonts-block-font-mapping)))
-  (dolist (unicode-block '("Mathematical Alphanumeric Symbols"
-                           "Mathematical Operators"
-                           "Miscellaneous Mathematical Symbols-A"
-                           "Miscellaneous Mathematical Symbols-B"
-                           "Miscellaneous Symbols"
-                           "Miscellaneous Symbols and Arrows"
-                           "Miscellaneous Symbols and Pictographs"
-                           "Letterlike Symbols"))
-      (push "TeX Gyre Termes Math" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+  (push "Twemoji" (cadr (assoc "Miscellaneous Symbols and Pictographs" unicode-fonts-block-font-mapping))))
 #+END_SRC
 
 - old school way of change =unicode= font
