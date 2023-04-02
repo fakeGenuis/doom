@@ -146,11 +146,13 @@ set -a 2install quivira ttf-twemoji
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
+~FiraCode Nerd Font~ better with icons in =vterm=
+~Symbola~ better with unicode emoji in doom module doc
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "mononokiLiga Nerd Font Mono" :size 13.0)
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
-      doom-unicode-font doom-font
+      doom-unicode-font (font-spec :family "FiraCode Nerd Font Mono")
       doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
       ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 #+end_src
