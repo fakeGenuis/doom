@@ -409,6 +409,18 @@ Line numbers
 (setq display-line-numbers-type nil)
 #+end_src
 
+notify initial time
+#+begin_src elisp
+(defun notify-init-time ()
+  (require 'notifications)
+  (notifications-notify
+   :image-path (expand-file-name "notify.jpg" doom-user-dir)
+   :title "Daemon"
+   :body (format "Initialed in %0.3fs" doom-init-time)))
+
+(add-hook 'doom-init-ui-hook #'notify-init-time)
+#+end_src
+
 * Editing
 #+begin_src emacs-lisp :tangle init.el
 :editor
