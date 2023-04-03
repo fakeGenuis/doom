@@ -95,6 +95,8 @@ restore last selected theme
         (load full-name))))
 
 (load-in-doom-dir "theme.el")
+;; load theme after `doom/restart-and-restore'
+(add-hook 'window-setup-hook #'doom-init-theme-h 'append)
 #+end_src
 
 difficult to choose theme? random it
@@ -120,7 +122,6 @@ track current theme for later load
     (message "Switch to theme: %s" new-theme)))
 
 (add-variable-watcher 'doom-theme #'+my/save-theme)
-(add-hook 'doom-load-them-hook #'+my/save-theme)
 #+end_src
 
 ** ewal
@@ -155,6 +156,9 @@ set -a 2install quivira ttf-twemoji
       doom-unicode-font (font-spec :family "FiraCode Nerd Font Mono")
       doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
       ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
+
+;; load fonts after `doom/restart-and-restore'
+(add-hook 'window-setup-hook #'doom-init-fonts-h 'append)
 #+end_src
 
 *** =all-the-icons= font
