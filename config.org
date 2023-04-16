@@ -143,7 +143,7 @@ emacs-client -e "(load-theme 'ewal-doom-themes t)"
 #+begin_src fish
 set -a 2install ttf-sarasa-ui-sc adobe-source-serif-fonts
 # for unicode/emoji font fallback
-set -a 2install quivira ttf-twemoji
+set -a 2install ttf-firacode-nerd noto-fonts-emoji
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
@@ -154,7 +154,7 @@ set -a 2install quivira ttf-twemoji
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       doom-unicode-font (font-spec :family "FiraCode Nerd Font Mono")
-      doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
+      doom-serif-font (font-spec :family "LXGW WenKai" :weight 'Bold :size 13.0))
       ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 
 ;; load fonts after `doom/restart-and-restore'
@@ -167,18 +167,51 @@ set -a 2install quivira ttf-twemoji
   (setq all-the-icons-scale-factor 0.9))
 #+end_src
 
+=all-the-icons= "arrow_back" error display in =doom-docs-header=
+#+begin_src emacs-lisp
+(advice-add 'doom-docs--display-menu-h :override #'ignore)
+#+end_src
+
 *** =unicode=
 #+begin_src fish
-set -a 2install ttf-firacode-nerd tex-gyre-math-fonts
+set -a 2install quivira
 #+end_src
 
 - doom way of change =unicode= font
 get current display font by =SPC h '=
 see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
-#+BEGIN_SRC elisp
+#+begin_src emacs-lisp
 (after! unicode-fonts
-  (push "Twemoji" (cadr (assoc "Miscellaneous Symbols and Pictographs" unicode-fonts-block-font-mapping))))
-#+END_SRC
+  (push "Noto Color Emoji" (cadr (assoc "Miscellaneous Symbols and Pictographs" unicode-fonts-block-font-mapping)))
+  (dolist (unicode-block '("Letterlike Symbols"
+                           "Supplemental Arrows-B"))
+    (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+#+end_src
+
+change =doom/reload-font= for not display all =unicode= by ~doom-unicode-font~.
+#+begin_src emacs-lisp
+(defun +my/doom-init-fonts-h (&optional reload)
+  "Loads `doom-font'."
+  (dolist (map `((default . ,doom-font)
+                 (fixed-pitch . ,doom-font)
+                 (fixed-pitch-serif . ,doom-serif-font)
+                 (variable-pitch . ,doom-variable-pitch-font)))
+    (when-let* ((face (car map))
+                (font (cdr map)))
+      (dolist (frame (frame-list))
+        (when (display-multi-font-p frame)
+          (set-face-attribute face frame
+                              :width 'normal :weight 'normal
+                              :slant 'normal :font font)))
+      (let ((new-specs (doom--make-font-specs face font)))
+        ;; Don't save to `customized-face' so it's omitted from `custom-file'
+        ;;(put face 'customized-face new-specs)
+        (custom-push-theme 'theme-face face 'user 'set new-specs)
+        (put face 'face-modified nil))))
+  ;; Users should inject their own font logic in `after-setting-font-hook'
+  (run-hooks 'after-setting-font-hook))
+(advice-add 'doom-init-fonts-h :override #'+my/doom-init-fonts-h)
+#+end_src
 
 - old school way of change =unicode= font
 [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
@@ -213,7 +246,7 @@ set -a 2install ttf-kose-git
 
 *** other faces
 #+begin_src fish
-set -a 2install ttf-{recursive,twemoji,comic-shanns-v2}
+set -a 2install ttf-{recursive,comic-shanns-v2}
 #+end_src
 
 #+begin_src emacs-lisp
@@ -269,16 +302,16 @@ Visual effect test
 #+end_src
 
 #+begin_src emacs-lisp
-(defun +my|init-font (&optional frame)
+(defun +my/init-font (&optional frame)
   (if frame
     (with-selected-frame frame
       (+my/better-font 14.3))
     (+my/better-font 14.3)))
 
 (if (and (fboundp 'daemonp) (daemonp))
-    (add-hook 'after-make-frame-functions #'+my|init-font)
-  (add-hook 'doom-init-ui-hook #'+my|init-font))
-(add-hook 'doom-load-theme-hook #'+my|init-font)
+    (add-hook 'after-make-frame-functions #'+my/init-font)
+  (add-hook 'doom-init-ui-hook #'+my/init-font))
+(add-hook 'doom-load-theme-hook #'+my/init-font)
 
 ;;https://emacs.stackexchange.com/a/47092
 ;; DONE restore ligature after exit big font mode
@@ -287,11 +320,11 @@ Visual effect test
             (if doom-big-font-mode
                 (progn
                   (+my/better-font 22.0)
-                  (add-hook 'doom-big-font-mode-hook #'+my|init-font))
-              (remove-hook 'doom-big-font-mode-hook #'+my|init-font))))
+                  (add-hook 'doom-big-font-mode-hook #'+my/init-font))
+              (remove-hook 'doom-big-font-mode-hook #'+my/init-font))))
 
 (add-hook 'writeroom-mode-enable-hook (lambda () (+my/better-font 20.5)))
-(add-hook 'writeroom-mode-disable-hook #'+my|init-font)
+(add-hook 'writeroom-mode-disable-hook #'+my/init-font)
 #+end_src
 
 ** Doom-dashboard
