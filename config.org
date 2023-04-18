@@ -562,11 +562,7 @@ Additional syntax highlighting for dired
   (map!
    (:leader
     :prefix "o"
-    :desc "dirvish"      "i" #'dirvish
     :desc "dirvish-side" "s" #'dirvish-side))
-  (after! dired
-    (dirvish-override-dired-mode)
-    (dirvish-side-follow-mode))
   :custom
   (dirvish-side-width 25)
   ;; (dirvish-reuse-session nil)
@@ -579,6 +575,8 @@ Additional syntax highlighting for dired
      ("m" "/mnt/"                       "Drives")
      ("t" "~/.local/share/Trash/files/" "TrashCan")))
   :config
+  (dirvish-override-dired-mode)
+  (dirvish-side-follow-mode)
   ;; (dirvish-header-line-format '(:left (path) :right (free-space)))
   (setq dirvish-mode-line-format
         '(:left
@@ -1477,7 +1475,8 @@ literate
 
 #+begin_src emacs-lisp
 (map! :leader
+      :desc "dirvish"               "-"    #'dirvish
       :desc "Eval expression"       ":"    #'pp-eval-expression
       :desc "M-x"                   ";"    #'execute-extended-command
-      :desc "Org agenda"            "A"    #'org-agenda)
+      :desc "Org agenda"            "="    #'org-agenda)
 #+end_src
