@@ -447,7 +447,7 @@ Line numbers
 #+end_src
 
 notify initial time
-#+begin_src elisp
+#+begin_src emacs-lisp
 (defun notify-init-time ()
   (require 'notifications)
   (notifications-notify
@@ -1302,9 +1302,21 @@ The return value is the new value of LIST-VAR."
         projectile-file-exists-remote-cache-expire (* 10 60)
         projectile-track-known-projects-automatically nil
         ;; projectile-require-project-root t
-        projectile-auto-discover t))
+        projectile-auto-discover t)
         ;; (projectile-file-exists-local-cache-expire (* 5 60)))
+  (add-to-list 'projectile-globally-ignored-directories
+               "*\\.run\\.tmp$")
+  (+my/append-to-list 'projectile-globally-ignored-modes
+                      '("helpful-mode" "dired-mode"))
+  (add-to-list 'projectile-globally-ignored-buffers "*doom*"))
 #+end_src
+
+[[https://emacs.stackexchange.com/questions/16497/how-to-exclude-files-from-projectile][How to exclude files from Projectile? - Emacs Stack Exchange]]
+For non git project, better add following in project root [[file:.dir-locals.el]]
+#+begin_src emacs-lisp :tangle no
+((nil . ((projectile-indexing-method . hybrid))))
+#+end_src
+and add ignored files in [[file:.projectile]].
 
 ** shrface
 #+begin_src emacs-lisp :tangle packages.el
