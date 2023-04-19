@@ -1286,8 +1286,14 @@ The return value is the new value of LIST-VAR."
     "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
     :global t
     (if keycast-mode
-        (add-hook 'pre-command-hook 'keycast--update t)
-      (remove-hook 'pre-command-hook 'keycast--update)))
+        (progn (add-hook 'pre-command-hook 'keycast--update t)
+               (setq keycast-mode-line-window-predicate
+                     'keycast-active-frame-bottom-right-p))
+     (remove-hook 'pre-command-hook 'keycast--update)
+     (setq keycast-mode-line-window-predicate 'ignore)))
+  (map! :leader
+        (:prefix "t"
+         :desc "Toggle keycast" "k" #'keycast-mode))
   (add-to-list 'global-mode-string '("" keycast-mode-line)))
 #+end_src
 
