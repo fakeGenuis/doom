@@ -1176,6 +1176,12 @@ remove org Fancy Priorities
 (package! org-fancy-priorities :disable t)
 #+end_src
 
+~:text/html~ output support
+#+begin_src emacs-lisp :tangle no
+(after! ob-jupyter
+  (push :text/html jupyter-org-mime-types))
+#+end_src
+
 ** css
 #+begin_src emacs-lisp
 (prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
