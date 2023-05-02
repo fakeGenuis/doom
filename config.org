@@ -1020,22 +1020,15 @@ References
 - [[https://emacs.stackexchange.com/a/63793][How to copy links OUT of org-mode? - Emacs Stack Exchange]]
 - [[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
 
+*** agenda
 #+begin_src emacs-lisp
-(setq org-directory "~/org/")
-(defvar co/org-agenda-directory (expand-file-name "agenda" org-directory))
-(defun co/org-agenda-file-paths (path)
-  (if (listp path)
-      (mapcar (lambda (x) (expand-file-name (concat x ".org") co/org-agenda-directory)) path)
-    (expand-file-name (concat path ".org") co/org-agenda-directory)))
-
-(defun org-copy-link-url ()
-  (interactive)
-  (kill-new (org-element-property :raw-link (org-element-context))))
-#+end_src
-
-#+begin_src emacs-lisp
-(setq org-agenda-files (co/org-agenda-file-paths '("todos" "habits" "journal"))
+(setq org-directory "~/org/"
+      org-agenda-files '("agenda/todos.org" "agenda/projects.org")
       org-agenda-start-with-log-mode t
+      org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+                                 (todo   . " ")
+                                 (tags   . " %i %-12:c")
+                                 (search . " %i %-12:c"))
       org-log-done 'time
       org-log-into-drawer t
       org-startup-numerated t
@@ -1043,18 +1036,56 @@ References
       org-image-actual-width 400
       org-duration-format '((special . h:mm))
       org-startup-with-inline-images t
-      org-refile-targets '(("archive.org" :maxlevel . 1))
-      org-link-descriptive t)
+      org-refile-targets '(("archive.org" :maxlevel . 1)
+                           ("projects.org")))
+      ;; org-link-descriptive t)
+#+end_src
 
-(load-in-doom-dir "org-capture-templates.el")
+custom agenda view from
+https://www.labri.fr/perso/nrougier/GTD/index.html#org9f2e38c
+#+begin_src emacs-lisp
+(setq org-agenda-custom-commands
+      '(("g" "Get Things Done (GTD)"
+         ((agenda ""
+                  ((org-agenda-skip-function
+                    '(org-agenda-skip-entry-if 'deadline))
+                   (org-deadline-warning-days 0)
+                   (org-agenda-start-day "-1d")
+                   (org-agenda-span 4)))
+          (todo "STRT"
+                ((org-agenda-skip-function
+                  '(org-agenda-skip-entry-if 'deadline))
+                 (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                 (org-agenda-overriding-header "\nTasks\n")))
+          (tags-todo "inbox"
+                     ((org-agenda-prefix-format "  %?-12t% s")
+                      (org-agenda-overriding-header "\nInbox\n")))
+          (tags "CLOSED>=\"<today>\""
+                ((org-agenda-overriding-header "\nCompleted today\n")))))))
+#+end_src
+
+capture todos
+#+begin_src emacs-lisp
+(after! org-capture
+  (setq org-capture-templates
+        `(("i" "Inbox" entry (file "agenda/todos.org")
+           "* TODO %?\n%U\n%i" :empty-lines 1 :prepend t)
+          ("@" "Inbox [mu4e]" entry (file "agenda/todos.org")
+           "* TODO Reply to \"%a\"\n%U\n%i" :empty-lines 1 :prepend t)
+          ("n" "Inbox [note]" entry (file "agenda/todos.org")
+           "* TODO [%a] %? %^G\n%U\n%i" :empty-lines 1 :prepend t))))
 #+end_src
 
 #+begin_src emacs-lisp
+(defun org-copy-link-url ()
+  (interactive)
+  (kill-new (org-element-property :raw-link (org-element-context))))
+
 (after! org
   ;;(org-clock-persist 'history)
   (org-clock-persistence-insinuate)
   ;; display inline images
-  (org-display-inline-images)
+  ;; (org-display-inline-images)
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
   (map! :map org-mode-map
