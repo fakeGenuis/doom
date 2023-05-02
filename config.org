@@ -86,11 +86,25 @@ zen                      ; distraction-free coding or writing
 #+end_src
 *The order of modules in above list make sense, so don't put them into subsections.*
 
+** ewal
+#+begin_src emacs-lisp :tangle packages.el
+(package! ewal-doom-themes)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! ewal-doom-themes)
+#+end_src
+
+to refresh wal theme from command line
+#+begin_src fish :tangle no
+emacs-client -e "(load-theme 'ewal-doom-themes t)"
+#+end_src
+
 ** Themes
 restore last selected theme
 #+begin_src emacs-lisp
 (defun load-in-doom-dir (file-name)
-  (let ((full-name (expand-file-name file-name doom-private-dir)))
+  (let ((full-name (expand-file-name file-name doom-user-dir)))
     (if (file-exists-p full-name)
         (load full-name))))
 
@@ -116,26 +130,12 @@ track current theme for later load
 #+begin_src emacs-lisp
 (defun +my/save-theme (prev new-theme &rest args)
   (let
-      ((theme-config-file (expand-file-name "theme.el" doom-private-dir)))
+      ((theme-config-file (expand-file-name "theme.el" doom-user-dir)))
     (write-region
      (format "(setq doom-theme '%s)\n" new-theme) nil theme-config-file)
     (message "Switch to theme: %s" new-theme)))
 
 (add-variable-watcher 'doom-theme #'+my/save-theme)
-#+end_src
-
-** ewal
-#+begin_src emacs-lisp :tangle packages.el
-(package! ewal-doom-themes)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! ewal-doom-themes)
-#+end_src
-
-to refresh wal theme from command line
-#+begin_src fish :tangle no
-emacs-client -e "(load-theme 'ewal-doom-themes t)"
 #+end_src
 
 ** Fonts
@@ -345,7 +345,7 @@ References
                "\n"))
      'face 'doom-dashboard-banner)))
 
-(let ((splash-file-name (expand-file-name "splash" doom-private-dir)))
+(let ((splash-file-name (expand-file-name "splash" doom-user-dir)))
   (if (file-exists-p splash-file-name)
     (setq +doom-dashboard-ascii-banner-fn (lambda () (my-weebery-is-always-greater splash-file-name)))))
 #+end_src
