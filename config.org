@@ -141,7 +141,7 @@ emacs-client -e "(load-theme 'ewal-doom-themes t)"
 ** Fonts
 *** Doom font
 #+begin_src fish
-set -a 2install ttf-sarasa-ui-sc adobe-source-serif-fonts
+set -a 2install ttf-sarasa-ui-sc gentium-plus-font
 # for unicode/emoji font fallback
 set -a 2install ttf-firacode-nerd noto-fonts-emoji
 #+end_src
@@ -154,7 +154,7 @@ set -a 2install ttf-firacode-nerd noto-fonts-emoji
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       doom-unicode-font (font-spec :family "FiraCode Nerd Font Mono")
-      doom-serif-font (font-spec :family "LXGW WenKai" :weight 'Bold :size 13.0))
+      doom-serif-font (font-spec :family "Gentium Book Plus" :size 13.0))
       ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 
 ;; load fonts after `doom/restart-and-restore'
@@ -183,8 +183,7 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 #+begin_src emacs-lisp
 (after! unicode-fonts
   (push "Noto Color Emoji" (cadr (assoc "Miscellaneous Symbols and Pictographs" unicode-fonts-block-font-mapping)))
-  (dolist (unicode-block '("Letterlike Symbols"
-                           "Supplemental Arrows-B"))
+  (dolist (unicode-block '("Letterlike Symbols"))
     (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+end_src
 
@@ -296,9 +295,9 @@ set -a 2install ttf-{recursive,comic-shanns-v2}
 *** Hooks
 Visual effect test
 #+begin_src python :tangle no
-  1234567890-+abcdedfghijkl
-# 1234567890-+abcdedfghijkl
-# 12345然后这是中文对齐jkl
+  1234567890-+abcdedfghijklmn
+# 1234567890-+abcdedfghijklmn
+# 12345然后这是中文对齐klmn
 #+end_src
 
 #+begin_src emacs-lisp
