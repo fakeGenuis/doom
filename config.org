@@ -1476,6 +1476,16 @@ and add ignored files in [[file:.projectile]].
          "C-c \" c" #'org-zotxt-copy-attachment-path)))
 #+end_src
 
+** figlet
+converting comments into ascii arts
+#+begin_src fish
+set -a 2install figlet
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! figlet)
+#+end_src
+
 * Other configs
 ** [[https://github.com/hlissner/doom-emacs/issues/397][maximize when start up]]
 #+begin_src emacs-lisp :tangle no
