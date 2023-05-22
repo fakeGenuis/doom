@@ -962,16 +962,21 @@ ligatures
 #+end_src
 
 ** wolfram
-#+begin_src emacs-lisp :tangle packages.el
-(package! wolfram-mode)
+unmaintainable if use following
+#+begin_src emacs-lisp :tangle no
+(package! wolfram-mode
+  :type 'local
+  :recipe (:host github
+           :type git
+           :repo "fakeGenuis/wolfram-mode"))
 #+end_src
 
 #+begin_src emacs-lisp
-;; last update was 5 years ago
 (use-package! wolfram-mode
+  :load-path "~/lib/wolfram-mode/"
   :mode ("\\.m\\'" "\\.fr\\'" "\\.wls?\\'")
   :interpreter "wolframscript"
-  :commands (wolfram-mode run-wolfram)
+  :commands wolfram-mode
   :config
   (setq wolfram-program "/usr/local/bin/wolfram")
   (setq wolfram-path "~/.Mathematica/Applications")
@@ -980,6 +985,7 @@ ligatures
     :and "&&"
     :or "||"
     :not "!"
+    :null "None"
     :true "True"
     :false "False")
   ;; open .nb file with mathematica from dirvish
