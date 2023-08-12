@@ -513,9 +513,10 @@ vc           ; version-control and Emacs, sitting in a tree
   (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
   (dired-clean-confirm-killing-deleted-buffers nil)
+  (dired-kill-when-opening-new-dired-buffer t)
   (dired-dwim-target t)
   (dired-listing-switches
-        "-l --almost-all --human-readable --time-style=long-iso --group-directories-first --no-group")
+        "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
   :config
   ;; Dirvish respects all the keybindings in `dired-mode-map'
   (map!
@@ -564,6 +565,7 @@ Additional syntax highlighting for dired
     :desc "dirvish-side" "s" #'dirvish-side))
   :custom
   (dirvish-side-width 25)
+  (dirvish-cache-dir "~/.cache/dirvish/")
   ;; (dirvish-reuse-session nil)
   ;; TODO fix line height
   (dirvish-header-line-height '(20 . 37))
@@ -571,7 +573,7 @@ Additional syntax highlighting for dired
   (dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
-     ("m" "/mnt/"                       "Drives")
+     ("m" "/mnt/Media/"                 "Media")
      ("t" "~/.local/share/Trash/files/" "TrashCan")))
   :config
   (dirvish-override-dired-mode)
