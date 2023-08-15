@@ -1,13 +1,8 @@
 #+TITLE: Doom Emacs Configuration
+
+* Tangle
 #+PROPERTY: header-args:emacs-lisp :results none
-#+PROPERTY: header-args:fish :tangle install.fish :results none :shebang "#!/usr/bin/fish" :file-mode (identity #o755)
-
-* Info
-requirements of =doom emacs=
-#+begin_src fish
-set -a 2install ripgrep fd
-#+end_src
-
+default tangle to [[file:config.el]]
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
@@ -15,19 +10,37 @@ set -a 2install ripgrep fd
       user-mail-address "***REMOVED***")
 #+end_src
 
-#+begin_src emacs-lisp :tangle init.el
+#+PROPERTY: header-args:fish :tangle install.fish :results none :shebang "#!/usr/bin/fish" :file-mode (identity #o755)
+Requirements
+#+begin_src fish
+set -a 2install ripgrep fd
+#+end_src
+
+[[file:init.el]]
+# FIXME add newline between =noweb-ref=
+#+begin_src emacs-lisp :tangle init.el :noweb tangle
 ;;; init.el -*- lexical-binding: t; -*-
 
 (doom!
+ <<init>>
+
+ :os
+ tty                       ; improve the terminal Emacs experience
+
+ :config
+ literate
+
+ (default +bindings +smartparens))
 #+end_src
 
+Extra packages from [[https://melpa.org][MELPA]]
 #+begin_src emacs-lisp :tangle packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+end_src
 
 * Input
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :input
 chinese
 #+end_src
@@ -38,7 +51,7 @@ set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
 #+end_src
 
 * Completion
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :completion
 (company +childframe)
 (vertico +icons +childframe)
@@ -65,7 +78,7 @@ set -a 2install words
 #+end_src
 
 * Display
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :ui
 doom                     ; what makes DOOM look the way it does
 doom-dashboard           ; a nifty splash screen for Emacs
@@ -458,7 +471,7 @@ notify initial time
 #+end_src
 
 * Editing
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :editor
 (evil +everywhere); come to the dark side, we have cookies
 file-templates    ; auto-snippets for empty files
@@ -497,7 +510,7 @@ About Parentheses
 #+end_src
 
 * Emacs
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :emacs
 electric     ; smarter, keyword-based electric-indent
 ibuffer      ; interactive buffer management
@@ -618,7 +631,7 @@ Additional syntax highlighting for dired
 set -a 2install fish libvterm
 #+end_src
 
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :term
 vterm ; the best terminal emulation in Emacs
 #+end_src
@@ -701,7 +714,7 @@ ligatures
 #+end_src
 
 * Checkers
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :checkers
 syntax           ; tasing you for every semicolon you forget
 (spell +flyspell ; tasing you for misspelling mispelling
@@ -726,7 +739,7 @@ disable annoying =writegood-mode=
 #+end_src
 
 * Tools
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :tools
 biblio          ; Writes a PhD for you (citation needed)
 debugger        ; FIXME stepping through code, to help you add bugs
@@ -836,7 +849,7 @@ set -a 2install sqlite wordnet-cli
 can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
 
 * Lang
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :lang
 (cc +lsp)              ; C/C++/Obj-C madness
 emacs-lisp             ; drown in parentheses
@@ -1242,7 +1255,7 @@ mu init --maildir=~/.mail --add-email-address=...@...
 mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :email
 (mu4e +***REMOVED***
       +org)
@@ -1280,11 +1293,11 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+end_src
 
 * App
-#+begin_src emacs-lisp :tangle init.el
+#+begin_src emacs-lisp :tangle no :noweb-ref init
 :app
 calendar
-everywhere                 ; don't leave emacs
-(rss +org)                 ; emacs as an RSS reader
+everywhere ; don't leave emacs
+(rss +org) ; emacs as an RSS reader
 #+end_src
 
 ** =elfeed=
@@ -1535,15 +1548,6 @@ set -a 2install figlet
 * End
 #+begin_src fish
 paru -S --needed --noconfirm $2install
-#+end_src
-
-#+begin_src emacs-lisp :tangle init.el
-:os
-tty                        ; improve the terminal Emacs experience
-
-:config
-literate
-(default +bindings +smartparens))
 #+end_src
 
 #+begin_src emacs-lisp
