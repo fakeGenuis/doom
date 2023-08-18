@@ -1520,6 +1520,18 @@ and add ignored files in [[file:.projectile]].
          "C-c \" c" #'org-zotxt-copy-attachment-path)))
 #+end_src
 
+open attachment with point at arxiv link
+[[https://emacs.stackexchange.com/a/38297][Get description of an org-mode link - Emacs Stack Exchange]]
+#+begin_src emacs-lisp
+(defun org-zotxt-open-arxiv-attachment ()
+  "open attachment from arxiv link, by zotxt"
+  (interactive)
+  (let* ((link (org-element-context))
+         (desc (buffer-substring-no-properties (org-element-property :contents-begin link)
+                                               (org-element-property :contents-end link))))
+     (org-zotxt-insert-reference-link)))
+#+end_src
+
 ** figlet
 converting comments into ascii arts
 #+begin_src fish
@@ -1554,6 +1566,23 @@ set -a 2install figlet
    (reverse
     (split-string
      (delete-and-extract-region beg end) "\\b"))))
+#+end_src
+
+** insert arxiv links
+#+begin_src emacs-lisp
+(defvar rx-arxiv-regexp
+  (rx (= 4 num) "." (= 5 num))
+  "Regular expression for arxiv id.")
+
+(defun org-insert-arxiv-link ()
+  "Insert arxiv link with arxiv id as description."
+  (interactive)
+  (let* ((ring (current-kill 0))
+         (id (if (string-match rx-arxiv-regexp ring)
+                 (match-string 0 ring)
+               (read-string "Input arxiv id:"))))
+    (insert " ")
+    (org-insert-link nil (concat "https://arxiv.org/abs/" id) id)))
 #+end_src
 
 * End
