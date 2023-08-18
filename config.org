@@ -759,18 +759,21 @@ upload          ; map local to remote projects via ssh/ftp
 ** pdf-tools
 default pdf viewer in emacs
 [[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
+
 #+begin_src emacs-lisp
 ;; overwrite doom's fit-page
 (use-package! pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
   :config
-  (setq-default pdf-view-display-size 'fit-width)
-  (setq +latex-viewers '(pdf-tools evince okular)))
+  (setq-default pdf-view-display-size 'fit-width))
+
+(after! latex (setq +latex-viewers '(pdf-tools evince okular)))
 
 ;; to use pdfview with auctex
-(setq TeX-view-program-selection '((output-pdf "PDF Tools")))
-(setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view)))
+(after! auctex
+  (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))
+  (setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))))
 ;;(TeX-source-correlate-start-server t)
 ;; not sure if last line is neccessary
 
@@ -900,7 +903,7 @@ see =company-backends= variable docs
 #+end_src
 
 *** math preview
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! math-preview)
 #+end_src
 
@@ -913,15 +916,16 @@ cd ~/.local/lib/math-preview && npm i
 preview latex formulas
 #+begin_src emacs-lisp
 (use-package! math-preview
-  :custom
-  (math-preview-command "~/.local/lib/math-preview/math-preview.js")
-  (math-preview-tex-marks '(("\\begin{equation}" "\\end{equation}")
-                            ("\\begin{equation*}" "\\end{equation*}")
-                            ("\\begin{align}" "\\end{align}")
-                            ("\\begin{align*}" "\\end{align*}")
-                            ("\\[" "\\]")
-                            ("\\(" "\\)")
-                            ("$$" "$$"))))
+  :defer t
+  :config
+  (setq math-preview-command "~/.local/lib/math-preview/math-preview.js")
+  (setq math-preview-tex-marks '(("\\begin{equation}" "\\end{equation}")
+                                 ("\\begin{equation*}" "\\end{equation*}")
+                                 ("\\begin{align}" "\\end{align}")
+                                 ("\\begin{align*}" "\\end{align*}")
+                                 ("\\[" "\\]")
+                                 ("\\(" "\\)")
+                                 ("$$" "$$"))))
   ;; (math-preview-preprocess-functions '((lambda (s)
   ;;                                        (concat "{\\color{white}" s "}")))))
 #+end_src
@@ -939,12 +943,19 @@ add =XeTeX= mode in =TeX/LaTeX=
 [[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
 
 #+begin_src emacs-lisp
-(add-hook 'LaTeX-mode-hook
-          (lambda ()
-            (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))))
+(after! latex
+  (add-to-list 'TeX-command-list
+               '("XeLaTeX" "%`xelatex%(mode) %(extraopts) %S%(PDFout)%' %t" TeX-run-TeX nil t)))
 ;; (setq TeX-command-default "XeLaTeX")))
 ;; (setq TeX-save-query nil)))
 ;; (setq TeX-show-compilation nil)))
+#+end_src
+
+#+begin_src emacs-lisp
+(map!
+  :map LaTeX-mode-map
+  :i "C-l" #'sp-up-sexp
+  :i "C-h" #'sp-down-sexp)
 #+end_src
 
 ** lua
