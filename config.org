@@ -1,6 +1,121 @@
 #+TITLE: Doom Emacs Configuration
 
+Literate and modular doom emacs configuration.
+
+*Conventions:*
+1. doom module respect orders in [[file:~/.config/emacs/templates/init.example.el]]
+
+2. doom module / extra package in secondary section
+   With prerequisites in [[file:packages.toml]] (=Arch= only) or package specialized config in [[file:config.el]]
+
+3. one line config goes into [[Tangle]]
+   Often a declare in [[file:init.el]] or [[file:packages.el]]
+
+4. extra bootstrap for package tangled to [[file:install.d/]]
+
+5. comment a module with
+   #+begin_src example
+:PROPERTIES:
+:header-args: :tangle no :noweb no
+:END:
+   #+end_src
+   # FIXME define a shortcut in this file?
+
 * Tangle
+[[file:init.el]]
+# FIXME add newline between =noweb-ref=
+#+begin_src emacs-lisp :tangle init.el :noweb tangle
+;;; init.el -*- lexical-binding: t; -*-
+
+(doom!
+ :input
+ <<input>>
+
+ :completion
+ <<completion>>
+
+ :ui
+ <<ui>>
+ hl-todo
+ indent-guides
+ nav-flash
+ ophints
+ (vc-gutter +pretty)
+ (window-select +numbers)
+ workspace
+ zen
+
+ :editor
+ <<editor>>
+ file-templates
+ fold
+ multiple-cursors
+ parinfer
+ snippets
+ word-wrap
+
+ :emacs
+ electric
+ ibuffer
+ (undo +tree)
+ vc
+
+ :term
+ <<term>>
+
+ :checkers
+ <<checkers>>
+ syntax
+
+ :tools
+ <<tools>>
+ biblio
+ debugger
+ docker
+ editorconfig
+ (eval +overlay)
+ rgb
+ upload
+
+ :os
+ tty
+
+ :lang
+ <<lang>>
+ (cc +lsp)
+ emacs-lisp
+ markdown
+
+ :email
+ <<email>>
+
+ :app
+ calendar
+ everywhere
+ <<app>>
+
+ :config
+ literate
+ (default +bindings +smartparens))
+#+end_src
+*The order of modules in above list make sense*
+
+Extra packages from [[https://melpa.org][MELPA]]
+#+begin_src emacs-lisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+(package! academic-phrases)
+
+(package! vlf)
+
+(package! inherit-org :recipe (:host github :repo "chenyanming/inherit-org"))
+
+(package! pomm)
+
+(package! tldr)
+#+end_src
+
 #+PROPERTY: header-args:emacs-lisp :results none
 default tangle to [[file:config.el]]
 #+begin_src emacs-lisp
@@ -10,60 +125,42 @@ default tangle to [[file:config.el]]
       user-mail-address "***REMOVED***")
 #+end_src
 
-#+PROPERTY: header-args:fish :tangle install.fish :results none :shebang "#!/usr/bin/fish" :file-mode (identity #o755)
-Requirements
-#+begin_src fish
-set -a 2install ripgrep fd
-#+end_src
-
-[[file:init.el]]
-# FIXME add newline between =noweb-ref=
-#+begin_src emacs-lisp :tangle init.el :noweb tangle
-;;; init.el -*- lexical-binding: t; -*-
-
-(doom!
- <<init>>
-
- :os
- tty                       ; improve the terminal Emacs experience
-
- :config
- literate
-
- (default +bindings +smartparens))
-#+end_src
-
-Extra packages from [[https://melpa.org][MELPA]]
-#+begin_src emacs-lisp :tangle packages.el
-;; -*- no-byte-compile: t; -*-
-;;; $DOOMDIR/packages.el
+For every module in [[file:init.el]] or extra package in [[file:packages.el]], maintain
+a bash script to install or uninstall its dependence.
+#+PROPERTY: header-args:toml :tangle packages.toml
+#+begin_src toml
+enable_default=true
 #+end_src
 
 * Input
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:input
+** chinese
+#+begin_src emacs-lisp :tangle no :noweb-ref input
 chinese
 #+end_src
 
 =fcitx= input method
-#+begin_src fish :tangle no
-set -a 2install fcitx5 fcitx5-{configtool,gtk,nord,qt,rime}
+#+begin_src toml
+[chinese]
+depends_on=["fcitx"]
 #+end_src
 
 * Completion
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:completion
-(company +childframe)
-(vertico +icons +childframe)
-#+end_src
-
 ** company
 =company-ispell= needs word dictionary
-#+begin_src fish
-set -a 2install words
+#+begin_src toml
+[company]
+packages=["words"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref completion
+(company +childframe)
 #+end_src
 
 ** vertico
+#+begin_src emacs-lisp :tangle no :noweb-ref completion
+(vertico +icons +childframe)
+#+end_src
+
 [[https://github.com/tumashu/vertico-posframe/issues/16][tumashu/vertico-posframe#16 Disable vertico-posframe when Emacs runs in terminal]]
 #+begin_src emacs-lisp
 (use-package! vertico-posframe
@@ -77,30 +174,8 @@ set -a 2install words
         (t posframe))))
 #+end_src
 
-* Display
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:ui
-hydra
-doom                     ; what makes DOOM look the way it does
-doom-dashboard           ; a nifty splash screen for Emacs
-(emoji +unicode)         ; 🙂
-hl-todo                  ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-indent-guides            ; highlighted indent columns
-(ligatures               ; ligatures and symbols to make your code pretty again
- +extra)
-modeline                 ; snazzy, Atom-inspired modeline, plus API
-nav-flash                ; blink cursor line after big motions
-ophints                  ; highlight the region an operation acts on
-unicode                  ; extended unicode support for various languages
-(popup +defaults)        ; tame sudden yet inevitable temporary windows
-vc-gutter                ; vcs diff in the fringe
-(window-select +numbers) ; visually switch windows
-workspaces               ; tab emulation, persistence & separate workspaces
-zen                      ; distraction-free coding or writing
-#+end_src
-*The order of modules in above list make sense, so don't put them into subsections.*
-
-** ewal
+* UI
+** ewal-doom-themes
 #+begin_src emacs-lisp :tangle packages.el
 (package! ewal-doom-themes)
 #+end_src
@@ -114,7 +189,21 @@ to refresh wal theme from command line
 emacs-client -e "(load-theme 'ewal-doom-themes t)"
 #+end_src
 
-** Themes
+** doom
+#+begin_src emacs-lisp :tangle no :noweb-ref ui
+doom
+#+end_src
+
+#+begin_src toml
+[doom]
+packages=[
+    "ttf-sarasa-ui-sc",
+    "gentium-plus-font",
+    "ttf-firacode-nerd"
+]
+#+end_src
+
+*** Themes
 restore last selected theme
 #+begin_src emacs-lisp
 (defun load-in-doom-dir (file-name)
@@ -152,17 +241,11 @@ track current theme for later load
 (add-variable-watcher 'doom-theme #'+my/save-theme)
 #+end_src
 
-** Fonts
-*** Doom font
-#+begin_src fish
-set -a 2install ttf-sarasa-ui-sc gentium-plus-font
-# for unicode/emoji font fallback
-set -a 2install ttf-firacode-nerd noto-fonts-emoji
-#+end_src
-
+*** Fonts
 [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
 ~FiraCode Nerd Font~ better with icons in =vterm=
 ~Symbola~ better with unicode emoji in doom module doc
+
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "mononokiLiga Nerd Font Mono" :size 13.0)
       ;; big font mode resize serif-font and variable-pitch-font also
@@ -174,173 +257,11 @@ set -a 2install ttf-firacode-nerd noto-fonts-emoji
 ;; load fonts after `doom/restart-and-restore'
 (add-hook 'window-setup-hook #'doom-init-fonts-h 'append)
 #+end_src
-
-*** =all-the-icons= font
-#+begin_src emacs-lisp
-(after! all-the-icons
-  (setq all-the-icons-scale-factor 0.9))
+** doom-dashboard
+#+begin_src emacs-lisp :tangle no :noweb-ref ui
+doom-dashboard
 #+end_src
 
-=all-the-icons= "arrow_back" error display in =doom-docs-header=
-#+begin_src emacs-lisp
-(advice-add 'doom-docs--display-menu-h :override #'ignore)
-#+end_src
-
-*** =unicode=
-#+begin_src fish
-set -a 2install quivira
-#+end_src
-
-- doom way of change =unicode= font
-get current display font by =SPC h '=
-see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
-#+begin_src emacs-lisp
-(after! unicode-fonts
-  (push "Noto Color Emoji" (cadr (assoc "Miscellaneous Symbols and Pictographs" unicode-fonts-block-font-mapping)))
-  (dolist (unicode-block '("Letterlike Symbols"))
-    (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
-#+end_src
-
-change =doom/reload-font= for not display all =unicode= by ~doom-unicode-font~.
-#+begin_src emacs-lisp
-(defun +my/doom-init-fonts-h (&optional reload)
-  "Loads `doom-font'."
-  (dolist (map `((default . ,doom-font)
-                 (fixed-pitch . ,doom-font)
-                 (fixed-pitch-serif . ,doom-serif-font)
-                 (variable-pitch . ,doom-variable-pitch-font)))
-    (when-let* ((face (car map))
-                (font (cdr map)))
-      (dolist (frame (frame-list))
-        (when (display-multi-font-p frame)
-          (set-face-attribute face frame
-                              :width 'normal :weight 'normal
-                              :slant 'normal :font font)))
-      (let ((new-specs (doom--make-font-specs face font)))
-        ;; Don't save to `customized-face' so it's omitted from `custom-file'
-        ;;(put face 'customized-face new-specs)
-        (custom-push-theme 'theme-face face 'user 'set new-specs)
-        (put face 'face-modified nil))))
-  ;; Users should inject their own font logic in `after-setting-font-hook'
-  (run-hooks 'after-setting-font-hook))
-(advice-add 'doom-init-fonts-h :override #'+my/doom-init-fonts-h)
-#+end_src
-
-- old school way of change =unicode= font
-[[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
-#+begin_src emacs-lisp :tangle no
-(defun +my/ligature-font ()
-  (dolist (chars '("ℤ" "ℝ" "ℕ"))
-      (set-fontset-font (frame-parameter nil 'font) (string-to-char chars) "DejaVu Math TeX Gyre") nil 'prepend)
-  ;; (set-fontset-font t ?𝔽 "DejaVu Math TeX Gyre")
-  (set-fontset-font (frame-parameter nil 'font) '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre") nil 'prepend)
-#+end_src
-
-*** Chinese fonts
-- [[https://emacs.stackexchange.com/questions/68644/doom-emacs-setting-font-for-devanagari-characters][Doom Emacs - Setting Font for Devanagari characters - Emacs Stack Exchange]]
-- [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]] 
-- [[https://emacs-china.org/t/doom-emacs/16809/7][doom emacs 中文字体与默认字体冲突 - #7，来自 HepIsaac - Emacs-general - Emacs China]]
-- [[https://emacs-china.org/t/doom-emacs/9628/8][doom emacs 下中文字体的设置 - #8，来自 RicardoM - Emacs-general - Emacs China]]
-- [[https://baohaojun.github.io/blog/2013/05/09/0-emacs-font-global-scaling.html][全局放大 Emacs 字体]]
-- [[https://baohaojun.github.io/blog/2012/12/19/perfect-emacs-chinese-font.html][狠狠地折腾了一把 Emacs 中文字体]]
-- [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
-- [[https://github.com/doomemacs/doomemacs/issues/5092][doomemacs/doomemacs#5092 (invalid-read-syntax . "#") on running doom doctor]]
-
-#+begin_src fish
-set -a 2install ttf-kose-git
-#+end_src
-
-#+begin_src emacs-lisp
-(defun +my/cjk-font()
-  (dolist (charset '(kana han cjk-misc))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Kosefont JP"))))
-#+end_src
-
-*** other faces
-#+begin_src fish
-set -a 2install ttf-{recursive,comic-shanns-v2}
-#+end_src
-
-#+begin_src emacs-lisp
-(defun +my/better-font (font-size)
-  (interactive "N")
-  (if (display-graphic-p)
-      (progn
-        (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
-        (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
-        (set-face-font 'font-lock-comment-face (font-spec :family "Cascadia Code Cur" :size (+ 0.0 font-size)))
-        (+my/cjk-font))))
-#+end_src
-
-*** Font scale
-- [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
-- [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
-- [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! emacs-gfs
-  :recipe (:host github
-           :repo "ndw/emacs-gfs"))
-#+end_src
-
-- [ ] display =text-scale-mode-amount= in mode-line
-#+begin_src emacs-lisp
-;; set a rescale font to cjk charset fonts,
-;; so no explicit font size is needed
-;; rescale doom-font cause bold font size != regular
-(dolist (rescales '(("Ubuntu" . 1.05)
-                    ("mononoki" . 1.00)
-                    ("Cascadia" . 0.95)
-                    ("Kosefont" . 1.10)
-                    ("小濑字体" . 1.10)))
-  (push rescales face-font-rescale-alist))
-
-(use-package! emacs-gfs
-  :config
-  (setq gfs/default-face-height 140)
-  (setq gfs/resizeable-ignore-faces nil)
-  :bind
-  (:map evil-normal-state-map
-        ("C--" . gfs/shrink-faces)
-        ("C-=" . gfs/magnify-faces)))
-#+end_src
-
-*** Hooks
-Visual effect test
-#+begin_src python :tangle no
-  1234567890-+abcdedfghijklmn
-# 1234567890-+abcdedfghijklmn
-# 12345然后这是中文对齐klmn
-#+end_src
-
-#+begin_src emacs-lisp
-(defun +my/init-font (&optional frame)
-  (if frame
-    (with-selected-frame frame
-      (+my/better-font 14.3))
-    (+my/better-font 14.3)))
-
-(if (and (fboundp 'daemonp) (daemonp))
-    (add-hook 'after-make-frame-functions #'+my/init-font)
-  (add-hook 'doom-init-ui-hook #'+my/init-font))
-(add-hook 'doom-load-theme-hook #'+my/init-font)
-
-;;https://emacs.stackexchange.com/a/47092
-;; DONE restore ligature after exit big font mode
-(add-hook 'doom-big-font-mode-hook
-          (lambda ()
-            (if doom-big-font-mode
-                (progn
-                  (+my/better-font 22.0)
-                  (add-hook 'doom-big-font-mode-hook #'+my/init-font))
-              (remove-hook 'doom-big-font-mode-hook #'+my/init-font))))
-
-(add-hook 'writeroom-mode-enable-hook (lambda () (+my/better-font 20.5)))
-(add-hook 'writeroom-mode-disable-hook #'+my/init-font)
-#+end_src
-
-** Doom-dashboard
 References
 - [[https://discourse.doomemacs.org/t/how-to-change-your-splash-screen/57][How to change your splash screen - Configuration - Doom Emacs Discourse]]
 - [[https://stackoverflow.com/a/25158644][elisp - Read from a file into a Emacs lisp list - Stack Overflow]]
@@ -374,11 +295,21 @@ add =vterm= entry
                :action +vterm/here))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
-(assoc-delete-all "Open vterm here" +doom-dashboard-menu-sections)
+** emoji
+#+begin_src toml
+[emoji]
+packages=["noto-fonts-emoji"]
 #+end_src
 
-** Ligatures
+#+begin_src emacs-lisp :tangle no :noweb-ref ui
+(emoji +unicode)
+#+end_src
+
+** ligatures
+#+begin_src emacs-lisp :tangle no :noweb-ref ui
+(ligatures +extra)
+#+end_src
+
 check code ligatures, *bold* and /italic/ enabled
 == <- -> <= => != == >= <== ==> === ?= :=
 
@@ -390,7 +321,11 @@ check code ligatures, *bold* and /italic/ enabled
   (global-prettify-symbols-mode))
 #+end_src
 
-** Doom-modeline
+** modeline
+#+begin_src emacs-lisp :tangle no :noweb-ref ui
+modeline
+#+end_src
+
 #+begin_src emacs-lisp
 (after! doom-modeline
   ;; The limit of the window width.
@@ -411,7 +346,11 @@ check code ligatures, *bold* and /italic/ enabled
                     :background (face-background 'default))
 #+end_src
 
-** Popup
+** popup
+#+begin_src emacs-lisp :tangle no :noweb-ref ui
+(popup +defaults)
+#+end_src
+
 #+begin_src emacs-lisp
 (setq split-width-threshold 120)
 #+end_src
@@ -431,7 +370,141 @@ see ~display-buffer-alist~
 #+end_src
 use ~+popup-mode~ to toggle popup mode globally.
 
+** unicode
+#+begin_src toml
+[unicode]
+packages=[
+    "quivira",
+    "ttf-kose-git",
+    "ttf-recursive",
+    "ttf-comic-shanns-v2"
+]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref ui
+unicode
+#+end_src
+
+- doom way of change =unicode= font
+get current display font by =SPC h '=
+see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
+#+begin_src emacs-lisp
+(after! unicode-fonts
+  (push "Noto Color Emoji" (cadr (assoc "Miscellaneous Symbols and Pictographs" unicode-fonts-block-font-mapping)))
+  (dolist (unicode-block '("Letterlike Symbols"))
+    (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+#+end_src
+
+- old school way of change =unicode= font
+[[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
+#+begin_src emacs-lisp :tangle no
+(defun +my/ligature-font ()
+  (dolist (chars '("ℤ" "ℝ" "ℕ"))
+      (set-fontset-font (frame-parameter nil 'font) (string-to-char chars) "DejaVu Math TeX Gyre") nil 'prepend)
+  ;; (set-fontset-font t ?𝔽 "DejaVu Math TeX Gyre")
+  (set-fontset-font (frame-parameter nil 'font) '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre") nil 'prepend)
+#+end_src
+
+*** Chinese fonts
+- [[https://emacs.stackexchange.com/questions/68644/doom-emacs-setting-font-for-devanagari-characters][Doom Emacs - Setting Font for Devanagari characters - Emacs Stack Exchange]]
+- [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]]
+- [[https://emacs-china.org/t/doom-emacs/16809/7][doom emacs 中文字体与默认字体冲突 - #7，来自 HepIsaac - Emacs-general - Emacs China]]
+- [[https://emacs-china.org/t/doom-emacs/9628/8][doom emacs 下中文字体的设置 - #8，来自 RicardoM - Emacs-general - Emacs China]]
+- [[https://baohaojun.github.io/blog/2013/05/09/0-emacs-font-global-scaling.html][全局放大 Emacs 字体]]
+- [[https://baohaojun.github.io/blog/2012/12/19/perfect-emacs-chinese-font.html][狠狠地折腾了一把 Emacs 中文字体]]
+- [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
+- [[https://github.com/doomemacs/doomemacs/issues/5092][doomemacs/doomemacs#5092 (invalid-read-syntax . "#") on running doom doctor]]
+
+#+begin_src emacs-lisp
+(defun +my/cjk-font()
+  (dolist (charset '(kana han cjk-misc))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "Kosefont JP"))))
+#+end_src
+
+*** other faces
+#+begin_src emacs-lisp
+(defun +my/better-font (font-size)
+  (interactive "N")
+  (if (display-graphic-p)
+      (progn
+        (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
+        (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
+        (set-face-font 'font-lock-comment-face (font-spec :family "Cascadia Code Cur" :size (+ 0.0 font-size)))
+        (+my/cjk-font))))
+#+end_src
+
+*** Hooks
+Visual effect test
+#+begin_src python :tangle no
+  1234567890-+abcdedfghijklmn
+# 1234567890-+abcdedfghijklmn
+# 12345然后这是中文对齐klmn
+#+end_src
+
+change =doom/reload-font= for not display all =unicode= by ~doom-unicode-font~.
+#+begin_src emacs-lisp
+(defun +my/doom-init-fonts-h (&optional reload)
+  "Loads `doom-font'."
+  (dolist (map `((default . ,doom-font)
+                 (fixed-pitch . ,doom-font)
+                 (fixed-pitch-serif . ,doom-serif-font)
+                 (variable-pitch . ,doom-variable-pitch-font)))
+    (when-let* ((face (car map))
+                (font (cdr map)))
+      (dolist (frame (frame-list))
+        (when (display-multi-font-p frame)
+          (set-face-attribute face frame
+                              :width 'normal :weight 'normal
+                              :slant 'normal :font font)))
+      (let ((new-specs (doom--make-font-specs face font)))
+        ;; Don't save to `customized-face' so it's omitted from `custom-file'
+        ;;(put face 'customized-face new-specs)
+        (custom-push-theme 'theme-face face 'user 'set new-specs)
+        (put face 'face-modified nil))))
+  ;; Users should inject their own font logic in `after-setting-font-hook'
+  (run-hooks 'after-setting-font-hook))
+(advice-add 'doom-init-fonts-h :override #'+my/doom-init-fonts-h)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun +my/init-font (&optional frame)
+  (if frame
+    (with-selected-frame frame
+      (+my/better-font 14.3))
+    (+my/better-font 14.3)))
+
+(if (and (fboundp 'daemonp) (daemonp))
+    (add-hook 'after-make-frame-functions #'+my/init-font)
+  (add-hook 'doom-init-ui-hook #'+my/init-font))
+(add-hook 'doom-load-theme-hook #'+my/init-font)
+
+;;https://emacs.stackexchange.com/a/47092
+;; DONE restore ligature after exit big font mode
+(add-hook 'doom-big-font-mode-hook
+          (lambda ()
+            (if doom-big-font-mode
+                (progn
+                  (+my/better-font 22.0)
+                  (add-hook 'doom-big-font-mode-hook #'+my/init-font))
+              (remove-hook 'doom-big-font-mode-hook #'+my/init-font))))
+
+(add-hook 'writeroom-mode-enable-hook (lambda () (+my/better-font 20.5)))
+(add-hook 'writeroom-mode-disable-hook #'+my/init-font)
+#+end_src
+
 ** Others
+=all-the-icons= font
+#+begin_src emacs-lisp
+(after! all-the-icons
+  (setq all-the-icons-scale-factor 0.9))
+#+end_src
+
+=all-the-icons= "arrow_back" error display in =doom-docs-header=
+#+begin_src emacs-lisp
+(advice-add 'doom-docs--display-menu-h :override #'ignore)
+#+end_src
+
 Transparency
 #+begin_src emacs-lisp
 (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
@@ -472,20 +545,12 @@ notify initial time
 (add-hook 'doom-init-ui-hook #'notify-init-time)
 #+end_src
 
-* Editing
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:editor
-(evil +everywhere); come to the dark side, we have cookies
-file-templates    ; auto-snippets for empty files
-fold              ; (nigh) universal code folding
-(format +onsave)  ; automated prettiness
-multiple-cursors  ; editing in many places at once
-parinfer          ; turn lisp into python, sort of
-snippets          ; my elves. They type so I don't have to
-word-wrap         ; soft wrapping with language-aware indent
+* Editor
+** evil
+#+begin_src emacs-lisp :tangle no :noweb-ref editor
+(evil +everywhere)
 #+end_src
 
-** Evil
 [[https://emacs.stackexchange.com/questions/28135/in-evil-mode-how-can-i-prevent-adding-to-the-kill-ring-when-i-yank-text-visual][In Evil mode, how can I prevent adding to the kill ring when I yank text, vis...]]
 #+begin_src emacs-lisp
 (after! evil
@@ -501,8 +566,18 @@ word-wrap         ; soft wrapping with language-aware indent
 #+end_src
 
 ** format
-#+begin_src fish
-set -a 2install prettier shfmt clang-format-static-bin python-black
+#+begin_src emacs-lisp :tangle no :noweb-ref editor
+(format +onsave)
+#+end_src
+
+#+begin_src toml
+[format]
+packages=[
+    "prettier",
+    "shfmt",
+    "clang-format-static-bin",
+    "python-black"
+]
 #+end_src
 
 ** Others
@@ -512,15 +587,7 @@ About Parentheses
 #+end_src
 
 * Emacs
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:emacs
-electric     ; smarter, keyword-based electric-indent
-ibuffer      ; interactive buffer management
-(undo +tree) ; persistent, smarter undo for your inevitable mistakes
-vc           ; version-control and Emacs, sitting in a tree
-#+end_src
-
-** Dired
+** dired
 #+begin_src emacs-lisp
 (use-package! dired
   :commands dired-jump
@@ -542,7 +609,7 @@ vc           ; version-control and Emacs, sitting in a tree
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package dired-x
+(use-package! dired-x
   :hook (dired-mode . dired-omit-mode)
   :config
   ;; Make dired-omit-mode hide all "dotfiles"
@@ -550,6 +617,7 @@ vc           ; version-control and Emacs, sitting in a tree
         (concat dired-omit-files "\\|^\\..*$")))
 #+end_src
 
+** diredfl
 #+begin_src emacs-lisp :tangle packages.el
 (package! diredfl)
 #+end_src
@@ -565,13 +633,13 @@ Additional syntax highlighting for dired
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 #+end_src
 
-** Dirvish
+** dirvish
 #+begin_src emacs-lisp :tangle packages.el
 (package! dirvish)
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package dirvish
+(use-package! dirvish
   :commands (dirvish dirvish-side)
   :init
   (map!
@@ -629,16 +697,16 @@ Additional syntax highlighting for dired
 #+end_src
 
 * Term
-#+begin_src fish
-set -a 2install fish libvterm
+** vterm
+#+begin_src toml
+[vterm]
+packages=["libvterm"]
 #+end_src
 
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:term
-vterm ; the best terminal emulation in Emacs
+#+begin_src emacs-lisp :tangle no :noweb-ref term
+vterm
 #+end_src
 
-** =vterm=
 #+begin_src emacs-lisp
 (defun +my/vterm-switch ()
   "Switch to vterm buffer in `Term' workspace.
@@ -694,44 +762,33 @@ If no vterm buffer in `Term' workspace, create it."
       (define-key vterm-mode-map (kbd (format "M-%d" num)) nil)))
 #+end_src
 
-** Colored output issues
+** Others
+Colored output issues
 [[https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues][Emacs - ArchWiki]]
 #+begin_src emacs-lisp :tangle no
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+end_src
 
-** fish shell
-ligatures
-#+begin_src emacs-lisp
-(after! fish-mode
-  (set-ligatures! 'fish-mode
-    :def "function"
-    :return "return"
-    :and "&&"
-    :or "||"
-    :not "not"
-    :true "true"
-    :false "false"
-    :for "for"))
-#+end_src
-
 * Checkers
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:checkers
-syntax           ; tasing you for every semicolon you forget
-(spell +flyspell ; tasing you for misspelling mispelling
-       +everywhere)
-grammar          ; tasing grammar mistake every you make
+** Spell checker
+#+begin_src toml
+[spell]
+packages=["aspell", "aspell-en"]
 #+end_src
 
-** Spell checker
-#+begin_src fish
-set -a 2install aspell aspell-en
+#+begin_src emacs-lisp :tangle no :noweb-ref checkers
+(spell +flyspell
+       +everywhere)
 #+end_src
 
 ** grammar
-#+begin_src fish
-set -a 2install languagetool
+#+begin_src toml
+[grammar]
+packages=["languagetool"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref checkers
+grammar
 #+end_src
 
 disable annoying =writegood-mode=
@@ -741,24 +798,97 @@ disable annoying =writegood-mode=
 #+end_src
 
 * Tools
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:tools
-biblio          ; Writes a PhD for you (citation needed)
-debugger        ; FIXME stepping through code, to help you add bugs
-docker
-editorconfig    ; let someone else argue about tabs vs spaces
-(eval +overlay) ; run code, run (also, repls)
-(lookup         ; navigate your code and its documentation
- +docsets
- +dictionary)
-(lsp)     ; M-x vscode
-magit           ; a git porcelain for Emacs
-pdf             ; pdf enhancements
-rgb             ; creating color strings
-upload          ; map local to remote projects via ssh/ftp
+** editorconfig
+#+begin_src toml
+[editorconfig]
+packages=["emacs-editorconfig-git"]
 #+end_src
 
-** pdf-tools
+#+begin_src emacs-lisp :tangle no :noweb-ref tools
+editorconfig
+#+end_src
+
+** lookup
+#+begin_src toml
+[lookup]
+packages=["sqlite", "wordnet-cli"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref tools
+(lookup
+ +docsets
+ +dictionary)
+#+end_src
+
+#+begin_src emacs-lisp
+(add-to-list '+lookup-provider-url-alist '("Brave" "https://search.brave.com/search?q=%s"))
+#+end_src
+
+** lsp
+#+begin_src emacs-lisp :tangle no :noweb-ref tools
+lsp
+#+end_src
+
+[[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
+#+begin_src emacs-lisp
+(after! lsp-ui
+  ;; 2022-03-28 - fix sideline height computation
+  (defun lsp-ui-sideline--compute-height nil
+    "Return a fixed size for text in sideline."
+    (let ((fontHeight (face-attribute 'lsp-ui-sideline-global :height)))
+      (if (null text-scale-mode-remapping)
+          '(height
+            (if (floatp fontHeight) fontHeight
+              (/ (face-attribute 'lsp-ui-sideline-global :height) 100.0))
+
+            ;; Readjust height when text-scale-mode is used
+            (list 'height
+                  (/ 1 (or (plist-get (cdr text-scale-mode-remapping) :height)
+                           1)))))))
+
+  ;; 2022-03-28 - fix sideline alignment
+  (defun lsp-ui-sideline--align (&rest lengths)
+    "Align sideline string by LENGTHS from the right of the window."
+    (list (* (window-font-width nil 'lsp-ui-sideline-global)
+             (+ (apply '+ lengths) (if (display-graphic-p) 1 2))))))
+#+end_src
+
+** magit
+#+begin_src emacs-lisp :tangle no :noweb-ref tools
+magit
+#+end_src
+
+[[https://github.com/TheLocehiliosan/yadm][GitHub - TheLocehiliosan/yadm: Yet Another Dotfiles Manager]]
+[[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
+
+~tramp~ from ~Melpa~ buggy, install it from ~aur~.
+#+begin_src emacs-lisp
+(use-package! tramp
+  :commands yadm-status
+  :init
+  (defun yadm-status ()
+    (interactive)
+    (magit-status "/yadm::"))
+  (map! :leader
+        (:prefix "g"
+         :desc "yadm-status" "a" #'yadm-status))
+  :config
+  (add-to-list 'tramp-methods
+               '("yadm"
+                 (tramp-remote-shell "/bin/bash")
+                 (tramp-remote-shell-args ("-c"))
+                 (tramp-login-program "yadm")
+                 (tramp-login-args (("enter"))))))
+                 ;; (tramp-login-env (("SHELL") ("/bin/bash")))))
+#+end_src
+
+can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
+
+** pdf
+#+begin_src emacs-lisp :tangle no :noweb-ref tools
+pdf
+#+end_src
+
 default pdf viewer in emacs
 [[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
 
@@ -787,130 +917,17 @@ default pdf viewer in emacs
 (add-hook! 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 #+end_src
 
-** =editorconfig=
-#+begin_src fish :tangle install.fish
-set -a 2install emacs-editorconfig-git
-#+end_src
-
-** lookup
-#+begin_src fish
-set -a 2install sqlite wordnet-cli
-#+end_src
-
-#+begin_src emacs-lisp
-(add-to-list '+lookup-provider-url-alist '("Brave" "https://search.brave.com/search?q=%s"))
-#+end_src
-
-** lsp
-[[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
-#+begin_src emacs-lisp
-(after! lsp-ui
-  ;; 2022-03-28 - fix sideline height computation
-  (defun lsp-ui-sideline--compute-height nil
-    "Return a fixed size for text in sideline."
-    (let ((fontHeight (face-attribute 'lsp-ui-sideline-global :height)))
-      (if (null text-scale-mode-remapping)
-          '(height
-            (if (floatp fontHeight) fontHeight
-              (/ (face-attribute 'lsp-ui-sideline-global :height) 100.0))
-
-            ;; Readjust height when text-scale-mode is used
-            (list 'height
-                  (/ 1 (or (plist-get (cdr text-scale-mode-remapping) :height)
-                           1)))))))
-
-  ;; 2022-03-28 - fix sideline alignment
-  (defun lsp-ui-sideline--align (&rest lengths)
-    "Align sideline string by LENGTHS from the right of the window."
-    (list (* (window-font-width nil 'lsp-ui-sideline-global)
-             (+ (apply '+ lengths) (if (display-graphic-p) 1 2))))))
-#+end_src
-
-** magit
-[[https://github.com/TheLocehiliosan/yadm][GitHub - TheLocehiliosan/yadm: Yet Another Dotfiles Manager]]
-[[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
-
-~tramp~ from ~Melpa~ buggy, install it from ~aur~.
-#+begin_src emacs-lisp
-(use-package! tramp
-  :commands yadm-status
-  :init
-  (defun yadm-status ()
-    (interactive)
-    (magit-status "/yadm::"))
-  (map! :leader
-        (:prefix "g"
-         :desc "yadm-status" "a" #'yadm-status))
-  :config
-  (add-to-list 'tramp-methods
-               '("yadm"
-                 (tramp-remote-shell "/bin/bash")
-                 (tramp-remote-shell-args ("-c"))
-                 (tramp-login-program "yadm")
-                 (tramp-login-args (("enter"))))))
-                 ;; (tramp-login-env (("SHELL") ("/bin/bash")))))
-#+end_src
-
-can't set shell rightly, change fish prompt in tramp instead. see [[file:~/.config/fish/config.fish]]
-
-* Lang
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:lang
-(cc +lsp)              ; C/C++/Obj-C madness
-emacs-lisp             ; drown in parentheses
-(lua +lsp)             ; one-based indices? one-based indices
-markdown               ; writing docs for people to ignore
-(org                   ; organize your plain life in plain text
- +hugo
- +dragndrop
- +gnuplot
- +noter
- +present
- +pandoc
- +pretty
- +jupyter
- +roam2)
-(latex                 ; writing papers in Emacs has never been so fun
- +lsp
- +fold
- +cdlatex)
-(python +lsp +pyright) ; beautiful is better than ugly
-(sh +fish +lsp)        ; she sells {ba,z,fi}sh shells on the C xor
-(yaml +lsp)            ; JSON, but readable
-#+end_src
-
-** Latex
-#+begin_src fish :tangle no
-set -a 2install miktex texlab
-#+end_src
-
-#+begin_src emacs-lisp
-(after! evil-tex
-  (setq evil-tex-include-newlines-in-envs nil
-        evil-tex-select-newlines-with-envs nil))
-#+end_src
-
-*** =cdlatex=
-#+begin_src emacs-lisp
-(map! :after cdlatex :map cdlatex-mode-map
-  :i "TAB" #'cdlatex-tab)
-#+end_src
-
-*** =lsp=
-word completion along with =(:lang (latex +lsp))=
-see =company-backends= variable docs
-[[https://github.com/hlissner/doom-emacs/issues/5672][set-company-backend! appending instead of prepending · Issue #5672 · doomemac...]]
-#+begin_src emacs-lisp
-(setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
-#+end_src
-
-*** math preview
+** math preview
 #+begin_src emacs-lisp :tangle no
 (package! math-preview)
 #+end_src
 
-#+begin_src fish
-paru -S --needed --noconfirm npm
+#+begin_src toml
+["math-preview"]
+packages=["npm"]
+#+end_src
+
+#+begin_src bash :tangle install.d/math-preview.sh
 git clone https://gitlab.com/matsievskiysv/math-preview ~/.local/lib
 cd ~/.local/lib/math-preview && npm i
 #+end_src
@@ -932,7 +949,39 @@ preview latex formulas
   ;;                                        (concat "{\\color{white}" s "}")))))
 #+end_src
 
-*** Others
+* Lang
+** Latex
+#+begin_src toml
+[latex]
+packages=["miktex-git", "texlab"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+(latex
+ +lsp
+ +fold
+ +cdlatex)
+#+end_src
+
+#+begin_src emacs-lisp
+(after! evil-tex
+  (setq evil-tex-include-newlines-in-envs nil
+        evil-tex-select-newlines-with-envs nil))
+#+end_src
+
+=cdlatex=
+#+begin_src emacs-lisp
+(map! :after cdlatex :map cdlatex-mode-map
+  :i "TAB" #'cdlatex-tab)
+#+end_src
+
+word completion along with =(:lang (latex +lsp))=
+see =company-backends= variable docs
+[[https://github.com/hlissner/doom-emacs/issues/5672][set-company-backend! appending instead of prepending · Issue #5672 · doomemac...]]
+#+begin_src emacs-lisp
+(setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
+#+end_src
+
 clean intermediate files
 #+begin_src emacs-lisp
 (after! latex
@@ -961,8 +1010,13 @@ add =XeTeX= mode in =TeX/LaTeX=
 #+end_src
 
 ** lua
-#+begin_src fish
-set -a 2install lua-language-server
+#+begin_src toml
+[lua]
+packages=["lua-language-server"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+(lua +lsp)
 #+end_src
 
 lsp support
@@ -989,63 +1043,23 @@ ligatures
     :for "for"))
 #+end_src
 
-** wolfram
-unmaintainable if use following
-#+begin_src emacs-lisp :tangle no
-(package! wolfram-mode
-  :type 'local
-  :recipe (:host github
-           :type git
-           :repo "fakeGenuis/wolfram-mode"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! wolfram-mode
-  :load-path "~/lib/wolfram-mode/"
-  :mode ("\\.m\\'" "\\.fr\\'" "\\.wls?\\'")
-  :interpreter "wolframscript"
-  :commands wolfram-mode
-  :config
-  (setq wolfram-program "/usr/local/bin/wolfram")
-  (setq wolfram-path "~/.Mathematica/Applications")
-  ;; ligatures
-  (set-ligatures! 'wolfram-mode
-    :and "&&"
-    :or "||"
-    :not "!"
-    :null "None"
-    :true "True"
-    :false "False")
-  ;; open .nb file with mathematica from dirvish
-  (after! dirvish
-    (push '(("nb") "/usr/local/bin/mathematica" "%f") dirvish-open-with-programs)))
-#+end_src
-
-org-wolfram
-#+begin_src emacs-lisp
-(use-package! org-wolfram
-  :load-path "~/lib/org-wolfram/"
-  :commands org-wolfram-mode)
-#+end_src
-
-wolfram-format
-#+begin_src emacs-lisp
-(load "~/lib/wolframFormatter/wolfram-format.el")
-#+end_src
-
-** python
-#+begin_src fish
-set -a 2install python-{pytest,nose,pyflakes,isort,lsp-server}
-#+end_src
-
-** shell
-#+begin_src fish
-set -a 2install shellcheck-bin bash-language-server
-#+end_src
-
 ** org
-#+begin_src fish
-set -a 2install gnuplot
+#+begin_src toml
+[org]
+packages=["gnuplot"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+(org
+ +hugo
+ +dragndrop
+ +gnuplot
+ +noter
+ +present
+ +pandoc
+ +pretty
+ +jupyter
+ +roam2)
 #+end_src
 
 References
@@ -1075,7 +1089,7 @@ References
 #+end_src
 
 custom agenda view from
-https://www.labri.fr/perso/nrougier/GTD/index.html#org9f2e38c
+[[https://www.labri.fr/perso/nrougier/GTD/index.html#org9f2e38c][Get Things Done with Emacs]]
 #+begin_src emacs-lisp
 (setq org-agenda-custom-commands
       '(("g" "Get Things Done (GTD)"
@@ -1252,17 +1266,62 @@ remove org Fancy Priorities
   (push :text/html jupyter-org-mime-types))
 #+end_src
 
-** css
+** python
+#+begin_src toml
+[python]
+packages=[
+    "python-pytest",
+    "python-nose",
+    "python-pyflakes",
+    "python-isort",
+    "python-lsp-server"
+]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+(python +lsp +pyright)
+#+end_src
+
+** sh
+#+begin_src toml
+[sh]
+packages=["shellcheck-bin", "bash-language-server"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+(sh +fish +lsp +powershell)
+#+end_src
+
+fish shell ligatures
 #+begin_src emacs-lisp
-(prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
+(after! fish-mode
+  (set-ligatures! 'fish-mode
+    :def "function"
+    :return "return"
+    :and "&&"
+    :or "||"
+    :not "not"
+    :true "true"
+    :false "false"
+    :for "for"))
 #+end_src
 
 ** yaml
-#+begin_src fish
-set -a 2install yaml-language-server
+#+begin_src toml
+[yaml]
+packages=["yaml-language-server"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+(yaml +lsp)
 #+end_src
 
 ** typst
+#+begin_src toml
+["typst-mode"]
+packages=["typst", "typst-lsp-bin"]
+#+end_src
+
 #+begin_src emacs-lisp :tangle packages.el
 (package! typst-mode)
 #+end_src
@@ -1271,9 +1330,61 @@ set -a 2install yaml-language-server
 (use-package! typst-mode)
 #+end_src
 
+** wolfram
+unmaintainable if use following
+#+begin_src emacs-lisp :tangle no
+(package! wolfram-mode
+  :type 'local
+  :recipe (:host github
+           :type git
+           :repo "fakeGenuis/wolfram-mode"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! wolfram-mode
+  :load-path "~/lib/wolfram-mode/"
+  :mode ("\\.m\\'" "\\.fr\\'" "\\.wls?\\'")
+  :interpreter "wolframscript"
+  :commands wolfram-mode
+  :config
+  (setq wolfram-program "/usr/local/bin/wolfram")
+  (setq wolfram-path "~/.Mathematica/Applications")
+  ;; ligatures
+  (set-ligatures! 'wolfram-mode
+    :and "&&"
+    :or "||"
+    :not "!"
+    :null "None"
+    :true "True"
+    :false "False")
+  ;; open .nb file with mathematica from dirvish
+  (after! dirvish
+    (push '(("nb") "/usr/local/bin/mathematica" "%f") dirvish-open-with-programs)))
+#+end_src
+
+org-wolfram
+#+begin_src emacs-lisp
+(use-package! org-wolfram
+  :load-path "~/lib/org-wolfram/"
+  :commands org-wolfram-mode)
+#+end_src
+
+wolfram-format
+#+begin_src emacs-lisp
+(load "~/lib/wolframFormatter/wolfram-format.el")
+#+end_src
+
+** Others
+css
+#+begin_src emacs-lisp
+(prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
+#+end_src
+
 * Email
-#+begin_src fish
-set -a 2install isync mu
+** mu4e
+#+begin_src toml
+[mu4e]
+packages=["isync", "muu"]
 #+end_src
 
 Example for initialing =mu= and =mbsync=
@@ -1283,14 +1394,11 @@ mu init --maildir=~/.mail --add-email-address=...@...
 mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:email
-(mu4e +***REMOVED***
-      +org)
+#+begin_src emacs-lisp :tangle no :noweb-ref email
+(mu4e +***REMOVED*** +org)
 #+end_src
 
-** mu4e
-A fix for https://github.com/doomemacs/doomemacs/issues/7196
+A fix for [[https://github.com/doomemacs/doomemacs/issues/7196][mu 1.10 support · Issue #7196 · doomemacs/doomemacs · GitHub]]
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! evil-collection)
 (package! evil-collection
@@ -1321,14 +1429,11 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+end_src
 
 * App
-#+begin_src emacs-lisp :tangle no :noweb-ref init
-:app
-calendar
-everywhere ; don't leave emacs
-(rss +org) ; emacs as an RSS reader
+** rss
+#+begin_src emacs-lisp :tangle no :noweb-ref app
+(rss +org)
 #+end_src
 
-** =elfeed=
 [[https://pragmaticemacs.wordpress.com/2016/08/17/read-your-rss-feeds-in-emacs-with-elfeed/][Read your RSS feeds in emacs with elfeed | Pragmatic Emacs]]
 #+begin_src emacs-lisp
 (after! elfeed
@@ -1346,28 +1451,37 @@ everywhere ; don't leave emacs
 #+end_src
 
 * Other packages
+** emacs-gfs
+- [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
+- [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
+- [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
+
 #+begin_src emacs-lisp :tangle packages.el
-(package! academic-phrases)
-
-(package! vlf)
-
-(package! inherit-org :recipe (:host github :repo "chenyanming/inherit-org"))
+(package! emacs-gfs
+  :recipe (:host github
+           :repo "ndw/emacs-gfs"))
 #+end_src
 
-[[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
+- [ ] display =text-scale-mode-amount= in mode-line
 #+begin_src emacs-lisp
-(defun +my/append-to-list (list-var elements)
-  "Append ELEMENTS to the end of LIST-VAR.
+;; set a rescale font to cjk charset fonts,
+;; so no explicit font size is needed
+;; rescale doom-font cause bold font size != regular
+(dolist (rescales '(("Ubuntu" . 1.05)
+                    ("mononoki" . 1.00)
+                    ("Cascadia" . 0.95)
+                    ("Kosefont" . 1.10)
+                    ("小濑字体" . 1.10)))
+  (push rescales face-font-rescale-alist))
 
-change to no return value
-The return value is the new value of LIST-VAR."
-  (unless (consp elements)
-    (error "ELEMENTS must be a list"))
-  (let ((list (symbol-value list-var)))
-    (if list
-        (setcdr (last list) elements)
-      (set list-var elements))))
-  ;(symbol-value list-var))
+(use-package! emacs-gfs
+  :config
+  (setq gfs/default-face-height 140)
+  (setq gfs/resizeable-ignore-faces nil)
+  :bind
+  (:map evil-normal-state-map
+        ("C--" . gfs/shrink-faces)
+        ("C-=" . gfs/magnify-faces)))
 #+end_src
 
 ** keycast
@@ -1394,31 +1508,6 @@ The return value is the new value of LIST-VAR."
          :desc "Toggle keycast" "k" #'keycast-mode))
   (add-to-list 'global-mode-string '("" keycast-mode-line)))
 #+end_src
-
-** projectile
-[[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
-#+begin_src emacs-lisp
-(after! projectile
-  (setq projectile-indexing-method 'alien
-        projectile-sort-order 'recently-active
-        projectile-file-exists-remote-cache-expire (* 10 60)
-        projectile-track-known-projects-automatically nil
-        ;; projectile-require-project-root t
-        projectile-auto-discover t)
-        ;; (projectile-file-exists-local-cache-expire (* 5 60)))
-  (add-to-list 'projectile-globally-ignored-directories
-               "*\\.run\\.tmp$")
-  (+my/append-to-list 'projectile-globally-ignored-modes
-                      '("helpful-mode" "dired-mode"))
-  (add-to-list 'projectile-globally-ignored-buffers "*doom*"))
-#+end_src
-
-[[https://emacs.stackexchange.com/questions/16497/how-to-exclude-files-from-projectile][How to exclude files from Projectile? - Emacs Stack Exchange]]
-For non git project, better add following in project root [[file:.dir-locals.el]]
-#+begin_src emacs-lisp :tangle no
-((nil . ((projectile-indexing-method . hybrid))))
-#+end_src
-and add ignored files in [[file:.projectile]].
 
 ** shrface
 #+begin_src emacs-lisp :tangle packages.el
@@ -1449,16 +1538,6 @@ and add ignored files in [[file:.projectile]].
                   (shrface-html-export-as-org data))))))
 #+end_src
 
-** pomm
-#+begin_src emacs-lisp :tangle packages.el
-(package! pomm)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package pomm
-  :commands pomm)
-#+end_src
-
 ** screenshot
 #+begin_src emacs-lisp :tangle packages.el
 (package! screenshot
@@ -1471,11 +1550,6 @@ and add ignored files in [[file:.projectile]].
   :init
   (map! (:leader :prefix "o"
          :desc "sreenshot within emacs" "S" #'screenshot)))
-#+end_src
-
-** tldr
-#+begin_src emacs-lisp :tangle packages.el
-(package! tldr)
 #+end_src
 
 ** zotxt
@@ -1551,8 +1625,9 @@ open attachment with point at arxiv link
 
 ** figlet
 converting comments into ascii arts
-#+begin_src fish
-set -a 2install figlet
+#+begin_src toml
+[figlet]
+packages=["figlet"]
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -1566,15 +1641,23 @@ set -a 2install figlet
 #+end_src
 
 * Other configs
-** proxy
+** defuns
+[[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
 #+begin_src emacs-lisp
-(setq url-proxy-services
-   `(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
-     ("http" . ,(shell-command-to-string "echo -n $ALL_PROXY"))
-     ("https" . ,(shell-command-to-string "echo -n $ALL_PROXY"))))
+(defun +my/append-to-list (list-var elements)
+  "Append ELEMENTS to the end of LIST-VAR.
+
+change to no return value
+The return value is the new value of LIST-VAR."
+  (unless (consp elements)
+    (error "ELEMENTS must be a list"))
+  (let ((list (symbol-value list-var)))
+    (if list
+        (setcdr (last list) elements)
+      (set list-var elements))))
+  ;(symbol-value list-var))
 #+end_src
 
-** reverse words
 #+begin_src emacs-lisp
 (defun +my/reverse-words (beg end)
   "Reverse the order of words in region."
@@ -1584,6 +1667,39 @@ set -a 2install figlet
    (reverse
     (split-string
      (delete-and-extract-region beg end) "\\b"))))
+#+end_src
+
+** projectile
+[[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
+#+begin_src emacs-lisp
+(after! projectile
+  (setq projectile-indexing-method 'alien
+        projectile-sort-order 'recently-active
+        projectile-file-exists-remote-cache-expire (* 10 60)
+        projectile-track-known-projects-automatically nil
+        ;; projectile-require-project-root t
+        projectile-auto-discover t)
+        ;; (projectile-file-exists-local-cache-expire (* 5 60)))
+  (add-to-list 'projectile-globally-ignored-directories
+               "*\\.run\\.tmp$")
+  (+my/append-to-list 'projectile-globally-ignored-modes
+                      '("helpful-mode" "dired-mode"))
+  (add-to-list 'projectile-globally-ignored-buffers "*doom*"))
+#+end_src
+
+[[https://emacs.stackexchange.com/questions/16497/how-to-exclude-files-from-projectile][How to exclude files from Projectile? - Emacs Stack Exchange]]
+For non git project, better add following in project root [[file:.dir-locals.el]]
+#+begin_src emacs-lisp :tangle no
+((nil . ((projectile-indexing-method . hybrid))))
+#+end_src
+and add ignored files in [[file:.projectile]].
+
+** proxy
+#+begin_src emacs-lisp
+(setq url-proxy-services
+   `(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
+     ("http" . ,(shell-command-to-string "echo -n $ALL_PROXY"))
+     ("https" . ,(shell-command-to-string "echo -n $ALL_PROXY"))))
 #+end_src
 
 ** insert arxiv links
@@ -1603,11 +1719,7 @@ set -a 2install figlet
     (org-insert-link nil (concat "https://arxiv.org/abs/" id) id)))
 #+end_src
 
-* End
-#+begin_src fish
-paru -S --needed --noconfirm $2install
-#+end_src
-
+** shortcuts
 #+begin_src emacs-lisp
 (map! :leader
       :desc "dirvish"               "-"    #'dirvish
