@@ -245,6 +245,8 @@ track current theme for later load
 ;; load fonts after `doom/restart-and-restore'
 (add-hook 'window-setup-hook #'doom-init-fonts-h 'append)
 #+end_src
+"mononokiLiga" in [[file:~/.local/share/fonts/]]
+
 ** doom-dashboard
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
 doom-dashboard
@@ -420,6 +422,8 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
         (set-face-font 'font-lock-comment-face (font-spec :family "Cascadia Code Cur" :size (+ 0.0 font-size)))
         (+my/cjk-font))))
 #+end_src
+
+"Cascadia cur" in [[file:~/.local/share/fonts/]]
 
 *** Hooks
 Visual effect test
