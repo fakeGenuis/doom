@@ -16,6 +16,7 @@ Literate and modular doom emacs configuration.
 5. comment a module with
    #+begin_src example
 :PROPERTIES:
+:header-args:toml: :tangle no
 :header-args: :tangle no :noweb no
 :END:
    #+end_src
@@ -29,7 +30,7 @@ Literate and modular doom emacs configuration.
 
 (doom!
  :input
- <<input>>
+ chinese
 
  :completion
  <<completion>>
@@ -132,18 +133,6 @@ a bash script to install or uninstall its dependence.
 enable_default=true
 #+end_src
 
-* Input
-** chinese
-#+begin_src emacs-lisp :tangle no :noweb-ref input
-chinese
-#+end_src
-
-=fcitx= input method
-#+begin_src toml
-[chinese]
-depends_on=["fcitx"]
-#+end_src
-
 * Completion
 ** company
 =company-ispell= needs word dictionary
@@ -197,7 +186,6 @@ doom
 #+begin_src toml
 [doom]
 packages=[
-    "ttf-sarasa-ui-sc",
     "gentium-plus-font",
     "ttf-firacode-nerd"
 ]
@@ -376,7 +364,6 @@ use ~+popup-mode~ to toggle popup mode globally.
 packages=[
     "quivira",
     "ttf-kose-git",
-    "ttf-recursive",
     "ttf-comic-shanns-v2"
 ]
 #+end_src
@@ -570,6 +557,7 @@ notify initial time
 (format +onsave)
 #+end_src
 
+*prerequisites depends on what you un-comment in =lang= section*
 #+begin_src toml
 [format]
 packages=[
@@ -634,6 +622,18 @@ Additional syntax highlighting for dired
 #+end_src
 
 ** dirvish
+#+begin_src toml
+[dirvish]
+packages=[
+    "fd",
+    # "imagemagick",
+    # "ffmpegthumbnailer",
+    # "mediainfo",
+    "tar",
+    "unzip"
+]
+#+end_src
+
 #+begin_src emacs-lisp :tangle packages.el
 (package! dirvish)
 #+end_src
@@ -917,8 +917,13 @@ default pdf viewer in emacs
 (add-hook! 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 #+end_src
 
-** math preview
-#+begin_src emacs-lisp :tangle no
+** math-preview
+:PROPERTIES:
+:header-args:toml: :tangle no
+:header-args: :tangle no :noweb no
+:END:
+
+#+begin_src emacs-lisp
 (package! math-preview)
 #+end_src
 
@@ -927,7 +932,7 @@ default pdf viewer in emacs
 packages=["npm"]
 #+end_src
 
-#+begin_src bash :tangle install.d/math-preview.sh
+#+begin_src bash
 git clone https://gitlab.com/matsievskiysv/math-preview ~/.local/lib
 cd ~/.local/lib/math-preview && npm i
 #+end_src
@@ -1044,16 +1049,10 @@ ligatures
 #+end_src
 
 ** org
-#+begin_src toml
-[org]
-packages=["gnuplot"]
-#+end_src
-
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
 (org
  +hugo
  +dragndrop
- +gnuplot
  +noter
  +present
  +pandoc
