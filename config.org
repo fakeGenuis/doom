@@ -1254,6 +1254,15 @@ remove org Fancy Priorities
 set -a 2install yaml-language-server
 #+end_src
 
+** typst
+#+begin_src emacs-lisp :tangle packages.el
+(package! typst-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! typst-mode)
+#+end_src
+
 * Email
 #+begin_src fish
 set -a 2install isync mu
