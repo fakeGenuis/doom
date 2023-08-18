@@ -1387,7 +1387,7 @@ css
 ** mu4e
 #+begin_src toml
 [mu4e]
-packages=["isync", "muu"]
+packages=["isync", "mu"]
 #+end_src
 
 Example for initialing =mu= and =mbsync=
