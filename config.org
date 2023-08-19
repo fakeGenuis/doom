@@ -600,6 +600,16 @@ About Parentheses
    :n "." #'dired-omit-mode))
 #+end_src
 
+ignore =dired-mode= buffers in =persp-mode=
+[[https://emacs.stackexchange.com/questions/59177/how-to-tell-persp-mode-to-ignore-some-buffers-by-major-mode][How to tell persp-mode to ignore some buffers by major-mode - Emacs Stack Exc...]]
+[[https://github.com/seagle0128/.emacs.d/blob/dcc772d05da04042b39d1660f79f599e030188ff/lisp/init-persp.el#L117-L129][.emacs.d/init-persp.el at dcc772d05da04042b39d1660f79f599e030188ff · seagle01...]]
+[[https://github.com/Bad-ptr/persp-mode.el#set-persp-add-buffer-on-after-change-major-mode-to-auto-add-more-buffers][GitHub - Bad-ptr/persp-mode.el: named perspectives(set of buffers/window conf...]]
+#+begin_src emacs-lisp
+(add-hook 'persp-common-buffer-filter-functions
+          #'(lambda (b)
+              (eq (buffer-local-value 'major-mode b) 'dired-mode)))
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package! dired-x
   :hook (dired-mode . dired-omit-mode)
