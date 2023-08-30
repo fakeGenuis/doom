@@ -365,8 +365,8 @@ use ~+popup-mode~ to toggle popup mode globally.
 [unicode]
 packages=[
     "quivira",
-    "ttf-kose-git",
-    "ttf-comic-shanns-v2"
+    "ttf-sarasa-gothic-sc",
+    "otf-comicshanns-nerd"
 ]
 #+end_src
 
@@ -417,8 +417,8 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
   (interactive "N")
   (if (display-graphic-p)
       (progn
-        (set-face-font 'mode-line (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
-        (set-face-font 'mode-line-inactive (font-spec :family "Comic Shanns" :size (+ 0.0 font-size)))
+        (set-face-font 'mode-line (font-spec :family "ComicShannsMono Nerd Font" :size (+ 0.0 font-size)))
+        (set-face-font 'mode-line-inactive (font-spec :family "ComicShannsMono Nerd Font" :size (+ 0.0 font-size)))
         (set-face-font 'font-lock-comment-face (font-spec :family "Cascadia Code Cur" :size (+ 0.0 font-size)))
         (+my/cjk-font))))
 #+end_src
