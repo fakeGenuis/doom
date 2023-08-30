@@ -13,14 +13,7 @@ Literate and modular doom emacs configuration.
 
 4. extra bootstrap for package tangled to [[file:install.d/]]
 
-5. comment a module with
-   #+begin_src example
-:PROPERTIES:
-:header-args:toml: :tangle no
-:header-args: :tangle no :noweb no
-:END:
-   #+end_src
-   # FIXME define a shortcut in this file?
+5. comment a module with [[kbd:C-c ;][Comment]]
 
 * Tangle
 [[file:init.el]]
@@ -43,21 +36,21 @@ Literate and modular doom emacs configuration.
  ophints
  (vc-gutter +pretty)
  (window-select +numbers)
- workspace
- zen
+ workspaces
+ ;zen
 
  :editor
  <<editor>>
- file-templates
+ ;file-templates
  fold
- multiple-cursors
+ ;multiple-cursors
  parinfer
  snippets
  word-wrap
 
  :emacs
- electric
- ibuffer
+ ;electric
+ ;ibuffer
  (undo +tree)
  vc
 
@@ -66,24 +59,24 @@ Literate and modular doom emacs configuration.
 
  :checkers
  <<checkers>>
- syntax
+ (syntax +childframe)
 
  :tools
  <<tools>>
- biblio
+ ;biblio
  debugger
  docker
- editorconfig
+ ;editorconfig
  (eval +overlay)
  rgb
- upload
+ ;upload
 
  :os
- tty
+ ;tty
 
  :lang
  <<lang>>
- (cc +lsp)
+ ;(cc +lsp)
  emacs-lisp
  markdown
 
@@ -92,7 +85,6 @@ Literate and modular doom emacs configuration.
 
  :app
  calendar
- everywhere
  <<app>>
 
  :config
@@ -108,9 +100,9 @@ Extra packages from [[https://melpa.org][MELPA]]
 
 (package! academic-phrases)
 
-(package! vlf)
+;(package! vlf)
 
-(package! inherit-org :recipe (:host github :repo "chenyanming/inherit-org"))
+;(package! inherit-org :recipe (:host github :repo "chenyanming/inherit-org"))
 
 (package! pomm)
 
@@ -492,7 +484,7 @@ change =doom/reload-font= for not display all =unicode= by ~doom-unicode-font~.
 #+end_src
 
 =all-the-icons= "arrow_back" error display in =doom-docs-header=
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (advice-add 'doom-docs--display-menu-h :override #'ignore)
 #+end_src
 
@@ -795,7 +787,7 @@ packages=["aspell", "aspell-en"]
        +everywhere)
 #+end_src
 
-** grammar
+** COMMENT grammar
 #+begin_src toml
 [grammar]
 packages=["languagetool"]
@@ -812,7 +804,7 @@ disable annoying =writegood-mode=
 #+end_src
 
 * Tools
-** editorconfig
+** COMMENT editorconfig
 #+begin_src toml
 [editorconfig]
 packages=["emacs-editorconfig-git"]
@@ -931,12 +923,7 @@ default pdf viewer in emacs
 (add-hook! 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 #+end_src
 
-** math-preview
-:PROPERTIES:
-:header-args:toml: :tangle no
-:header-args: :tangle no :noweb no
-:END:
-
+** COMMENT math-preview
 #+begin_src emacs-lisp
 (package! math-preview)
 #+end_src
@@ -1329,7 +1316,7 @@ packages=["yaml-language-server"]
 (yaml +lsp)
 #+end_src
 
-** typst
+** COMMENT typst
 #+begin_src toml
 ["typst-mode"]
 packages=["typst", "typst-lsp-bin"]
@@ -1522,7 +1509,7 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
   (add-to-list 'global-mode-string '("" keycast-mode-line)))
 #+end_src
 
-** shrface
+** COMMENT shrface
 #+begin_src emacs-lisp :tangle packages.el
 (package! shrface)
 #+end_src
