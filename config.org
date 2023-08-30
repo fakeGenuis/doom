@@ -1450,6 +1450,21 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
   (setq elfeed-goodies/entry-pane-size 0.5))
 #+end_src
 
+** everywhere
+#+begin_src emacs-lisp :tangle no :noweb-ref app
+everywhere
+#+end_src
+
+#+begin_src toml
+[everywhere]
+packages=[
+    "xclip",
+    "xdotool",
+    "xorg-xprop",
+    "xorg-xwininfo"
+]
+#+end_src
+
 * Other packages
 ** emacs-gfs
 - [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
