@@ -178,7 +178,7 @@ doom
 #+begin_src toml
 [doom]
 packages=[
-    "gentium-plus-font",
+    "adobe-source-serif-fonts",
     "ttf-firacode-nerd"
 ]
 #+end_src
@@ -231,7 +231,7 @@ track current theme for later load
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
       doom-unicode-font (font-spec :family "FiraCode Nerd Font Mono")
-      doom-serif-font (font-spec :family "Gentium Book Plus" :size 13.0))
+      doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
       ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 
 ;; load fonts after `doom/restart-and-restore'
@@ -400,7 +400,7 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 (defun +my/cjk-font()
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Kosefont JP"))))
+                      (font-spec :family "Sarasa Gothic SC"))))
 #+end_src
 
 *** other faces
@@ -1470,6 +1470,7 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 (dolist (rescales '(("Ubuntu" . 1.05)
                     ("mononoki" . 1.00)
                     ("Cascadia" . 0.95)
+                    ("Sarasa" . 0.95)
                     ("Kosefont" . 1.10)
                     ("小濑字体" . 1.10)))
   (push rescales face-font-rescale-alist))
