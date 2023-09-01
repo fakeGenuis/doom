@@ -78,7 +78,6 @@ Literate and modular doom emacs configuration.
  <<lang>>
  ;(cc +lsp)
  emacs-lisp
- markdown
 
  :email
  <<email>>
@@ -98,13 +97,13 @@ Extra packages from [[https://melpa.org][MELPA]]
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-(package! academic-phrases)
+;(package! academic-phrases)
 
 ;(package! vlf)
 
 ;(package! inherit-org :recipe (:host github :repo "chenyanming/inherit-org"))
 
-(package! pomm)
+;(package! pomm)
 
 (package! tldr)
 #+end_src
@@ -706,7 +705,12 @@ packages=[
 ** vterm
 #+begin_src toml
 [vterm]
-packages=["libvterm"]
+packages=[
+    "libvterm",
+    "cmake",
+    # =hostname= command
+    "inetutils"
+]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref term
@@ -1050,6 +1054,15 @@ ligatures
 #+end_src
 
 ** org
+#+begin_src toml
+[org]
+packages=[
+    "xclip",
+    "maim",
+    # "graphviz"
+]
+#+end_src
+
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
 (org
  +hugo
@@ -1256,7 +1269,7 @@ org-format
 #+end_src
 
 remove org Fancy Priorities
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! org-fancy-priorities :disable t)
 #+end_src
 
@@ -1274,6 +1287,7 @@ packages=[
     "python-nose",
     "python-pyflakes",
     "python-isort",
+    "python-pipenv",
     "python-lsp-server"
 ]
 #+end_src
@@ -1373,6 +1387,17 @@ wolfram-format
 #+begin_src emacs-lisp
 (load "~/lib/wolframFormatter/wolfram-format.el")
 #+end_src
+** markdown
+#+begin_src toml
+[markdown]
+packages=[
+    "pandoc-bin"
+]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+markdown
+#+end_src
 
 ** Others
 css
@@ -1384,7 +1409,11 @@ css
 ** mu4e
 #+begin_src toml
 [mu4e]
-packages=["isync", "mu"]
+packages=[
+    "isync",
+    "mu",
+    #"imagemagick"
+]
 #+end_src
 
 Example for initialing =mu= and =mbsync=
@@ -1399,7 +1428,7 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
 A fix for [[https://github.com/doomemacs/doomemacs/issues/7196][mu 1.10 support · Issue #7196 · doomemacs/doomemacs · GitHub]]
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (unpin! evil-collection)
 (package! evil-collection
   :recipe (:repo "emacs-evil/evil-collection" :branch "master"))
