@@ -1537,7 +1537,7 @@ packages=[
 [[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
 #+begin_src emacs-lisp
 (use-package! keycast
-  :hook doom-after-init
+  ; :hook doom-init-ui
   :config
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
