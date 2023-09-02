@@ -13,7 +13,7 @@ Literate and modular doom emacs configuration.
 
 4. extra bootstrap for package tangled to [[file:install.d/]]
 
-5. comment a module with [[kbd:C-c ;][Comment]]
+5. comment a module with [[kbd:][C-c ;]]
 
 * Tangle
 [[file:init.el]]
@@ -355,8 +355,15 @@ use ~+popup-mode~ to toggle popup mode globally.
 #+begin_src toml
 [unicode]
 packages=[
+    # org ellipsis
     "quivira",
+    # chinese
     "ttf-sarasa-gothic-sc",
+    # emoji
+    "noto-fonts-emoji",
+    # org section 3
+    "ttf-dejavu-nerd",
+    # modeline
     "otf-comicshanns-nerd"
 ]
 #+end_src
