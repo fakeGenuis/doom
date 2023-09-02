@@ -660,7 +660,9 @@ packages=[
     :desc "dirvish-side" "s" #'dirvish-side))
   :custom
   (dirvish-side-width 25)
-  (dirvish-cache-dir "~/.cache/dirvish/")
+  ;; (dirvish-cache-dir "~/.cache/dirvish/")
+  ;; (dirvish-media-auto-cache-threshold '(500 . 6))
+  ;; (dirvish-preview-dispatchers '(image gif video audio epub pdf archive))
   ;; (dirvish-reuse-session nil)
   ;; TODO fix line height
   (dirvish-header-line-height '(20 . 37))
