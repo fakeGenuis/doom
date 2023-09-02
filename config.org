@@ -690,24 +690,25 @@ packages=[
   ;; (dirvish-peek-mode)
   (map!
    :map dired-mode-map
-   "TAB" #'dirvish-subtree-toggle
-   ;; :gn "r"   #'dirvish-roam
-   :gn "*"   #'dirvish-mark-menu
-   :gn "M-b" #'dirvish-quick-access
-   :gn "M-f" #'dirvish-layout-toggle
-   :gn "M-l" #'dirvish-ls-switches-menu
-   :gn "M-n" #'dirvish-history-go-forward
-   :gn "M-p" #'dirvish-history-go-backward
-   :gn "M-s" #'dirvish-setup-menu
-   :gn "N"   #'dirvish-narrow
-   :gn "b"   #'dirvish-history-jump
-   :gn "f"   #'dirvish-file-info-menu
-   :gn "o"   #'dirvish-quicksort
-   :gn "q"   #'dirvish-quit
-   :gn "y"   #'dirvish-yank-menu))
-   ;; [remap dired-sort-toggle-or-edit] #'dirvish-quicksort
-   ;; [remap dired-do-redisplay] #'dirvish-ls-switches-menu
-   ;; [remap dired-summary] #'dirvish-dispatch
+   :gn "TAB"   #'dirvish-subtree-toggle
+   ;; :gn "r"  #'dirvish-roam
+   :gn "M-e"   #'dirvish-emerge-menu
+   :gn "M-f"   #'dirvish-layout-toggle
+   :gn "M-l"   #'dirvish-ls-switches-menu
+   :gn "M-m"   #'dirvish-mark-menu
+   :gn "M-n"   #'dirvish-history-go-forward
+   :gn "M-p"   #'dirvish-history-go-backward
+   :gn "M-s"   #'dirvish-setup-menu
+   :gn "M-v"   #'dirvish-vc-menu
+   :gn "N"     #'dirvish-narrow
+   :gn "a"     #'dirvish-quick-access
+   :gn "b"     #'dirvish-history-jump
+   :gn "f"     #'dirvish-file-info-menu
+   :gn "g TAB" #'dirvish-emerge-toggle-current-group
+   :gn "g z"   #'revert-buffer
+   :gn "o"     #'dirvish-quicksort
+   :gn "q"     #'dirvish-quit
+   :gn "y"     #'dirvish-yank-menu))
 #+end_src
 
 * Term
