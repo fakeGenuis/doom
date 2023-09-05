@@ -1695,6 +1695,25 @@ packages=["figlet"]
   (setq figlet-options '("-W" "-f" "script")))
 #+end_src
 
+** shell-command+
+#+begin_src emacs-lisp :tangle packages.el
+(package! shell-command+
+  :built-in t
+  :recipe (:host nil
+           :repo "https://git.sr.ht/~pkal/shell-command-plus"))
+#+end_src
+
+substitute "%" to buffer file in ~shell-command~
+[[https://puntoblogspot.blogspot.com/2021/05/current-file-name-on-emacss-shell.html][puntoblogspot: Current file name on emacs's shell-command]]
+[[https://unix.stackexchange.com/questions/45125/how-to-get-current-buffers-filename-in-emacs][function - How to get current buffer's filename in emacs? - Unix & Linux Stac...]]
+
+#+begin_src emacs-lisp
+(use-package! shell-command+
+  :commands shell-command+
+  :config
+  (global-set-key (kbd "M-!") #'shell-command+))
+#+end_src
+
 * Other configs
 ** defuns
 [[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
