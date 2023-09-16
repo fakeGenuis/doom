@@ -45,7 +45,6 @@ Literate and modular doom emacs configuration.
  fold
  ;multiple-cursors
  parinfer
- snippets
  word-wrap
 
  :emacs
@@ -568,6 +567,18 @@ packages=[
     "clang-format-static-bin",
     "python-black"
 ]
+#+end_src
+
+** snippets
+#+begin_src emacs-lisp :tangle no :noweb-ref editor
+snippets
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! yasnippet
+  :init
+  (setq +snippets-dir
+        (expand-file-name "~/Documents/Templates/snippets")))
 #+end_src
 
 ** Others
