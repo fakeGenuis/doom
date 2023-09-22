@@ -265,16 +265,6 @@ References
     (setq +doom-dashboard-ascii-banner-fn (lambda () (my-weebery-is-always-greater splash-file-name)))))
 #+end_src
 
-add =vterm= entry
-#+begin_src emacs-lisp
-(add-to-list '+doom-dashboard-menu-sections
-             '("Open vterm"
-               :icon (all-the-icons-octicon "terminal" :face 'doom-dashboard-menu-title)
-               :when (modulep! :term vterm)
-               :face (:inherit (doom-dashboard-menu-title bold))
-               :action +vterm/here))
-#+end_src
-
 ** emoji
 #+begin_src toml
 [emoji]
@@ -708,23 +698,23 @@ packages=[
    :map dired-mode-map
    :gn "TAB"   #'dirvish-subtree-toggle
    ;; :gn "r"  #'dirvish-roam
-   :gn "M-e"   #'dirvish-emerge-menu
-   :gn "M-f"   #'dirvish-layout-toggle
-   :gn "M-l"   #'dirvish-ls-switches-menu
-   :gn "M-m"   #'dirvish-mark-menu
-   :gn "M-n"   #'dirvish-history-go-forward
-   :gn "M-p"   #'dirvish-history-go-backward
-   :gn "M-s"   #'dirvish-setup-menu
-   :gn "M-v"   #'dirvish-vc-menu
-   :gn "N"     #'dirvish-narrow
-   :gn "a"     #'dirvish-quick-access
-   :gn "b"     #'dirvish-history-jump
-   :gn "f"     #'dirvish-file-info-menu
-   :gn "g TAB" #'dirvish-emerge-toggle-current-group
-   :gn "g z"   #'revert-buffer
-   :gn "o"     #'dirvish-quicksort
-   :gn "q"     #'dirvish-quit
-   :gn "y"     #'dirvish-yank-menu))
+   :gn "M-e"  #'dirvish-emerge-menu
+   :gn "M-f"  #'dirvish-layout-toggle
+   :gn "M-l"  #'dirvish-ls-switches-menu
+   :gn "M-m"  #'dirvish-mark-menu
+   :gn "M-n"  #'dirvish-history-go-forward
+   :gn "M-p"  #'dirvish-history-go-backward
+   :gn "M-s"  #'dirvish-setup-menu
+   :gn "M-v"  #'dirvish-vc-menu
+   :gn "N"    #'dirvish-narrow
+   :gn "a"    #'dirvish-quick-access
+   :gn "b"    #'dirvish-history-jump
+   :gn "f"    #'dirvish-file-info-menu
+   :n "g TAB" #'dirvish-emerge-toggle-current-group
+   :n "g z"   #'revert-buffer
+   :gn "o"    #'dirvish-quicksort
+   :gn "q"    #'dirvish-quit
+   :gn "y"    #'dirvish-yank-menu))
 #+end_src
 
 * Term
@@ -989,7 +979,7 @@ preview latex formulas
 ** Latex
 #+begin_src toml
 [latex]
-packages=["miktex-git", "texlab"]
+packages=["miktex", "texlab"]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
@@ -1085,7 +1075,7 @@ ligatures
 packages=[
     "xclip",
     "maim",
-    # "graphviz"
+    "graphviz"
 ]
 #+end_src
 
