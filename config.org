@@ -488,6 +488,11 @@ change =doom/reload-font= for not display all =unicode= by ~doom-unicode-font~.
   (setq all-the-icons-scale-factor 0.9))
 #+end_src
 
+#+begin_src emacs-lisp
+(after! nerd-icons
+  (setq nerd-icons-scale-factor 0.9))
+#+end_src
+
 =all-the-icons= "arrow_back" error display in =doom-docs-header=
 #+begin_src emacs-lisp :tangle no
 (advice-add 'doom-docs--display-menu-h :override #'ignore)
