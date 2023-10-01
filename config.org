@@ -1361,24 +1361,21 @@ packages=["typst", "typst-lsp-bin"]
 #+end_src
 
 ** wolfram
-unmaintainable if use following
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle packages.el
 (package! wolfram-mode
-  :type 'local
-  :recipe (:host github
-           :type git
-           :repo "fakeGenuis/wolfram-mode"))
+  :recipe (:local-repo "~/lib/wolfram-mode/"))
+
+(package! org-wolfram
+  :recipe (:local-repo "~/lib/org-wolfram/"))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package! wolfram-mode
-  :load-path "~/lib/wolfram-mode/"
+  :after lsp-mode
+  :commands wolfram-mode
   :mode ("\\.m\\'" "\\.fr\\'" "\\.wls?\\'")
   :interpreter "wolframscript"
-  :commands wolfram-mode
   :config
-  (setq wolfram-program "/usr/local/bin/wolfram")
-  (setq wolfram-path "~/.Mathematica/Applications")
   ;; ligatures
   (set-ligatures! 'wolfram-mode
     :and "&&"
@@ -1387,22 +1384,28 @@ unmaintainable if use following
     :null "None"
     :true "True"
     :false "False")
+  ;; (add-to-list 'lsp-language-id-configuration
+  ;;              '(wolfram-mode . "wolfram"))
   ;; open .nb file with mathematica from dirvish
   (after! dirvish
-    (push '(("nb") "/usr/local/bin/mathematica" "%f") dirvish-open-with-programs)))
+    (push '(("nb") "/usr/local/bin/mathematica" "%f")
+          dirvish-open-with-programs)))
 #+end_src
 
 org-wolfram
 #+begin_src emacs-lisp
 (use-package! org-wolfram
-  :load-path "~/lib/org-wolfram/"
   :commands org-wolfram-mode)
 #+end_src
+
+- error when run after execute hook
+  [[https://github.com/emacs-jupyter/jupyter/issues/492][emacs-jupyter/jupyter#492 org-babel-after-execute-hook not executed in contex...]]
 
 wolfram-format
 #+begin_src emacs-lisp
 (load "~/lib/wolframFormatter/wolfram-format.el")
 #+end_src
+
 ** markdown
 #+begin_src toml
 [markdown]
@@ -1807,3 +1810,4 @@ and add ignored files in [[file:.projectile]].
       :desc "M-x"                   ";"    #'execute-extended-command
       :desc "Org agenda"            "="    #'org-agenda)
 #+end_src
+
