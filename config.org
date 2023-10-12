@@ -1431,6 +1431,8 @@ css
 packages=[
     "isync",
     "mu",
+    "pass",
+    "msmtp"
     #"imagemagick"
 ]
 #+end_src
@@ -1438,21 +1440,13 @@ packages=[
 Example for initialing =mu= and =mbsync=
 #+begin_src fish :tangle no
 mkdir -p ~/.mail/$mailname
-mu init --maildir=~/.mail --add-email-address=...@...
+mu init --maildir=~/.mail --my-address=...@...
+mu index
 mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref email
 (mu4e +***REMOVED*** +org)
-#+end_src
-
-A fix for [[https://github.com/doomemacs/doomemacs/issues/7196][mu 1.10 support · Issue #7196 · doomemacs/doomemacs · GitHub]]
-#+begin_src emacs-lisp :tangle no
-(unpin! evil-collection)
-(package! evil-collection
-  :recipe (:repo "emacs-evil/evil-collection" :branch "master"))
-;; (package! evil-collection
-;;   :recipe (:repo "meliache/evil-collection" :branch "mu4e-development"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
@@ -1468,6 +1462,16 @@ A fix for [[https://github.com/doomemacs/doomemacs/issues/7196][mu 1.10 support 
         ;; every new email composition gets its own frame!
         mu4e-compose-in-new-frame t
         mu4e-use-fancy-chars t))
+#+end_src
+
+send email by =msmtp=, see [[file:~/.config/msmtp/config]]
+#+begin_src emacs-lisp
+(after! mu4e
+  (setq sendmail-program (executable-find "msmtp")
+        send-mail-function #'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-send-mail-function #'message-send-mail-with-sendmail))
 #+end_src
 
 private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
