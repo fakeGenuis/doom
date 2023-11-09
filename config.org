@@ -1373,6 +1373,21 @@ packages=["typst", "typst-lsp-bin"]
   :recipe (:local-repo "~/lib/org-wolfram/"))
 #+end_src
 
+suppress message
+#+begin_quote
+Org babel: Wolfram-Language :session is incompatible with :async. Executing
+synchronously!
+#+end_quote
+
+#+begin_src emacs-lisp
+;; (setq jupyter--debug t)
+;; (push "jupyter-Wolfram-Language" ob-async-no-async-languages-alist)
+(push 'Wolfram-Language +org-babel-native-async-langs)
+(setq org-babel-default-header-args:jupyter-Wolfram-Language
+      '((:async . "yes")
+        (:kernel . "wolframforjupyter")))
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package! wolfram-mode
   :after lsp-mode
