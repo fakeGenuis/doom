@@ -676,7 +676,11 @@ packages=[
   (dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
-     ("m" "/mnt/Media/"                 "Media")
+     ("D" "~/Documents/"                "Documents")
+     ("l" "~/lib/"                      "Library")
+     ("m" "/mnt/"                       "Mounts")
+     ("n" "~/.Nextcloud/"               "Nextcloud")
+     ("p" "~/Pictures/"                 "Pictures")
      ("t" "~/.local/share/Trash/files/" "TrashCan")))
   :config
   (dirvish-override-dired-mode)
