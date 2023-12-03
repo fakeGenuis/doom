@@ -721,6 +721,29 @@ packages=[
    :gn "y"    #'dirvish-yank-menu))
 #+end_src
 
+Replace =/home/$user= to =~=
+#+begin_src emacs-lisp
+(defun +my/home-to-tide (file)
+  "Replace /home/$user in FILE to ~."
+  (let ((home (getenv "HOME"))
+        (file-name (concat file)))
+    (if (s-starts-with? home file-name)
+        (s-replace home "~" file-name)
+      file-name)))
+
+(defun +my/dirvish-copy-file-path (&optional multi-line)
+  "Copy filepath of marked files.
+If MULTI-LINE, make every path occupy a new line."
+  (interactive "P")
+  (let* ((files (mapcar #'file-local-name (dired-get-marked-files)))
+         (related-files (mapcar #'+my/home-to-tide files))
+         (names (mapconcat #'identity related-files (if multi-line "\n" " "))))
+    (dirvish--kill-and-echo (if multi-line (concat "\n" names) names))))
+
+(after! dirvish
+ (advice-add 'dirvish-copy-file-path :override #'+my/dirvish-copy-file-path))
+#+end_src
+
 * Term
 ** vterm
 #+begin_src toml
