@@ -1275,6 +1275,12 @@ capture todos
 #+END_SRC
 
 *** others
+revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
+#+begin_src emacs-lisp
+(after! evil-org
+  (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
+#+end_src
+
 org-src
 [[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
 #+begin_src emacs-lisp
