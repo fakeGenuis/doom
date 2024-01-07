@@ -1114,7 +1114,6 @@ packages=[
  +present
  +pandoc
  +pretty
- +jupyter
  +roam2)
 #+end_src
 
@@ -1773,6 +1772,17 @@ substitute "%" to buffer file in ~shell-command~
   :commands shell-command+
   :config
   (global-set-key (kbd "M-!") #'shell-command+))
+#+end_src
+
+** jupyter
+#+begin_src emacs-lisp :tangle packages.el
+(package! jupyter)
+#+end_src
+
+[[https://github.com/emacs-jupyter/jupyter/issues/489][emacs-jupyter/jupyter#489 no `org-babel-execute-function` after upgrade]]
+#+begin_src emacs-lisp
+(with-eval-after-load 'ob-jupyter
+ (org-babel-jupyter-aliases-from-kernelspecs))
 #+end_src
 
 * Other configs
