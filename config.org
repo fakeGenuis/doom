@@ -176,7 +176,9 @@ doom
 #+begin_src toml
 [doom]
 packages=[
+    # serif font
     "adobe-source-serif-fonts",
+    # for org section 1-2 and lambda
     "ttf-firacode-nerd"
 ]
 #+end_src
@@ -225,17 +227,16 @@ track current theme for later load
 ~Symbola~ better with unicode emoji in doom module doc
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "mononokiLiga Nerd Font Mono" :size 13.0)
+(setq doom-font (font-spec :family "Maple NF" :size 12.7)
       ;; big font mode resize serif-font and variable-pitch-font also
       ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
-      doom-unicode-font (font-spec :family "FiraCode Nerd Font Mono")
+      doom-symbol-font (font-spec :family "FiraCode Nerd Font")
       doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
       ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
 
 ;; load fonts after `doom/restart-and-restore'
 (add-hook 'window-setup-hook #'doom-init-fonts-h 'append)
 #+end_src
-"mononokiLiga" in [[file:~/.local/share/fonts/]]
 
 ** doom-dashboard
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
@@ -395,7 +396,7 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 (defun +my/cjk-font()
   (dolist (charset '(kana han cjk-misc))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Sarasa Gothic SC"))))
+                      (font-spec :family "Maple SC NF"))))
 #+end_src
 
 *** other faces
@@ -406,11 +407,9 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
       (progn
         (set-face-font 'mode-line (font-spec :family "ComicShannsMono Nerd Font" :size (+ 0.0 font-size)))
         (set-face-font 'mode-line-inactive (font-spec :family "ComicShannsMono Nerd Font" :size (+ 0.0 font-size)))
-        (set-face-font 'font-lock-comment-face (font-spec :family "Cascadia Code Cur" :size (+ 0.0 font-size)))
+        (set-face-font 'font-lock-comment-face (font-spec :family "Maple NF" :slant 'italic))
         (+my/cjk-font))))
 #+end_src
-
-"Cascadia cur" in [[file:~/.local/share/fonts/]]
 
 *** Hooks
 Visual effect test
