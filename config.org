@@ -814,6 +814,31 @@ If no vterm buffer in `Term' workspace, create it."
       (define-key vterm-mode-map (kbd (format "M-%d" num)) nil)))
 #+end_src
 
+*** save vterm buffers with command history
+[[https://github.com/akermu/emacs-libvterm/issues/666][akermu/emacs-libvterm#666 Integrate with desktop-save-mode]]
+[[https://bmag.github.io/2015/12/26/desktop.html][Desktop-Save Mode]]
+[[https://github.com/Bad-ptr/persp-mode.el#custom-saveload-buffer-function-example][GitHub - Bad-ptr/persp-mode.el: named perspectives(set of buffers/window conf...]]
+[[doom:modules/ui/workspaces/config.el::263][examples in doom config]]
+
+No text properties saved.
+#+begin_src emacs-lisp
+(after! persp-mode
+  ;; vterm
+  (persp-def-buffer-save/load
+   :mode 'vterm-mode :tag-symbol 'def-vterm-buffer
+   :save-vars '(default-directory)
+   :save-function (lambda (buf tag vars)
+                    (list tag (buffer-name buf) vars
+                          (string-trim-right (buffer-substring-no-properties (point-min) (point-max)))))
+   :load-function (lambda (savelist &rest _)
+                    (cl-destructuring-bind (buf-name vars buf-string) (cdr savelist)
+                      (let ((default-directory (alist-get 'default-directory vars)))
+                        (require 'vterm)
+                        (with-current-buffer (get-buffer-create buf-name)
+                          (insert buf-string)
+                          (vterm-mode)))))))
+#+end_src
+
 ** Others
 Colored output issues
 [[https://wiki.archlinux.org/index.php/Emacs#Colored_output_issues][Emacs - ArchWiki]]
