@@ -691,9 +691,9 @@ packages=[
           :right
           ;; For `dired-filter' users, replace `omit' with `filter' segment defined below
           (omit yank index)))
-  (setq dirvish-attributes '(vc-state subtree-state all-the-icons collapse git-msg file-size))
+  (setq dirvish-attributes '(vc-state subtree-state nerd-icons collapse git-msg file-size))
   ;; Maybe the icons are too big to your eyes
-  (setq dirvish-all-the-icons-height 0.8)
+  (setq dirvish-nerd-icons-height 0.8)
   ;; In case you want the details at startup like `dired'
   (setq dirvish-hide-details t)
   ;; (dirvish-peek-mode)
