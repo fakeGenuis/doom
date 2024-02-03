@@ -1870,6 +1870,16 @@ and add ignored files in [[file:.projectile]].
      ("http" . ,(shell-command-to-string "echo -n $ALL_PROXY"))
      ("https" . ,(shell-command-to-string "echo -n $ALL_PROXY"))))
 #+end_src
+** Windows =Librewolf= in wsl
+#+begin_src emacs-lisp
+(setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
+#+end_src
+
+Open link with host =Librewolf= browser
+#+begin_src emacs-lisp
+(if IS-WSL
+  (setq browse-url-firefox-program "librewolf.exe"))
+#+end_src
 
 ** insert arxiv links
 #+begin_src emacs-lisp
