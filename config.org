@@ -193,7 +193,8 @@ restore last selected theme
 
 (load-in-doom-dir "theme.el")
 ;; load theme after `doom/restart-and-restore'
-(add-hook 'window-setup-hook #'doom-init-theme-h 'append)
+;; DEPRECATED should have been done by doom
+; (add-hook 'window-setup-hook #'doom-init-theme-h 'append)
 #+end_src
 
 difficult to choose theme? random it
@@ -222,20 +223,38 @@ track current theme for later load
 #+end_src
 
 *** Fonts
-[[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
-~FiraCode Nerd Font~ better with icons in =vterm=
-~Symbola~ better with unicode emoji in doom module doc
-
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "Maple NF" :size 12.7)
-      ;; big font mode resize serif-font and variable-pitch-font also
-      ;; doom-big-font (font-spec :family "MononokiLiga Nerd Font Mono" :size (+my/font-size 17))
-      doom-symbol-font (font-spec :family "FiraCode Nerd Font")
-      doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0))
-      ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5))
+(setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
+#+end_src
+
+Set default fontsize, =WSL= currently not aware dpi settings in
+[[file:~/.Xresources]] while float size makes it work on Linux.
+[[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
+#+begin_src emacs-lisp
+(setq +my/font-size (* (if IS-WSL 2 1) 11.0))
+
+(setq doom-font (font-spec :family "Maple NF" :size +my/font-size)
+      ;; doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0)
+      ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5)
+      ;; doom-emoji-font (font-spec :family "Noto Color Emoji")
+      doom-symbol-font (font-spec :family "FiraCode Nerd Font"))
 
 ;; load fonts after `doom/restart-and-restore'
-(add-hook 'window-setup-hook #'doom-init-fonts-h 'append)
+;; DEPRECATED should have been done by doom
+; (add-hook 'window-setup-hook #'doom-init-fonts-h 'append)
+#+end_src
+
+Prefer italic comment font
+#+begin_src emacs-lisp
+(defun +my/set-comment-font ()
+  (set-face-font 'font-lock-comment-face (font-spec :family "Maple NF" :slant 'italic)))
+
+(add-hook 'after-setting-font-hook #'+my/set-comment-font 90)
+#+end_src
+
+Load font setting when init/reload theme
+#+begin_src emacs-lisp
+(add-hook 'doom-load-theme-hook #'doom-init-fonts-h)
 #+end_src
 
 ** doom-dashboard
@@ -272,7 +291,8 @@ References
 packages=["noto-fonts-emoji"]
 #+end_src
 
-#+begin_src emacs-lisp :tangle no :noweb-ref ui
+Emacs should render emoji rightly if emoji fonts are presented.
+#+begin_src emacs-lisp :tangle no :noweb-ref foo-ui
 (emoji +unicode)
 #+end_src
 
@@ -285,7 +305,7 @@ check code ligatures, *bold* and /italic/ enabled
 == <- -> <= => != == >= <== ==> === ?= :=
 
 [[https://emacs-china.org/t/org-source-code/9762/8][求一款适合阅读 org source code 的主题 - #8，来自 lijigang - Org-mode - Emacs China]]
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (with-eval-after-load "ligatures"
   (plist-put! +ligatures-extra-symbols
               :private    "")
@@ -293,6 +313,11 @@ check code ligatures, *bold* and /italic/ enabled
 #+end_src
 
 ** modeline
+#+begin_src toml
+[unicode]
+packages=["otf-comicshanns-nerd"]
+#+end_src
+
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
 modeline
 #+end_src
@@ -301,21 +326,23 @@ modeline
 (after! doom-modeline
   ;; The limit of the window width.
   ;; If `window-width' is smaller than the limit, some information won't be displayed.
-  (setq doom-modeline-window-width-limit fill-column)
-  (setq doom-modeline-enable-word-count nil)
-  (setq doom-modeline-persp-name t)
-  (setq doom-modeline-persp-icon nil)
-  (setq doom-modeline-workspace-name nil))
+  (setq doom-modeline-window-width-limit fill-column
+        doom-modeline-enable-word-count nil
+        doom-modeline-persp-name t
+        doom-modeline-persp-icon nil
+        doom-modeline-workspace-name nil))
+#+end_src
+
+custom doom-modeline font
+#+begin_src emacs-lisp
+(defun +my/set-mode-line-font ()
+  (set-face-font 'mode-line (font-spec :family "ComicShannsMono Nerd Font" :size (+ +my/font-size 1.5)))
+  (set-face-font 'mode-line-inactive (font-spec :family "ComicShannsMono Nerd Font" :size (+ +my/font-size 1.5))))
+
+(add-hook 'after-setting-font-hook #'+my/set-mode-line-font 90)
 #+end_src
 
 [[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
-#+begin_src emacs-lisp :tangle no
-;; wrap your mode-line-format
-;((:eval (when (doom-modeline--active) .)))
-(set-face-attribute 'mode-line-inactive nil
-                    :underline t
-                    :background (face-background 'default))
-#+end_src
 
 ** popup
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
@@ -345,16 +372,12 @@ use ~+popup-mode~ to toggle popup mode globally.
 #+begin_src toml
 [unicode]
 packages=[
-    # org ellipsis
+    # org ellipsis ⤵
     "quivira",
-    # chinese
+    # CJK
     "ttf-sarasa-gothic-sc",
-    # emoji
-    "noto-fonts-emoji",
-    # org section 3
-    "ttf-dejavu-nerd",
-    # modeline
-    "otf-comicshanns-nerd"
+    # org section 3 ✸
+    "ttf-dejavu-nerd"
 ]
 #+end_src
 
@@ -362,25 +385,39 @@ packages=[
 unicode
 #+end_src
 
-- doom way of change =unicode= font
-get current display font by =SPC h '=
-see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]] for unicode block name
-#+begin_src emacs-lisp
+*** change font by block
+To get unicode block name for a character, [[kbd:SPC h ']] on it to get it's
+lexical code, and search in
+[[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]]
+
+Doom's way of change unicode font, but it will be shadowed by
+[[fn:doom-init-fonts-h]] if [[var:doom-symbol-font]] is set.
+#+begin_src emacs-lisp :tangle no
 (after! unicode-fonts
-  (push "Noto Color Emoji" (cadr (assoc "Miscellaneous Symbols and Pictographs" unicode-fonts-block-font-mapping)))
-  (dolist (unicode-block '("Letterlike Symbols"))
+  (dolist (unicode-block '("Letterlike Symbols" "Supplemental Arrows-B"))
     (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+end_src
 
-- old school way of change =unicode= font
-[[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
+Add to [[var:after-setting-font-hook]] not work well, font display diffs after
+[[fn:doom/reload-theme]]
 #+begin_src emacs-lisp :tangle no
-(defun +my/ligature-font ()
-  (dolist (chars '("ℤ" "ℝ" "ℕ"))
-      (set-fontset-font (frame-parameter nil 'font) (string-to-char chars) "DejaVu Math TeX Gyre") nil 'prepend)
-  ;; (set-fontset-font t ?𝔽 "DejaVu Math TeX Gyre")
-  (set-fontset-font (frame-parameter nil 'font) '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre") nil 'prepend)
+(defun +my/unicode-fonts ()
+  (dolist (unicode-block '("Letterlike Symbols" "Supplemental Arrows-B"))
+    (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+(add-hook 'after-setting-font-hook #'+my/unicode-fonts 60)
 #+end_src
+
+Add hook but with [[fn:set-fontset-font]] succeed
+#+begin_src emacs-lisp
+(defun +my/unicode-fonts ()
+  (dolist (range '((#x2900 . #x297f))) (set-fontset-font t range "Quivira"))
+  ; programming keywords
+  ;; (set-fontset-font t '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre")
+  (dolist (chars '("𝔹" "ℕ" "ℝ" "𝕊" "ℤ"))
+     (set-fontset-font t (string-to-char chars) "Quivira")))
+(add-hook 'after-setting-font-hook #'+my/unicode-fonts 60)
+#+end_src
+see more in [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
 
 *** Chinese fonts
 - [[https://emacs.stackexchange.com/questions/68644/doom-emacs-setting-font-for-devanagari-characters][Doom Emacs - Setting Font for Devanagari characters - Emacs Stack Exchange]]
@@ -393,98 +430,20 @@ see [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia
 - [[https://github.com/doomemacs/doomemacs/issues/5092][doomemacs/doomemacs#5092 (invalid-read-syntax . "#") on running doom doctor]]
 
 #+begin_src emacs-lisp
-(defun +my/cjk-font()
-  (dolist (charset '(kana han cjk-misc))
+(defun +my/cjk-font ()
+  (dolist (charset '(han))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family "Maple SC NF"))))
-#+end_src
 
-*** other faces
-#+begin_src emacs-lisp
-(defun +my/better-font (font-size)
-  (interactive "N")
-  (if (display-graphic-p)
-      (progn
-        (set-face-font 'mode-line (font-spec :family "ComicShannsMono Nerd Font" :size (+ 0.0 font-size)))
-        (set-face-font 'mode-line-inactive (font-spec :family "ComicShannsMono Nerd Font" :size (+ 0.0 font-size)))
-        (set-face-font 'font-lock-comment-face (font-spec :family "Maple NF" :slant 'italic))
-        (+my/cjk-font))))
-#+end_src
-
-*** Hooks
-Visual effect test
-#+begin_src python :tangle no
-  1234567890-+abcdedfghijklmn
-# 1234567890-+abcdedfghijklmn
-# 12345然后这是中文对齐klmn
-#+end_src
-
-change =doom/reload-font= for not display all =unicode= by ~doom-unicode-font~.
-#+begin_src emacs-lisp
-(defun +my/doom-init-fonts-h (&optional reload)
-  "Loads `doom-font'."
-  (dolist (map `((default . ,doom-font)
-                 (fixed-pitch . ,doom-font)
-                 (fixed-pitch-serif . ,doom-serif-font)
-                 (variable-pitch . ,doom-variable-pitch-font)))
-    (when-let* ((face (car map))
-                (font (cdr map)))
-      (dolist (frame (frame-list))
-        (when (display-multi-font-p frame)
-          (set-face-attribute face frame
-                              :width 'normal :weight 'normal
-                              :slant 'normal :font font)))
-      (let ((new-specs (doom--make-font-specs face font)))
-        ;; Don't save to `customized-face' so it's omitted from `custom-file'
-        ;;(put face 'customized-face new-specs)
-        (custom-push-theme 'theme-face face 'user 'set new-specs)
-        (put face 'face-modified nil))))
-  ;; Users should inject their own font logic in `after-setting-font-hook'
-  (run-hooks 'after-setting-font-hook))
-(advice-add 'doom-init-fonts-h :override #'+my/doom-init-fonts-h)
-#+end_src
-
-#+begin_src emacs-lisp
-(defun +my/init-font (&optional frame)
-  (if frame
-    (with-selected-frame frame
-      (+my/better-font 14.3))
-    (+my/better-font 14.3)))
-
-(if (and (fboundp 'daemonp) (daemonp))
-    (add-hook 'after-make-frame-functions #'+my/init-font)
-  (add-hook 'doom-init-ui-hook #'+my/init-font))
-(add-hook 'doom-load-theme-hook #'+my/init-font)
-
-;;https://emacs.stackexchange.com/a/47092
-;; DONE restore ligature after exit big font mode
-(add-hook 'doom-big-font-mode-hook
-          (lambda ()
-            (if doom-big-font-mode
-                (progn
-                  (+my/better-font 22.0)
-                  (add-hook 'doom-big-font-mode-hook #'+my/init-font))
-              (remove-hook 'doom-big-font-mode-hook #'+my/init-font))))
-
-(add-hook 'writeroom-mode-enable-hook (lambda () (+my/better-font 20.5)))
-(add-hook 'writeroom-mode-disable-hook #'+my/init-font)
+(add-hook 'after-setting-font-hook #'+my/cjk-font)
 #+end_src
 
 ** Others
-=all-the-icons= font
 #+begin_src emacs-lisp
 (after! all-the-icons
   (setq all-the-icons-scale-factor 0.9))
-#+end_src
-
-#+begin_src emacs-lisp
 (after! nerd-icons
   (setq nerd-icons-scale-factor 0.9))
-#+end_src
-
-=all-the-icons= "arrow_back" error display in =doom-docs-header=
-#+begin_src emacs-lisp :tangle no
-(advice-add 'doom-docs--display-menu-h :override #'ignore)
 #+end_src
 
 Transparency
@@ -1589,7 +1548,7 @@ packages=[
 #+end_src
 
 * Other packages
-** emacs-gfs
+** COMMENT emacs-gfs
 - [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
 - [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
 - [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
@@ -1598,6 +1557,15 @@ packages=[
 (package! emacs-gfs
   :recipe (:host github
            :repo "ndw/emacs-gfs"))
+#+end_src
+
+Conflict with [[var:nerd-icons-scale-factor]]
+
+Visual effect preview
+#+begin_src python :tangle no
+  1234567890-+abcdedfghijklmn
+# 1234567890-+abcdedfghijklmn
+# 12345 然后这是中文对齐klmn
 #+end_src
 
 - [ ] display =text-scale-mode-amount= in mode-line
@@ -1609,6 +1577,7 @@ packages=[
                     ("mononoki" . 1.00)
                     ("Cascadia" . 0.95)
                     ("Sarasa" . 0.95)
+                    ("Symbols" . 0.85)
                     ("Kosefont" . 1.10)
                     ("小濑字体" . 1.10)))
   (push rescales face-font-rescale-alist))
@@ -1622,6 +1591,9 @@ packages=[
         ("C--" . gfs/shrink-faces)
         ("C-=" . gfs/magnify-faces)))
 #+end_src
+
+- [ ] fix font scale in big-font/zen mode
+  [[https://emacs.stackexchange.com/a/47092][How to automatically remove a hook provided by a minor mode after disabling t...]]
 
 ** keycast
 #+begin_src emacs-lisp :tangle packages.el
