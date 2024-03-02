@@ -1,19 +1,20 @@
 #+TITLE: Doom Emacs Configuration
 
-Literate and modular doom emacs configuration.
+Literate and modular Doom Emacs configuration.
 
-*Conventions:*
-1. doom module respect orders in [[file:~/.config/emacs/templates/init.example.el]]
+* About
+The *conventions* of this org file:
+- First level heading respect Doom's order
 
-2. doom module / extra package in secondary section
-   With prerequisites in [[file:packages.toml]] (=Arch= only) or package specialized config in [[file:config.el]]
+- Configured module goes to second level heading ::
+  - Prerequisite packages tangled into [[file:packages.toml]] (=Arch= only)
 
-3. one line config goes into [[Tangle]]
-   Often a declare in [[file:init.el]] or [[file:packages.el]]
+  - Bootstrap scripts tangled to [[file:install.d/]]
 
-4. extra bootstrap for package tangled to [[file:install.d/]]
+  - Comment a module with [[kbd:][C-c ;]] at heading
 
-5. comment a module with [[kbd:][C-c ;]]
+- One line config goes into [[* Tangle]] ::
+  Often a declare in [[file:init.el]]
 
 * Tangle
 [[file:init.el]]
@@ -99,7 +100,7 @@ Extra packages from [[https://melpa.org][MELPA]]
 #+end_src
 
 #+PROPERTY: header-args:emacs-lisp :results none
-default tangle to [[file:config.el]]
+Default tangle to [[file:config.el]]
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
@@ -107,8 +108,7 @@ default tangle to [[file:config.el]]
       user-mail-address "***REMOVED***")
 #+end_src
 
-For every module in [[file:init.el]] or extra package in [[file:packages.el]], maintain
-a bash script to install or uninstall its dependence.
+Default install all packages in [[file:packages.toml]]
 #+PROPERTY: header-args:toml :tangle packages.toml
 #+begin_src toml
 enable_default=true
@@ -148,6 +148,8 @@ The return value is the new value of LIST-VAR."
 
 * Completion
 ** company
++ [ ] fix scroll bar width
+
 =company-ispell= needs word dictionary
 #+begin_src toml
 [company]
@@ -177,7 +179,7 @@ packages=["words"]
 #+end_src
 
 * UI
-** ewal-doom-themes
+** Extra themes
 #+begin_src emacs-lisp :tangle packages.el
 (package! ewal-doom-themes)
 #+end_src
@@ -186,7 +188,7 @@ packages=["words"]
 (use-package! ewal-doom-themes)
 #+end_src
 
-to refresh wal theme from command line
+load wal theme from command line
 #+begin_src fish :tangle no
 emacs-client -e "(load-theme 'ewal-doom-themes t)"
 #+end_src
@@ -243,7 +245,7 @@ track current theme for later load
 *** Fonts
 *bold* /italic/ _underline_ +stride+
 
-Set default fontsize, =WSL= currently not aware dpi settings in
+Set default font size, =WSL= currently not aware dpi settings in
 [[file:~/.Xresources]] while float size makes it work on Linux.
 [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
 #+begin_src emacs-lisp
@@ -264,7 +266,7 @@ Prefer italic comment font
 (add-hook 'after-setting-font-hook #'+my/set-comment-font 90)
 #+end_src
 
-Load font setting when init/reload theme
+Load font setting when (re)load theme
 #+begin_src emacs-lisp
 (add-hook 'doom-load-theme-hook #'doom-init-fonts-h)
 #+end_src
@@ -413,9 +415,8 @@ unicode
 #+end_src
 
 *** change font by block
-To get unicode block name for a character, [[kbd:SPC h ']] on it to get it's
-lexical code, and search in
-[[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]]
+To get unicode block name for a character, [[kbd:SPC h ']] on it to get it's lexical
+code, and search in [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unicode) - Wikipedia]]
 
 Doom's way of change unicode font, but it will be shadowed by
 [[fn:doom-init-fonts-h]] if [[var:doom-symbol-font]] is set.
@@ -523,7 +524,8 @@ notify initial time
 (format +onsave)
 #+end_src
 
-*prerequisites depends on what you un-comment in =lang= section*
+- [ ] Add packages from headings in [[* Lang]] section
+
 #+begin_src toml
 [format]
 packages=[
@@ -767,8 +769,8 @@ If no vterm buffer in `Term' workspace, create it."
         vterm-ignore-blink-cursor nil)
   (map! :leader
         (:prefix "o"
-         ;; default to vterm at current file directory
-         ;; `C-Return' to project root
+         ;; vterm to current file directory (not project root)
+         ;; use `C-Return' to project root
          :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
          :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
   ;; TODO fixed-pitch in bpytop like
