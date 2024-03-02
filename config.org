@@ -1011,6 +1011,7 @@ packages=[
 (org
  +hugo
  +dragndrop
+  +jupyter
  +noter
  +present
  +pandoc
@@ -1092,6 +1093,19 @@ custom agenda view from
   (map! :map org-mode-map
         :localleader
         "y" #'org-copy-link-url))
+#+end_src
+
+** jupyter
+[[https://github.com/emacs-jupyter/jupyter/issues/489][emacs-jupyter/jupyter#489 no `org-babel-execute-function` after upgrade]]
+#+begin_src emacs-lisp
+(with-eval-after-load 'ob-jupyter
+ (org-babel-jupyter-aliases-from-kernelspecs))
+#+end_src
+
+~:text/html~ output support
+#+begin_src emacs-lisp :tangle no
+(after! ob-jupyter
+  (push :text/html jupyter-org-mime-types))
 #+end_src
 
 *** unfold search
@@ -1669,17 +1683,6 @@ substitute "%" to buffer file in ~shell-command~
   :commands shell-command+
   :config
   (global-set-key (kbd "M-!") #'shell-command+))
-#+end_src
-
-** jupyter
-#+begin_src emacs-lisp :tangle packages.el
-(package! jupyter)
-#+end_src
-
-[[https://github.com/emacs-jupyter/jupyter/issues/489][emacs-jupyter/jupyter#489 no `org-babel-execute-function` after upgrade]]
-#+begin_src emacs-lisp
-(with-eval-after-load 'ob-jupyter
- (org-babel-jupyter-aliases-from-kernelspecs))
 #+end_src
 
 * Other configs
