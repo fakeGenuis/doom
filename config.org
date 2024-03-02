@@ -1654,10 +1654,11 @@ packages=["figlet"]
 ** shell-command+
 #+begin_src emacs-lisp :tangle packages.el
 (package! shell-command+
-  :built-in t
-  :recipe (:host nil
-           :repo "https://git.sr.ht/~pkal/shell-command-plus"))
+  :recipe (:host sourcehut
+           :repo "pkal/shell-command-plus"))
 #+end_src
+This package is located in =GNU ELPA=, but it cannot be installed, see
+[[https://www.reddit.com/r/DoomEmacs/comments/q4jrer/cant_install_elpa_package/][cant install elpa package]]
 
 substitute "%" to buffer file in ~shell-command~
 [[https://puntoblogspot.blogspot.com/2021/05/current-file-name-on-emacss-shell.html][puntoblogspot: Current file name on emacs's shell-command]]
