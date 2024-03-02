@@ -644,6 +644,13 @@ packages=[
 vterm
 #+end_src
 
+tweak from ~doom doctor~
+#+begin_src emacs-lisp :tangle no
+(setq shell-file-name (executable-find "bash"))
+(setq-default vterm-shell (executable-find "fish"))
+(setq-default explicit-shell-file-name (executable-find "fish"))
+#+end_src
+
 #+begin_src emacs-lisp
 (defun +my/vterm-switch ()
   "Switch to vterm buffer in `Term' workspace.
@@ -675,8 +682,7 @@ If no vterm buffer in `Term' workspace, create it."
   (vterm-send-return))
 
 (after! vterm
-  (setq vterm-shell "/usr/bin/fish"
-        vterm-buffer-name-string "vterm %s"
+  (setq vterm-buffer-name-string "vterm %s"
         vterm-ignore-blink-cursor nil)
   (map! :leader
         (:prefix "o"
