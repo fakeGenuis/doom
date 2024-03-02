@@ -114,6 +114,38 @@ a bash script to install or uninstall its dependence.
 enable_default=true
 #+end_src
 
+* Predefined
+#+begin_src emacs-lisp
+(setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
+#+end_src
+
+[[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
+#+begin_src emacs-lisp
+(defun +my/append-to-list (list-var elements)
+  "Append ELEMENTS to the end of LIST-VAR.
+
+change to no return value
+The return value is the new value of LIST-VAR."
+  (unless (consp elements)
+    (error "ELEMENTS must be a list"))
+  (let ((list (symbol-value list-var)))
+    (if list
+        (setcdr (last list) elements)
+      (set list-var elements))))
+  ;(symbol-value list-var))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun +my/reverse-words (beg end)
+  "Reverse the order of words in region."
+  (interactive "*r")
+  (apply
+   'insert
+   (reverse
+    (split-string
+     (delete-and-extract-region beg end) "\\b"))))
+#+end_src
+
 * Completion
 ** company
 =company-ispell= needs word dictionary
@@ -209,9 +241,7 @@ track current theme for later load
 #+end_src
 
 *** Fonts
-#+begin_src emacs-lisp
-(setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
-#+end_src
+*bold* /italic/ _underline_ +stride+
 
 Set default fontsize, =WSL= currently not aware dpi settings in
 [[file:~/.Xresources]] while float size makes it work on Linux.
@@ -238,6 +268,52 @@ Load font setting when init/reload theme
 #+begin_src emacs-lisp
 (add-hook 'doom-load-theme-hook #'doom-init-fonts-h)
 #+end_src
+
+** COMMENT emacs-gfs
+- [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
+- [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
+- [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! emacs-gfs
+  :recipe (:host github
+           :repo "ndw/emacs-gfs"))
+#+end_src
+Conflict with [[var:nerd-icons-scale-factor]]
+
+Visual effect preview
+#+begin_src python :tangle no
+  1234567890-+abcdedfghijklmn
+# 1234567890-+abcdedfghijklmn
+# 12345 然后这是中文对齐klmn
+#+end_src
+
+- [ ] display =text-scale-mode-amount= in mode-line
+#+begin_src emacs-lisp
+;; set a rescale font to cjk charset fonts,
+;; so no explicit font size is needed
+;; rescale doom-font cause bold font size != regular
+(dolist (rescales '(("Ubuntu" . 1.05)
+                    ("mononoki" . 1.00)
+                    ("Cascadia" . 0.95)
+                    ("Sarasa" . 0.95)
+                    ("Symbols" . 0.85)
+                    ("Kosefont" . 1.10)
+                    ("小濑字体" . 1.10)))
+  (push rescales face-font-rescale-alist))
+
+(use-package! emacs-gfs
+  :config
+  (setq gfs/default-face-height 140)
+  (setq gfs/resizeable-ignore-faces nil)
+  :bind
+  (:map evil-normal-state-map
+        ("C--" . gfs/shrink-faces)
+        ("C-=" . gfs/magnify-faces)))
+#+end_src
+
+- [ ] fix font scale in big-font/zen mode
+  [[https://emacs.stackexchange.com/a/47092][How to automatically remove a hook provided by a minor mode after disabling t...]]
 
 ** doom-dashboard
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
@@ -547,6 +623,7 @@ packages=[
   :init
   (map!
    (:leader
+    :desc "dirvish" "-" #'dirvish
     :prefix "o"
     :desc "dirvish-side" "s" #'dirvish-side))
   :custom
@@ -673,6 +750,10 @@ If no vterm buffer in `Term' workspace, create it."
         (switch-to-buffer vterm-buffer)
       ;; create vterm buffer if not exist
       (vterm vterm-buffer-name))))
+
+(map! :leader
+ :prefix "b"
+ :desc "Switch to vterm buffer" "v" #'+my/vterm-switch)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -689,9 +770,7 @@ If no vterm buffer in `Term' workspace, create it."
          ;; default to vterm at current file directory
          ;; `C-Return' to project root
          :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
-         :desc "Open vterm here" "T" (cmd!! #'+vterm/here t))
-        (:prefix "b"
-         :desc "Switch to vterm buffer" "v" #'+my/vterm-switch))
+         :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
   ;; TODO fixed-pitch in bpytop like
   ;; (add-hook 'vterm-mode-hook
   ;;           (lambda ()
@@ -1011,18 +1090,13 @@ packages=[
 (org
  +hugo
  +dragndrop
-  +jupyter
+ +jupyter
  +noter
  +present
  +pandoc
  +pretty
  +roam2)
 #+end_src
-
-References
-- [[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
-- [[https://emacs.stackexchange.com/a/63793][How to copy links OUT of org-mode? - Emacs Stack Exchange]]
-- [[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
 
 *** agenda
 #+begin_src emacs-lisp
@@ -1042,6 +1116,15 @@ References
       org-startup-with-inline-images t
       org-refile-targets '(("archive.org" :maxlevel . 1)
                            ("projects.org")))
+#+end_src
+
+[[https://emacs.stackexchange.com/a/7840][saving - How do I automatically save org-mode buffers? - Emacs Stack Exchange]]
+#+begin_src emacs-lisp
+(after! org
+  ;;(org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+  (advice-add 'org-agenda-quit :before 'org-save-all-org-buffers))
 #+end_src
 
 custom agenda view from
@@ -1078,24 +1161,10 @@ custom agenda view from
            "* TODO [%a] %? %^G\n%U\n%i" :empty-lines 1 :prepend t))))
 #+end_src
 
-#+begin_src emacs-lisp
-(defun org-copy-link-url ()
-  (interactive)
-  (kill-new (org-element-property :raw-link (org-element-context))))
+[[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
+[[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
 
-(after! org
-  ;;(org-clock-persist 'history)
-  (org-clock-persistence-insinuate)
-  ;; display inline images
-  ;; (org-display-inline-images)
-  ;; Save Org buffers after refiling!
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
-  (map! :map org-mode-map
-        :localleader
-        "y" #'org-copy-link-url))
-#+end_src
-
-** jupyter
+*** jupyter
 [[https://github.com/emacs-jupyter/jupyter/issues/489][emacs-jupyter/jupyter#489 no `org-babel-execute-function` after upgrade]]
 #+begin_src emacs-lisp
 (with-eval-after-load 'ob-jupyter
@@ -1106,34 +1175,6 @@ custom agenda view from
 #+begin_src emacs-lisp :tangle no
 (after! ob-jupyter
   (push :text/html jupyter-org-mime-types))
-#+end_src
-
-*** unfold search
-[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
-#+begin_src emacs-lisp
-(after! org-fold-core
-  (defun org-show-current-heading-tidily ()
-    (interactive)  ;Inteactive
-    "Show next entry, keeping other entries closed."
-    (if (save-excursion (end-of-line) (outline-invisible-p))
-        (progn (org-show-entry) (show-children))
-      (setq-local my:current_line (line-number-at-pos))
-      (outline-back-to-heading)
-      (unless (and (bolp) (org-on-heading-p))
-        (org-up-heading-safe)
-        (hide-subtree)
-        (error "Boundary reached"))
-      (org-overview)
-      (org-reveal t)
-      (org-show-entry)
-      (show-children)
-      (goto-line my:current_line)))
-
-  (defun qw/search-buffer ()
-    (interactive)
-    (org-fold-show-all)
-    (+default/search-buffer)
-    (org-show-current-heading-tidily)))
 #+end_src
 
 *** org-noter
@@ -1165,6 +1206,34 @@ custom agenda view from
   :after org)
 #+end_src
 
+*** unfold search
+[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
+#+begin_src emacs-lisp
+(after! org-fold-core
+  (defun org-show-current-heading-tidily ()
+    (interactive)  ;Inteactive
+    "Show next entry, keeping other entries closed."
+    (if (save-excursion (end-of-line) (outline-invisible-p))
+        (progn (org-show-entry) (show-children))
+      (setq-local my:current_line (line-number-at-pos))
+      (outline-back-to-heading)
+      (unless (and (bolp) (org-on-heading-p))
+        (org-up-heading-safe)
+        (hide-subtree)
+        (error "Boundary reached"))
+      (org-overview)
+      (org-reveal t)
+      (org-show-entry)
+      (show-children)
+      (goto-line my:current_line)))
+
+  (defun qw/search-buffer ()
+    (interactive)
+    (org-fold-show-all)
+    (+default/search-buffer)
+    (org-show-current-heading-tidily)))
+#+end_src
+
 *** Color ~shell~ block output
 [[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1187,6 +1256,18 @@ custom agenda view from
 #+END_SRC
 
 *** others
+[[https://emacs.stackexchange.com/a/63793][How to copy links OUT of org-mode? - Emacs Stack Exchange]]
+#+begin_src emacs-lisp
+(defun org-copy-link-url ()
+  (interactive)
+  (kill-new (org-element-property :raw-link (org-element-context))))
+
+(after! org
+  (map! :map org-mode-map
+        :localleader
+        "y" #'org-copy-link-url))
+#+end_src
+
 revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
 #+begin_src emacs-lisp
 (after! evil-org
@@ -1205,12 +1286,6 @@ format org-src
 #+begin_src emacs-lisp
 (map! :after org :map evil-org-mode-map
   :n "g Q" #'+format:region)
-#+end_src
-
-org-agenda
-[[https://emacs.stackexchange.com/a/7840][saving - How do I automatically save org-mode buffers? - Emacs Stack Exchange]]
-#+begin_src emacs-lisp
-(advice-add 'org-agenda-quit :before 'org-save-all-org-buffers)
 #+end_src
 
 org-format
@@ -1462,53 +1537,6 @@ packages=[
 #+end_src
 
 * Other packages
-** COMMENT emacs-gfs
-- [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
-- [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
-- [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! emacs-gfs
-  :recipe (:host github
-           :repo "ndw/emacs-gfs"))
-#+end_src
-
-Conflict with [[var:nerd-icons-scale-factor]]
-
-Visual effect preview
-#+begin_src python :tangle no
-  1234567890-+abcdedfghijklmn
-# 1234567890-+abcdedfghijklmn
-# 12345 然后这是中文对齐klmn
-#+end_src
-
-- [ ] display =text-scale-mode-amount= in mode-line
-#+begin_src emacs-lisp
-;; set a rescale font to cjk charset fonts,
-;; so no explicit font size is needed
-;; rescale doom-font cause bold font size != regular
-(dolist (rescales '(("Ubuntu" . 1.05)
-                    ("mononoki" . 1.00)
-                    ("Cascadia" . 0.95)
-                    ("Sarasa" . 0.95)
-                    ("Symbols" . 0.85)
-                    ("Kosefont" . 1.10)
-                    ("小濑字体" . 1.10)))
-  (push rescales face-font-rescale-alist))
-
-(use-package! emacs-gfs
-  :config
-  (setq gfs/default-face-height 140)
-  (setq gfs/resizeable-ignore-faces nil)
-  :bind
-  (:map evil-normal-state-map
-        ("C--" . gfs/shrink-faces)
-        ("C-=" . gfs/magnify-faces)))
-#+end_src
-
-- [ ] fix font scale in big-font/zen mode
-  [[https://emacs.stackexchange.com/a/47092][How to automatically remove a hook provided by a minor mode after disabling t...]]
-
 ** keycast
 #+begin_src emacs-lisp :tangle packages.el
 (package! keycast)
@@ -1686,34 +1714,6 @@ substitute "%" to buffer file in ~shell-command~
 #+end_src
 
 * Other configs
-** defuns
-[[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
-#+begin_src emacs-lisp
-(defun +my/append-to-list (list-var elements)
-  "Append ELEMENTS to the end of LIST-VAR.
-
-change to no return value
-The return value is the new value of LIST-VAR."
-  (unless (consp elements)
-    (error "ELEMENTS must be a list"))
-  (let ((list (symbol-value list-var)))
-    (if list
-        (setcdr (last list) elements)
-      (set list-var elements))))
-  ;(symbol-value list-var))
-#+end_src
-
-#+begin_src emacs-lisp
-(defun +my/reverse-words (beg end)
-  "Reverse the order of words in region."
-  (interactive "*r")
-  (apply
-   'insert
-   (reverse
-    (split-string
-     (delete-and-extract-region beg end) "\\b"))))
-#+end_src
-
 ** projectile
 [[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
 #+begin_src emacs-lisp
@@ -1746,11 +1746,8 @@ and add ignored files in [[file:.projectile]].
      ("http" . ,(shell-command-to-string "echo -n $ALL_PROXY"))
      ("https" . ,(shell-command-to-string "echo -n $ALL_PROXY"))))
 #+end_src
-** Windows =Librewolf= in wsl
-#+begin_src emacs-lisp
-(setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
-#+end_src
 
+** Windows =Librewolf= in wsl
 Open link with host =Librewolf= browser
 #+begin_src emacs-lisp
 (if IS-WSL
@@ -1777,7 +1774,6 @@ Open link with host =Librewolf= browser
 ** shortcuts
 #+begin_src emacs-lisp
 (map! :leader
-      :desc "dirvish"               "-"    #'dirvish
       :desc "Eval expression"       ":"    #'pp-eval-expression
       :desc "M-x"                   ";"    #'execute-extended-command
       :desc "Org agenda"            "="    #'org-agenda)
