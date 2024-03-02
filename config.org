@@ -932,6 +932,10 @@ magit
 
 If you use =fish= shell, you may change ~fish_prompt~. see [[file:~/.config/fish/config.fish]]
 
+[[fn:magit-stage]] (visually stage hunks) may not work in =yadm=, which cause emacs
+to hang, use [[kbd:E s]] ([[fn:magit-ediff-stage]]) instead.
+[[https://github.com/magit/magit/issues/719][magit/magit#719 Magit process hangs when trying to stage a hunk]]
+
 ** pdf
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
 pdf
