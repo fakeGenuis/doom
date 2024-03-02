@@ -64,7 +64,6 @@ Literate and modular doom emacs configuration.
  <<tools>>
  ;biblio
  debugger
- docker
  ;editorconfig
  (eval +overlay)
  rgb
@@ -760,6 +759,16 @@ packages=["emacs-editorconfig-git"]
 
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
 editorconfig
+#+end_src
+
+** COMMENT docker
+#+begin_src toml
+[docker]
+packages=["dockfmt"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref tools
+docker
 #+end_src
 
 ** lookup
