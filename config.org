@@ -872,7 +872,7 @@ packages=["sqlite", "wordnet-cli"]
 
 ** lsp
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
-lsp
+(lsp +eglot)
 #+end_src
 
 [[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
@@ -1375,6 +1375,61 @@ packages=["typst", "typst-lsp-bin"]
   :recipe (:local-repo "~/lib/org-wolfram/"))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package! wolfram-mode
+  :config
+  ;; ligatures
+  (set-ligatures! 'wolfram-mode
+    :and "&&"
+    :or "||"
+    :not "!"
+    :null "None"
+    :true "True"
+    :false "False"))
+#+end_src
+
+notebook open in =dirvish=
+#+begin_src emacs-lisp
+(after! dirvish
+  (push '(("nb") "/usr/local/bin/mathematica" "%f")
+        dirvish-open-with-programs))
+#+end_src
+
+wolfram-format
+#+begin_src emacs-lisp
+(load "~/lib/wolframFormatter/wolfram-format.el")
+#+end_src
+
+*** =lsp-wl= with =eglot=
+#+begin_src bash :tangle no
+WLPATH="~/.local/lib/lsp-wl/"
+[[ -d "$WLPATH" ]] || git clone https://github.com/kenkangxgwe/lsp-wl.git "$WLPATH"
+#+end_src
+
+#+begin_src Wolfram-Language :tangle no
+PacletInstall["CodeParser"]
+PacletInstall["CodeInspector"]
+PacletInstall["ZeroMQLink"] (* 1.2.6+ *)
+#+end_src
+
+=eglot= is far faster than =LSP=!
+[[https://github.com/kenkangxgwe/lsp-wl/wiki#eglot]]
+#+begin_src emacs-lisp
+(let ((wlserver (expand-file-name "~/.local/lib/lsp-wl/init.wls")))
+  (when (and (file-exists-p wlserver) (executable-find "wolframscript"))
+    (with-eval-after-load 'eglot
+      (add-to-list 'eglot-server-programs
+                   `(wolfram-mode . ("wolframscript" "-f" ,wlserver
+                                     "--tcp-server" :autoport))))))
+#+end_src
+Completion seems not work with =12.3=.
+
+*** org-wolfram
+#+begin_src emacs-lisp
+(use-package! org-wolfram
+  :commands org-wolfram-mode)
+#+end_src
+
 suppress message
 #+begin_quote
 Org babel: Wolfram-Language :session is incompatible with :async. Executing
@@ -1390,42 +1445,8 @@ synchronously!
         (:kernel . "wolframforjupyter")))
 #+end_src
 
-#+begin_src emacs-lisp
-(use-package! wolfram-mode
-  :after lsp-mode
-  :commands wolfram-mode
-  :mode ("\\.m\\'" "\\.fr\\'" "\\.wls?\\'")
-  :interpreter "wolframscript"
-  :config
-  ;; ligatures
-  (set-ligatures! 'wolfram-mode
-    :and "&&"
-    :or "||"
-    :not "!"
-    :null "None"
-    :true "True"
-    :false "False")
-  ;; (add-to-list 'lsp-language-id-configuration
-  ;;              '(wolfram-mode . "wolfram"))
-  ;; open .nb file with mathematica from dirvish
-  (after! dirvish
-    (push '(("nb") "/usr/local/bin/mathematica" "%f")
-          dirvish-open-with-programs)))
-#+end_src
-
-org-wolfram
-#+begin_src emacs-lisp
-(use-package! org-wolfram
-  :commands org-wolfram-mode)
-#+end_src
-
 - error when run after execute hook
   [[https://github.com/emacs-jupyter/jupyter/issues/492][emacs-jupyter/jupyter#492 org-babel-after-execute-hook not executed in contex...]]
-
-wolfram-format
-#+begin_src emacs-lisp
-(load "~/lib/wolframFormatter/wolfram-format.el")
-#+end_src
 
 ** markdown
 #+begin_src toml
