@@ -385,20 +385,16 @@ custom doom-modeline font
 (setq split-width-threshold 120)
 #+end_src
 
-see ~display-buffer-alist~
+Prefer stack at right for following info windows, since they are fill-columned
 #+begin_src emacs-lisp
-(when (modulep! :ui popup)
-  (set-popup-rules!
-    '(("^\\*\\([Hh]elp\\|Apropos\\)"  ; help messages
-       :ignore t)
-      ("^\\*eww\\*"  ; `eww' (and used by dash docsets)
-       :ignore t)
-      ("^\\*\\(?:Wo\\)?Man "
-       :ignore t)
-      ("^\\*info\\*$"
-       :ignore t))))
+(set-popup-rules!
+  '(("^\\*\\([Hh]elp\\|Apropos\\)"  ; help messages
+     :side right :size 0.4 :slot 2 :vslot -8 :select t)
+    ("^\\*\\(?:Wo\\)?Man "
+     :side right :size 0.4 :vslot -6 :select t)
+    ("^\\*info\\*$"
+     :side right :size 0.4 :slot 2 :vslot 2 :select t)))
 #+end_src
-use ~+popup-mode~ to toggle popup mode globally.
 
 ** unicode
 #+begin_src toml
