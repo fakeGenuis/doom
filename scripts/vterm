@@ -1,0 +1,3 @@
+#!/bin/bash
+
+emacsclient -nc -s utility -e "(progn (setq-local default-directory \"${1:-$HOME}\") (+vterm/here t))" -F "((width . 90) (height . 30))"
