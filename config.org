@@ -726,6 +726,18 @@ tweak from ~doom doctor~
 (setq-default explicit-shell-file-name (executable-find "fish"))
 #+end_src
 
+[[https://emacs.stackexchange.com/questions/24330/have-a-function-to-disable-close-confirmation-on-terms-work-on-all-terms-but-sh][have a function to disable close confirmation on terms. work on all terms but...]]
+#+begin_src emacs-lisp
+(defun set-no-process-query-on-exit ()
+  (let ((proc (get-buffer-process (current-buffer))))
+    (when (processp proc)
+      (set-process-query-on-exit-flag proc nil))))
+
+(after! vterm
+  (if (and (daemonp) (string= server-name "utility"))
+      (add-hook 'vterm-mode-hook #'set-no-process-query-on-exit)))
+#+end_src
+
 #+begin_src emacs-lisp
 (defun +my/vterm-switch ()
   "Switch to vterm buffer in `Term' workspace.
@@ -761,7 +773,7 @@ If no vterm buffer in `Term' workspace, create it."
   (vterm-send-return))
 
 (after! vterm
-  (setq vterm-buffer-name-string "vterm %s"
+  (setq vterm-buffer-name-string "%s - vterm"
         vterm-ignore-blink-cursor nil)
   (map! :leader
         (:prefix "o"
