@@ -759,10 +759,10 @@ If no vterm buffer in `Term' workspace, create it."
     (if vterm-buffer
         (switch-to-buffer vterm-buffer)
       ;; create vterm buffer if not exist
-      (vterm vterm-buffer-name))))
+      (+vterm/here t))))
 
 (map! :leader
- :prefix "b"
+ :prefix "TAB"
  :desc "Switch to vterm buffer" "v" #'+my/vterm-switch)
 #+end_src
 
