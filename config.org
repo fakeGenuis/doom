@@ -1191,6 +1191,29 @@ custom agenda view from
   (push :text/html jupyter-org-mime-types))
 #+end_src
 
+*** ob-async
+Session async have been include in org mode, see how to implement async using built in method.
+[[https://github.com/jackkamm/ob-session-async][GitHub - jackkamm/ob-session-async: Asynchronous org-mode session evaluation]]
+[[https://github.com/emacs-mirror/emacs/blob/a7cb220523d881449a2dba683e7358b3312fd482/etc/ORG-NEWS#L863]]
+
+This branch mainly fix =apply: Wrong number of arguments= of advice [[fn:ob-async-org-babel-execute-src-block]]
+[[https://github.com/astahlman/ob-async/pull/96][astahlman/ob-async#96 Update signature and skip :session blocks by stsquad]]
+
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! ob-async)
+(package! ob-async
+  :recipe (:host github
+           :repo "stsquad/ob-async"
+           :branch "update-signature-skip-session"))
+#+end_src
+
+Disable doom's "maybe" advice around, run after it add the advice.
+#+begin_src emacs-lisp
+(add-hook 'org-load-hook
+          (lambda ()
+            (advice-remove 'ob-async-org-babel-execute-src-block #'+org-babel-disable-async-maybe-a)) 90)
+#+end_src
+
 *** org-noter
 #+begin_src emacs-lisp
 (after! org-noter
