@@ -278,9 +278,9 @@ Conflict with [[var:nerd-icons-scale-factor]]
 
 Visual effect preview
 #+begin_src python :tangle no
-  1234567890-+abcdedfghijklmn
-# 1234567890-+abcdedfghijklmn
-# 12345 然后这是中文对齐klmn
+Emacs is the advanced, extensible, customizable, self-documenting editor.
+# Emacs is the advanced, extensible, customizable, self-documenting editor.
+# Emacs 是一款可扩展可自定义且自带文档的高级editor.
 #+end_src
 
 - [ ] display =text-scale-mode-amount= in mode-line
