@@ -18,9 +18,7 @@ The *conventions* of this org file:
 
 * Tangle
 [[file:init.el]]
-#+begin_src emacs-lisp :tangle init.el :noweb tangle
-;;; init.el -*- lexical-binding: t; -*-
-
+#+begin_src emacs-lisp :tangle init.el :noweb tangle :shebang ";;; init.el -*- lexical-binding: t; -*-\n"
 (doom!
  :input
  chinese
@@ -92,18 +90,13 @@ The *conventions* of this org file:
 *The order of modules in above list make sense*
 
 Extra packages from [[https://melpa.org][MELPA]]
-#+begin_src emacs-lisp :tangle packages.el
-;; -*- no-byte-compile: t; -*-
-;;; $DOOMDIR/packages.el
-
+#+begin_src emacs-lisp :tangle packages.el :shebang ";; -*- no-byte-compile: t; -*-\n"
 (package! tldr)
 #+end_src
 
 #+PROPERTY: header-args:emacs-lisp :results none
 Default tangle to [[file:config.el]]
-#+begin_src emacs-lisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
+#+begin_src emacs-lisp :shebang ";;; $DOOMDIR/config.el -*- lexical-binding: t; -*-\n"
 (setq user-full-name "name"
       user-mail-address "***REMOVED***")
 #+end_src
