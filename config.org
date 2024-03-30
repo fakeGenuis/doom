@@ -800,9 +800,11 @@ No text properties saved.
    :save-vars '(default-directory)
    :save-function (lambda (buf tag vars)
                     (list tag (buffer-name buf) vars
-                          (string-trim-right (buffer-substring-no-properties (point-min) (point-max)))))
+                          (string-trim-right (buffer-string))))
+                          ;; no face and other text properties saved
+                          ;; (string-trim-right (buffer-substring-no-properties (point-min) (point-max)))))
    :load-function (lambda (savelist &rest _)
-                    (cl-destructuring-bind (buf-name vars buf-string) (cdr savelist)
+                    (cl-destructuring-bind (_ buf-name vars buf-string) savelist
                       (let ((default-directory (alist-get 'default-directory vars)))
                         (require 'vterm)
                         (with-current-buffer (get-buffer-create buf-name)
