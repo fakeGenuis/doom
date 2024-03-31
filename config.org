@@ -1186,6 +1186,55 @@ custom agenda view from
   (push :text/html jupyter-org-mime-types))
 #+end_src
 
+*** org-compat
+~imenu~ show org headings in all levels
+[[https://emacs.stackexchange.com/questions/20759/all-org-subheadings-in-imenu][org mode - All org subheadings in imenu? - Emacs Stack Exchange]]
+[[https://list.orgmode.org/20180410214619.66092-1-michael@ndrix.org/t/][{PATCH} org-compat: Allow imenu items without hierarchy]]
+[[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg144622.html][{PATCH} org-imenu-get-tree: Allow parent headings to be selected themselves]]
+
+- [ ] add number like [[fn:org-num-mode]]
+- [ ] =consult-line= style previous next highlight distinct
+
+#+begin_src emacs-lisp
+(defun +my/org-imenu-get-tree--region (begin end)
+  "Get org headings tree index for Imenu in region BEGIN to END."
+  (org-with-wide-buffer
+   (goto-char end)
+   (let* ((re (concat "^" (org-get-limited-outline-regexp)))
+          (subs (make-vector (1+ org-imenu-depth) nil))
+          (last-level 0))
+     (while (re-search-backward re begin t)
+       (let ((level (org-reduced-level (funcall outline-level)))
+             (headline (org-no-properties
+                        (org-link-display-format (org-get-heading t t t t)))))
+         (when (and (<= level org-imenu-depth) (org-string-nw-p headline))
+           (let* ((m (point-marker))
+                  (item (propertize headline 'org-imenu-marker m 'org-imenu t)))
+             (push m org-imenu-markers)
+             (when (< level last-level)
+               (push (cons item
+                           (cl-mapcan #'identity (cl-subseq subs (1+ level))))
+                     (aref subs level))
+               (cl-loop for i from (1+ level) to org-imenu-depth
+                        do (aset subs i nil)))
+             ;; always include headings
+             (push (cons item m) (aref subs level))
+             (setq last-level level)))))
+     ;; FIXME add padding parent heading for illegal headings
+     ;; allow illegal headings, i.e. 0 indexed
+     (reduce 'vconcat (reverse subs)))))
+     ;; (aref subs 1))))
+
+(defun +my/org-imenu-get-tree ()
+  "Get org headings tree index for Imenu."
+  (dolist (x org-imenu-markers) (move-marker x nil))
+  (setq org-imenu-markers nil)
+  (vconcat (+my/org-imenu-get-tree--region (point) (point-max))
+           (+my/org-imenu-get-tree--region nil (point))))
+
+(advice-add #'org-imenu-get-tree :override #'+my/org-imenu-get-tree)
+#+end_src
+
 *** ob-async
 Session async have been include in org mode, see how to implement async using built in method.
 [[https://github.com/jackkamm/ob-session-async][GitHub - jackkamm/ob-session-async: Asynchronous org-mode session evaluation]]
