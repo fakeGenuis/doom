@@ -1186,6 +1186,21 @@ custom agenda view from
   (push :text/html jupyter-org-mime-types))
 #+end_src
 
+Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel lazy load
+#+begin_src emacs-lisp
+(defvar +my/jupyter-langs '()
+  "A list of language that use jupyter override.")
+
+(add-hook '+org-babel-load-functions
+  (defun +org-babel-load-jupyter-override-h (lang)
+    (when-let ((lang-name (symbol-name lang))
+               (_ (member lang-name +my/jupyter-langs)))
+      (require 'jupyter)
+      (require 'ob-jupyter)
+      (org-babel-jupyter-override-src-block lang-name)))
+  90)
+#+end_src
+
 *** org-compat
 ~imenu~ show org headings in all levels
 [[https://emacs.stackexchange.com/questions/20759/all-org-subheadings-in-imenu][org mode - All org subheadings in imenu? - Emacs Stack Exchange]]
@@ -1449,15 +1464,12 @@ packages=["typst", "typst-lsp-bin"]
 #+begin_src emacs-lisp :tangle packages.el
 (package! wolfram-mode
   :recipe (:local-repo "~/lib/wolfram-mode/"))
-
-(package! org-wolfram
-  :recipe (:local-repo "~/lib/org-wolfram/"))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package! wolfram-mode
+  :defer t
   :config
-  ;; ligatures
   (set-ligatures! 'wolfram-mode
     :and "&&"
     :or "||"
@@ -1492,7 +1504,7 @@ PacletInstall["ZeroMQLink"] (* 1.2.6+ *)
 #+end_src
 
 =eglot= is far faster than =LSP=!
-[[https://github.com/kenkangxgwe/lsp-wl/wiki#eglot]]
+[[https://github.com/kenkangxgwe/lsp-wl/wiki#eglot][Home · kenkangxgwe/lsp-wl Wiki · GitHub]]
 #+begin_src emacs-lisp
 (let ((wlserver (expand-file-name "~/.local/lib/lsp-wl/init.wls")))
   (when (and (file-exists-p wlserver) (executable-find "wolframscript"))
@@ -1503,10 +1515,12 @@ PacletInstall["ZeroMQLink"] (* 1.2.6+ *)
 #+end_src
 Completion seems not work with =12.3=.
 
-*** org-wolfram
+*** wolfram in jupyter
 #+begin_src emacs-lisp
-(use-package! org-wolfram
-  :commands org-wolfram-mode)
+(add-to-list '+my/jupyter-langs "Wolfram-Language")
+
+(after! org-src
+  (add-to-list 'org-src-lang-modes '("Wolfram-Language" . wolfram)))
 #+end_src
 
 suppress message
