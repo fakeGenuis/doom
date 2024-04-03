@@ -140,7 +140,35 @@ The return value is the new value of LIST-VAR."
 #+end_src
 
 * Completion
-** company
+** corfu
+#+begin_src toml
+[corfu]
+packages=["words"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref completion
+(corfu +icons)
+#+end_src
+
+#+begin_src emacs-lisp
+(after! cape
+  ;; cape-dict trigger easily
+  (setq cape-dict-limit 233))
+
+(add-hook! org-mode
+  ;; orderless completion in dict makes everyone crazy
+  (setq-local completion-styles '(basic)
+              completion-at-point-functions (list (cape-capf-super #'yasnippet-capf
+                                                                   #'cape-dabbrev #'cape-dict))))
+#+end_src
+
+#+begin_src emacs-lisp
+(map! (:prefix "C-x"
+       :i "C-f" #'cape-file
+       :i "C-d" #'cape-dict))
+#+end_src
+
+** COMMENT company
 + [ ] fix scroll bar width
 
 =company-ispell= needs word dictionary
