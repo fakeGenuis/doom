@@ -112,6 +112,12 @@ enable_default=true
 (setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
 #+end_src
 
+#+begin_src emacs-lisp
+(defun +my/is-utility-daemon ()
+  "If current session run from daemon called `utility`."
+  (and (daemonp) (string= server-name "utility")))
+#+end_src
+
 [[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
 #+begin_src emacs-lisp
 (defun +my/append-to-list (list-var elements)
@@ -755,7 +761,7 @@ tweak from ~doom doctor~
       (set-process-query-on-exit-flag proc nil))))
 
 (after! vterm
-  (if (and (daemonp) (string= server-name "utility"))
+  (if (+my/is-utility-daemon)
       (add-hook 'vterm-mode-hook #'set-no-process-query-on-exit)))
 #+end_src
 
