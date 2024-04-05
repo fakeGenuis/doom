@@ -378,7 +378,7 @@ Emacs should render emoji rightly if emoji fonts are presented.
 
 ** modeline
 #+begin_src toml
-[unicode]
+[modeline]
 packages=["otf-comicshanns-nerd"]
 #+end_src
 
@@ -624,10 +624,10 @@ Additional syntax highlighting for dired
 [dirvish]
 packages=[
     "fd",
-    # "imagemagick",
-    # "ffmpegthumbnailer",
-    # "mediainfo",
-    "tar",
+    "imagemagick",
+    "ffmpegthumbnailer",
+    "mediainfo",
+    # "tar", # include in =base=
     "unzip"
 ]
 #+end_src
@@ -1202,6 +1202,11 @@ custom agenda view from
 [[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
 
 *** jupyter
+#+begin_src toml
+[jupyter]
+packages=["jupyter-notebook"]
+#+end_src
+
 [[https://github.com/emacs-jupyter/jupyter/issues/489][emacs-jupyter/jupyter#489 no `org-babel-execute-function` after upgrade]]
 #+begin_src emacs-lisp
 (with-eval-after-load 'ob-jupyter
@@ -1394,10 +1399,11 @@ org-format
 packages=[
     "python-pytest",
     "python-nose",
+    "python-black",
     "python-pyflakes",
     "python-isort",
     "python-pipenv",
-    "python-lsp-server"
+    "pyright"
 ]
 #+end_src
 
@@ -1454,6 +1460,11 @@ packages=["typst", "typst-lsp-bin"]
 #+end_src
 
 ** wolfram
+#+begin_src toml
+[wolfram]
+packages=["mathematica"]
+#+end_src
+
 #+begin_src emacs-lisp :tangle packages.el
 (package! wolfram-mode
   :recipe (:local-repo "~/lib/wolfram-mode/"))
