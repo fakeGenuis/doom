@@ -1232,7 +1232,7 @@ packages=["jupyter-notebook"]
 #+begin_src emacs-lisp
 (use-package! jupyter+
   :commands jupyter-org-transient
-  :config
+  :init
   (map! :map jupyter-org-interaction-mode-map
         :n "\\" #'jupyter-org-transient))
 #+end_src
@@ -1669,7 +1669,11 @@ packages=[
 [[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
 #+begin_src emacs-lisp
 (use-package! keycast
-  ; :hook doom-init-ui
+  :commands (keycast-mode)
+  :init
+  (map! :leader
+        (:prefix "t"
+         :desc "Toggle keycast" "k" #'keycast-mode))
   :config
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line (fix for use with doom-mode-line)."
@@ -1680,9 +1684,6 @@ packages=[
                      'keycast-active-frame-bottom-right-p))
      (remove-hook 'pre-command-hook 'keycast--update)
      (setq keycast-mode-line-window-predicate 'ignore)))
-  (map! :leader
-        (:prefix "t"
-         :desc "Toggle keycast" "k" #'keycast-mode))
   (add-to-list 'global-mode-string '("" keycast-mode-line)))
 #+end_src
 
@@ -1813,6 +1814,7 @@ packages=["figlet"]
 
 #+begin_src emacs-lisp
 (use-package! figlet
+  :defer t
   :config
   (setq figlet-options '("-W" "-f" "script")))
 #+end_src
@@ -1833,7 +1835,7 @@ substitute "%" to buffer file in ~shell-command~
 #+begin_src emacs-lisp
 (use-package! shell-command+
   :commands shell-command+
-  :config
+  :init
   (global-set-key (kbd "M-!") #'shell-command+))
 #+end_src
 
