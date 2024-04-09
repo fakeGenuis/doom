@@ -371,17 +371,6 @@ doom-dashboard
     (setq +doom-dashboard-ascii-banner-fn (lambda () (my-weebery-is-always-greater splash-file-name)))))
 #+end_src
 
-** emoji
-#+begin_src toml
-[emoji]
-packages=["noto-fonts-emoji"]
-#+end_src
-
-Emacs should render emoji rightly if emoji fonts are presented.
-#+begin_src emacs-lisp :tangle no :noweb-ref no
-(emoji +unicode)
-#+end_src
-
 ** modeline
 #+begin_src toml
 [modeline]
