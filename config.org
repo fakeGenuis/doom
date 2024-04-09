@@ -903,30 +903,6 @@ packages=["sqlite", "wordnet-cli"]
 (lsp +eglot)
 #+end_src
 
-[[https://github.com/emacs-lsp/lsp-ui/issues/561#issuecomment-1080363562][emacs-lsp/lsp-ui#561 Scaling/Resizing of sideline fonts]]
-#+begin_src emacs-lisp
-(after! lsp-ui
-  ;; 2022-03-28 - fix sideline height computation
-  (defun lsp-ui-sideline--compute-height nil
-    "Return a fixed size for text in sideline."
-    (let ((fontHeight (face-attribute 'lsp-ui-sideline-global :height)))
-      (if (null text-scale-mode-remapping)
-          '(height
-            (if (floatp fontHeight) fontHeight
-              (/ (face-attribute 'lsp-ui-sideline-global :height) 100.0))
-
-            ;; Readjust height when text-scale-mode is used
-            (list 'height
-                  (/ 1 (or (plist-get (cdr text-scale-mode-remapping) :height)
-                           1)))))))
-
-  ;; 2022-03-28 - fix sideline alignment
-  (defun lsp-ui-sideline--align (&rest lengths)
-    "Align sideline string by LENGTHS from the right of the window."
-    (list (* (window-font-width nil 'lsp-ui-sideline-global)
-             (+ (apply '+ lengths) (if (display-graphic-p) 1 2))))))
-#+end_src
-
 ** magit
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
 magit
@@ -990,36 +966,7 @@ default pdf viewer in emacs
 (add-hook! 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 #+end_src
 
-** COMMENT math-preview
-#+begin_src emacs-lisp
-(package! math-preview)
-#+end_src
 
-#+begin_src toml
-["math-preview"]
-packages=["npm"]
-#+end_src
-
-#+begin_src bash
-git clone https://gitlab.com/matsievskiysv/math-preview ~/.local/lib
-cd ~/.local/lib/math-preview && npm i
-#+end_src
-
-preview latex formulas
-#+begin_src emacs-lisp
-(use-package! math-preview
-  :defer t
-  :config
-  (setq math-preview-command "~/.local/lib/math-preview/math-preview.js")
-  (setq math-preview-tex-marks '(("\\begin{equation}" "\\end{equation}")
-                                 ("\\begin{equation*}" "\\end{equation*}")
-                                 ("\\begin{align}" "\\end{align}")
-                                 ("\\begin{align*}" "\\end{align*}")
-                                 ("\\[" "\\]")
-                                 ("\\(" "\\)")
-                                 ("$$" "$$"))))
-  ;; (math-preview-preprocess-functions '((lambda (s)
-  ;;                                        (concat "{\\color{white}" s "}")))))
 #+end_src
 
 * Lang
@@ -1277,20 +1224,6 @@ Disable doom's "maybe" advice around, run after it add the advice.
   (setq org-roam-dailies-capture-templates
    '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
-#+end_src
-
-*** org-pandoc-import
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-pandoc-import
-  :recipe (:host github
-           :repo "tecosaur/org-pandoc-import"
-           :files ("*.el" "filters" "preprocessors")))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! org-pandoc-import
-  :defer t
-  :after org)
 #+end_src
 
 *** unfold search
