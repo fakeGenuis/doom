@@ -565,10 +565,8 @@ snippets
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! yasnippet
-  :init
-  (setq +snippets-dir
-        (expand-file-name "~/Documents/Templates/snippets")))
+(setq +snippets-dir
+      (expand-file-name "~/Documents/Templates/snippets"))
 #+end_src
 
 * Emacs
