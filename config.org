@@ -1071,9 +1071,14 @@ packages=[
  +noter
  +present
  +pandoc
- +pretty
  +roam2)
 #+end_src
+
+*Never* enable =+pretty=
+[[https://github.com/doomemacs/doomemacs/commit/68136f7ff9444504a5dac93c80e0bca600ae4e1a][lang/org: add +pretty flag; move org-superstar · doomemacs/doomemacs@68136f7 ...]]
+
+It cause many other hooks (like [[var:sh-mode-local-vars-hook]]) called when opening
+org file (just because you have that lang src block inside).
 
 *** agenda
 #+begin_src emacs-lisp
