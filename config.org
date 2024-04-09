@@ -1185,18 +1185,20 @@ Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel la
 
 (add-hook '+org-babel-load-functions
   (defun +org-babel-load-jupyter-override-h (lang)
-    (when-let ((lang-name (symbol-name lang))
-               (_ (member lang-name +my/jupyter-langs)))
-      (require 'jupyter)
-      (require 'ob-jupyter)
-      (org-babel-jupyter-override-src-block lang-name)))
+    ;; don't multi run `org-babel-jupyter-override-src-block'
+    (unless (boundp (intern (format "org-babel-header-args:%s" lang)))
+      (when-let ((lang-name (symbol-name lang))
+                 (_ (member lang-name +my/jupyter-langs)))
+        (require 'jupyter)
+        (require 'ob-jupyter)
+        (org-babel-jupyter-override-src-block lang-name))))
   90)
 #+end_src
 
 *** ob-async
 Session async have been include in org mode, see how to implement async using built in method.
 [[https://github.com/jackkamm/ob-session-async][GitHub - jackkamm/ob-session-async: Asynchronous org-mode session evaluation]]
-[[https://github.com/emacs-mirror/emacs/blob/a7cb220523d881449a2dba683e7358b3312fd482/etc/ORG-NEWS#L863]]
+[[https://github.com/emacs-mirror/emacs/blob/a7cb220523d881449a2dba683e7358b3312fd482/etc/ORG-NEWS#L863][emacs/etc/ORG-NEWS at a7cb220523d881449a2dba683e7358b3312fd482 · emacs-mirror...]]
 
 This branch mainly fix =apply: Wrong number of arguments= of advice [[fn:ob-async-org-babel-execute-src-block]]
 [[https://github.com/astahlman/ob-async/pull/96][astahlman/ob-async#96 Update signature and skip :session blocks by stsquad]]
