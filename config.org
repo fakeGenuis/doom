@@ -519,7 +519,8 @@ notify initial time
    :sound-name "bell"
    :body (format "Initialed in %0.3fs" doom-init-time)))
 
-(add-hook 'doom-init-ui-hook #'notify-init-time)
+(if (+my/is-utility-daemon)
+  (add-hook 'doom-init-ui-hook #'notify-init-time))
 #+end_src
 
 * Editor
