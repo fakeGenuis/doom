@@ -236,12 +236,13 @@ packages=[
 *** Themes
 restore last selected theme
 #+begin_src emacs-lisp
-(defun load-in-doom-dir (file-name)
-  (let ((full-name (expand-file-name file-name doom-user-dir)))
+(defun load-in-doom-dir (file-name &optional dir)
+  (let* ((dir (or dir doom-user-dir))
+         (full-name (expand-file-name file-name dir)))
     (if (file-exists-p full-name)
         (load full-name))))
 
-(load-in-doom-dir "theme.el")
+(load-in-doom-dir "theme.el" doom-cache-dir)
 #+end_src
 
 difficult to choose theme? random it
@@ -261,7 +262,7 @@ track current theme for later load
 #+begin_src emacs-lisp
 (defun +my/save-theme (prev new-theme &rest args)
   (let
-      ((theme-config-file (expand-file-name "theme.el" doom-user-dir)))
+      ((theme-config-file (expand-file-name "theme.el" doom-cache-dir)))
     (write-region
      (format "(setq doom-theme '%s)\n" new-theme) nil theme-config-file)
     (message "Switch to theme: %s" new-theme)))
