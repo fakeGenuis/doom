@@ -1,0 +1,18 @@
+# -*- eval: (auto-fill-mode 1); -*-
+#+TITLE: contribution
+#+created: April 13, 2024
+
+* Sources
+[[file:bcc.txt]]
+[[https://github.com/emacs-dashboard/doom-dashboard/tree/master][GitHub - emacs-dashboard/doom-dashboard: Doom Like style for emacs dashboard]]
+
+[[file:splash.png]]
+[[https://codeberg.org/alifara/doom.d/src/branch/master/splash.png][doom.d/splash.png at master - alifara/doom.d - Codeberg.org]]
+
+[[file:Emacs-logo.svg]]
+[[https://commons.wikimedia.org/wiki/File:Emacs-logo.svg][File:Emacs-logo.svg - Wikimedia Commons]]
+
+* See also
+[[https://github.com/Schievel1/doom-emacs-splash/tree/main][GitHub - Schievel1/doom-emacs-splash: Splash screen images for Doom Emacs]]
+
+[[https://iconduck.com/icons/20258/emacs]["Emacs" Icon - Download for free – Iconduck]]
