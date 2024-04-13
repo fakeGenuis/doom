@@ -1004,7 +1004,8 @@ word completion along with =(:lang (latex +lsp))=
 see =company-backends= variable docs
 [[https://github.com/hlissner/doom-emacs/issues/5672][set-company-backend! appending instead of prepending · Issue #5672 · doomemac...]]
 #+begin_src emacs-lisp
-(setq-hook! 'LaTeX-mode-hook +lsp-company-backends '(:separate company-capf company-yasnippet company-dabbrev))
+(setq-hook! 'LaTeX-mode-hook completion-at-point-functions
+            (list (cape-capf-super #'cape-dabbrev #'cape-dict)))
 #+end_src
 
 clean intermediate files
