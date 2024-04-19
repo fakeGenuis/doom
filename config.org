@@ -115,7 +115,7 @@ enable_default=true
 #+begin_src emacs-lisp
 (defun +my/is-utility-daemon ()
   "If current session run from daemon called `utility`."
-  (and (daemonp) (string= server-name "utility")))
+  (and (daemonp) (boundp 'server-name) (string= server-name "utility")))
 #+end_src
 
 [[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
