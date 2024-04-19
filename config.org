@@ -655,8 +655,10 @@ packages=[
   (dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
+     ("c" "~/.config/"                  "Config")
      ("D" "~/Documents/"                "Documents")
-     ("l" "~/lib/"                      "Library")
+     ("l" "~/lib/"                      "Personal Library")
+     ("L" "~/.local/lib/"               "Library")
      ("m" "/mnt/"                       "Mounts")
      ("n" "~/.Nextcloud/"               "Nextcloud")
      ("p" "~/Pictures/"                 "Pictures")
@@ -1121,7 +1123,7 @@ org file (just because you have that lang src block inside).
 
 *** agenda
 #+begin_src emacs-lisp
-(setq org-directory "~/org/"
+(setq org-directory "~/Documents/org/"
       org-agenda-files '("agenda/todos.org" "agenda/projects.org")
       org-agenda-start-with-log-mode t
       org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
@@ -1369,7 +1371,7 @@ org-format
 #+begin_src emacs-lisp
 (use-package! org-format
   :commands org-format-buffer
-  :load-path "~/org/org-format/"
+  :load-path "~/Documents/org/org-format/"
   :init
   (map! :map org-mode-map
         :localleader
