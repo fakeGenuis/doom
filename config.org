@@ -975,6 +975,25 @@ default pdf viewer in emacs
 #+end_src
 
 * Lang
+** COMMENT julia
+#+begin_src toml
+[julia]
+packages=["julia-bin"]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref lang
+(julia +lsp +tree-sitter)
+#+end_src
+
+If we want table output without ~:results output~
+#+begin_src julia :tangle no
+import Pkg; Pkg.add("DataFrames")
+import Pkg; Pkg.add("CSV")
+#+end_src
+
+also one need to enable [[doom-module::lang ess]], see
+[[https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-julia.html][Julia Code Blocks in Babel]]
+
 ** Latex
 #+begin_src toml
 [latex]
