@@ -153,19 +153,23 @@ packages=["words"]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref completion
-(corfu +icons)
+(corfu +icons +dabbrev)
 #+end_src
 
 #+begin_src emacs-lisp
 (after! cape
   ;; cape-dict trigger easily
-  (setq cape-dict-limit 233))
+  (setq cape-dict-limit 233)
 
-(add-hook! org-mode
-  ;; orderless completion in dict makes everyone crazy
-  (setq-local completion-styles '(basic)
-              completion-at-point-functions (list (cape-capf-super #'yasnippet-capf
-                                                                   #'cape-dabbrev #'cape-dict))))
+  ;; orderless completion in dict makes me crazy
+  (advice-add 'cape-dict :around
+              (defun +my/cape-dict (orig-fun &rest args)
+                (let ((completion-styles '(basic)))
+                  (apply orig-fun args)))))
+
+;; (add-hook! org-mode
+;;   (setq-local completion-at-point-functions (list (cape-capf-super #'yasnippet-capf
+;;                                                                    #'cape-dabbrev #'cape-dict))))
 #+end_src
 
 #+begin_src emacs-lisp
