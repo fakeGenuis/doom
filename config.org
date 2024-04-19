@@ -1077,8 +1077,22 @@ packages=[
  +noter
  +present
  +pandoc
+ +pretty
  +roam2)
 #+end_src
+
+*** COMMENT org superstar
+#+begin_src emacs-lisp
+(package! org-superstar :disable t)
+#+end_src
+
+#+begin_src emacs-lisp
+(setq org-highlight-latex-and-related '(native))
+#+end_src
+
+[2024-04-19 Fri]
+wait for new org module bump
+[[https://github.com/doomemacs/doomemacs/commit/5b7d6763f8f899e556c7c5d89556bf39a1c81f64][revert: org · doomemacs/doomemacs@5b7d676 · GitHub]]
 
 *Never* enable =+pretty=
 [[https://github.com/doomemacs/doomemacs/commit/68136f7ff9444504a5dac93c80e0bca600ae4e1a][lang/org: add +pretty flag; move org-superstar · doomemacs/doomemacs@68136f7 ...]]
