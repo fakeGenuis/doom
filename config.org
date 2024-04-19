@@ -277,11 +277,11 @@ Set default font size, =WSL= currently not aware dpi settings in
 [[file:~/.Xresources]] while float size makes it work on Linux.
 [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
 #+begin_src emacs-lisp
-(setq +my/font-size (* (if IS-WSL 2 1) 11.0))
+(setq +my/font-size (* (if IS-WSL 2 1) 12.0))
 
 (setq doom-font (font-spec :family "Maple NF" :size +my/font-size)
-      ;; doom-serif-font (font-spec :family "Source Serif Pro" :size 13.0)
-      ;; doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14.5)
+      doom-serif-font (font-spec :family "LXGW WenKai Mono" :weight 'bold :size +my/font-size)
+      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size +my/font-size)
       ;; doom-emoji-font (font-spec :family "Noto Color Emoji")
       doom-symbol-font (font-spec :family "FiraCode Nerd Font"))
 #+end_src
