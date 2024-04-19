@@ -971,8 +971,8 @@ default pdf viewer in emacs
 (add-hook! 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 #+end_src
 
-
-#+end_src
+Selection in =pdf-tools= when evil mode enabled
+[[https://github.com/doomemacs/doomemacs/issues/6286#issuecomment-1870216583][doomemacs/doomemacs#6286 `evil` interfering with PDF text selection/highlight...]]
 
 * Lang
 ** COMMENT julia
@@ -1197,11 +1197,21 @@ packages=["jupyter-notebook"]
  (org-babel-jupyter-aliases-from-kernelspecs))
 #+end_src
 
+Fix error when [[kbd:M-x]] in org mode
+#+begin_quote
+‘org-element-at-point’ cannot be used in non-Org buffer
+#+end_quote
+[[https://www.reddit.com/r/emacs/comments/18gkx0i/orgelementatpoint_cannot_be_used_in_nonorg_buffer/][orgelementatpoint_cannot_be_used_in_nonorg_buffer]]
+[[https://github.com/steelman/org-mode/issues/1][steelman/org-mode#1 `org-element-at-point` cannot be used in non-Org buffer]]
+
 ~:text/html~ output support
 #+begin_src emacs-lisp :tangle no
 (after! ob-jupyter
   (push :text/html jupyter-org-mime-types))
 #+end_src
+
+To view contents of =.ipynb= file, see
+[[https://github.com/astoff/code-cells.el][GitHub - astoff/code-cells.el: Emacs utilities for code split into cells, inc...]]
 
 *** jupyter+
 #+begin_src emacs-lisp :tangle packages.el
@@ -1497,21 +1507,6 @@ Completion seems not work with =12.3=.
 
 (after! org-src
   (add-to-list 'org-src-lang-modes '("Wolfram-Language" . wolfram)))
-#+end_src
-
-suppress message
-#+begin_quote
-Org babel: Wolfram-Language :session is incompatible with :async. Executing
-synchronously!
-#+end_quote
-
-#+begin_src emacs-lisp
-;; (setq jupyter--debug t)
-;; (push "jupyter-Wolfram-Language" ob-async-no-async-languages-alist)
-(push 'Wolfram-Language +org-babel-native-async-langs)
-(setq org-babel-default-header-args:jupyter-Wolfram-Language
-      '((:async . "yes")
-        (:kernel . "wolframforjupyter")))
 #+end_src
 
 - error when run after execute hook
