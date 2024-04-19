@@ -1239,6 +1239,7 @@ Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel la
       (when-let ((lang-name (symbol-name lang))
                  (_ (member lang-name +my/jupyter-langs)))
         (require 'jupyter)
+        (require 'jupyter+)
         (require 'ob-jupyter)
         (org-babel-jupyter-override-src-block lang-name))))
   90)
