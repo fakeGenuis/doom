@@ -232,8 +232,9 @@ doom
 #+begin_src toml
 [doom]
 packages=[
-    # "adobe-source-serif-fonts", # serif font
-    "ttf-firacode-nerd" # for org section 1-2 and lambda
+    "ttf-lxgw-wenkai",      # fixed-patch-serif font
+    "ttf-sarasa-gothic-sc", # variable-pitch-font
+    "ttf-firacode-nerd"     # for org section 1-2 and lambda
 ]
 #+end_src
 
