@@ -1290,56 +1290,10 @@ Disable doom's "maybe" advice around, run after it add the advice.
       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
 #+end_src
 
-*** unfold search
-[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
-#+begin_src emacs-lisp
-(after! org-fold-core
-  (defun org-show-current-heading-tidily ()
-    (interactive)  ;Inteactive
-    "Show next entry, keeping other entries closed."
-    (if (save-excursion (end-of-line) (outline-invisible-p))
-        (progn (org-show-entry) (show-children))
-      (setq-local my:current_line (line-number-at-pos))
-      (outline-back-to-heading)
-      (unless (and (bolp) (org-on-heading-p))
-        (org-up-heading-safe)
-        (hide-subtree)
-        (error "Boundary reached"))
-      (org-overview)
-      (org-reveal t)
-      (org-show-entry)
-      (show-children)
-      (goto-line my:current_line)))
-
-  (defun qw/search-buffer ()
-    (interactive)
-    (org-fold-show-all)
-    (+default/search-buffer)
-    (org-show-current-heading-tidily)))
-#+end_src
-
-*** Color ~shell~ block output
-[[https://emacs.stackexchange.com/a/52238][How do I attach a custom function to process org-mode babel shell output?]]
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package cl-lib
-  :init
-  (defun org-redisplay-ansi-source-blocks ()
-    "Refresh the display of ANSI text source blocks."
-    (interactive)
-    (org-element-map (org-element-parse-buffer) 'src-block
-      (lambda (src)
-        (when (equalp "ansi" (org-element-property :language src))
-          (let ((begin (org-element-property :begin src))
-                (end (org-element-property :end src)))
-            (ansi-color-apply-on-region begin end))))))
-  :custom
-  (add-to-list 'org-babel-after-execute-hook #'org-redisplay-ansi-source-blocks)
-  (setq org-babel-default-header-args:shell
-        '((:results . "output verbatim drawer")
-          (:wrap . "src ansi"))))
-#+END_SRC
-
 *** others
+[[kbd:SPC s b]] should work as expected
+[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
+
 [[https://emacs.stackexchange.com/a/63793][How to copy links OUT of org-mode? - Emacs Stack Exchange]]
 #+begin_src emacs-lisp
 (defun org-copy-link-url ()
