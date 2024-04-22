@@ -1283,8 +1283,8 @@ Disable doom's "maybe" advice around, run after it add the advice.
 
 *** org-roam
 #+begin_src emacs-lisp
+(setq org-roam-directory (expand-file-name "roam/" org-directory))
 (after! org-roam
-  (setq org-roam-directory (file-truename "~/org/roam"))
   (setq org-roam-dailies-capture-templates
    '(("d" "default" entry "* %?\n[%<%Y-%m-%d %H:%M>]\n"
       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
@@ -1329,8 +1329,9 @@ format org-src
 org-format
 #+begin_src emacs-lisp
 (use-package! org-format
+  :init
+  (add-to-list 'load-path (expand-file-name "org-format" org-directory))
   :commands org-format-buffer
-  :load-path "~/Documents/org/org-format/"
   :init
   (map! :map org-mode-map
         :localleader
@@ -1561,7 +1562,7 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
   (setq elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/")
         elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/")
         ;; elfeed-search-filter "@1-month-ago +unread"
-        rmh-elfeed-org-files (list "~/org/elfeed.org"))
+        rmh-elfeed-org-files (list (expand-file-name "elfeed.org" org-directory)))
   (map! :leader
         (:prefix "o"
          :desc "elfeed"    "e" #'elfeed)))
