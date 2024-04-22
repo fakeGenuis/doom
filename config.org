@@ -358,11 +358,11 @@ doom-dashboard
 - [[https://discourse.doomemacs.org/t/how-to-change-your-splash-screen/57][How to change your splash screen - Configuration - Doom Emacs Discourse]]
 - [[https://stackoverflow.com/a/25158644][elisp - Read from a file into a Emacs lisp list - Stack Overflow]]
 
-#+begin_src emacs-lisp :tangle no
-(setq fancy-splash-image (expand-file-name "splashs/Emacs-logo.svg" doom-user-dir))
+#+begin_src emacs-lisp
+(setq fancy-splash-image (expand-file-name "splashs/TransparentGNU_512x.png" doom-user-dir))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun my-weebery-is-always-greater (splash-file-name)
   (let* ((banner (s-split "\n" (f-read splash-file-name) t))
          (longest-line (apply #'max (mapcar #'length banner))))

@@ -12,6 +12,12 @@
 [[file:Emacs-logo.svg]]
 [[https://commons.wikimedia.org/wiki/File:Emacs-logo.svg][File:Emacs-logo.svg - Wikimedia Commons]]
 
+[[file:TransparentGNU_512x.png]]
+[[https://twitter.com/sawaratsuki1004/status/1782079506083381657]]
+#+begin_src shell
+convert TransparentGNU.png -resize 512x TransparentGNU_512x.png
+#+end_src
+
 * See also
 [[https://github.com/Schievel1/doom-emacs-splash/tree/main][GitHub - Schievel1/doom-emacs-splash: Splash screen images for Doom Emacs]]
 
