@@ -425,9 +425,10 @@ Prefer stack at right for following info windows, since they are fill-columned
 #+begin_src toml
 [unicode]
 packages=[
-    "quivira", # org ellipsis ⤵
-    # "ttf-sarasa-gothic-sc", # CJK
-    "ttf-dejavu-nerd" # org section 3 ✸
+    "quivira",              # org ellipsis ⤵
+    "ttf-sarasa-gothic-sc", # ￢
+    "ttf-dejavu-nerd",      # org section 3 ✸
+    "tex-gyre-fonts"        # ∈
 ]
 #+end_src
 
@@ -460,8 +461,10 @@ Add hook but with [[fn:set-fontset-font]] succeed
 #+begin_src emacs-lisp
 (defun +my/unicode-fonts ()
   (dolist (range '((#x2900 . #x297f))) (set-fontset-font t range "Quivira"))
-  ; programming keywords
-  ;; (set-fontset-font t '(?𝔸 . ?𝕐) "DejaVu Math TeX Gyre")
+  (dolist (chars '("￢")) ; keywords in code ligatures
+     (set-fontset-font t (string-to-char chars) "Sarasa Gothic SC"))
+  (dolist (chars '("∈" "∉" "⋃" "∖" "⨂"))
+     (set-fontset-font t (string-to-char chars) "TeX Gyre Adventor"))
   (dolist (chars '("𝔹" "ℕ" "ℝ" "𝕊" "ℤ"))
      (set-fontset-font t (string-to-char chars) "Quivira")))
 (add-hook 'after-setting-font-hook #'+my/unicode-fonts 60)
