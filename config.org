@@ -631,7 +631,7 @@ Additional syntax highlighting for dired
 packages=[
     "fd",
     "imagemagick",
-    "ffmpegthumbnailer",
+    # "ffmpegthumbnailer", # may require pipewire-jack
     "mediainfo",
     # "tar", # include in =base=
     "unzip"
@@ -1410,6 +1410,7 @@ packages=["typst", "typst-lsp-bin"]
 ** wolfram
 #+begin_src toml
 [wolfram]
+enabled="not is_wsl"
 packages=["mathematica"]
 #+end_src
 
