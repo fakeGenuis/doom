@@ -1768,6 +1768,18 @@ substitute "%" to buffer file in ~shell-command~
   :init
   (global-set-key (kbd "M-!") #'shell-command+))
 #+end_src
+** gptel
+#+begin_src emacs-lisp :tangle packages.el
+(package! gptel)
+#+end_src
+
+#+begin_src emacs-lisp
+(after! gptel
+ (gptel-make-ollama "Ollama"             ;Any name of your choosing
+   :host "localhost:11434"               ;Where it's running
+   :stream t                             ;Stream responses
+   :models '("llama3:latest")))          ;List of models
+#+end_src
 
 * Other configs
 ** projectile
