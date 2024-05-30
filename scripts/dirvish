@@ -1,3 +1,3 @@
 #!/bin/bash
 
-emacsclient -nc -s utility -e "(dirvish \"${1:-$HOME}\")" -F "((width . 135) (height . 45))"
+emacsclient -nc -s utility -e "(dirvish \"${1:-$HOME}\")" -F "((width . 0.5) (height . 0.7))"
