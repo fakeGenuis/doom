@@ -1,0 +1,9 @@
+# tangled files
+init.el
+packages.el
+packages.toml
+config.el
+install.sh
+# files may contains private data
+mu4e.el
+custom.el
