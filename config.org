@@ -1256,6 +1256,26 @@ custom agenda view from
 [[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
 [[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
 
+*** org-babel
+Skip executing org source blocks within commented headings. To optimize, consider advicing [[fn:org-babel-map-executables]]
+#+begin_src emacs-lisp
+(defun +my/org-babel-execute-buffer (&optional arg)
+  "Execute source code blocks in a buffer.
+Call `org-babel-execute-src-block' on every source block in
+the current buffer."
+  (interactive "P")
+  (org-babel-eval-wipe-error-buffer)
+  (org-save-outline-visibility t
+    (org-babel-map-executables nil
+      (unless (org-in-commented-heading-p)
+        (if (memq (org-element-type (org-element-context))
+                  '(babel-call inline-babel-call))
+            (org-babel-lob-execute-maybe)
+          (org-babel-execute-src-block arg))))))
+
+(advice-add 'org-babel-execute-buffer :override #'+my/org-babel-execute-buffer)
+#+end_src
+
 *** jupyter
 #+begin_src toml
 [jupyter]
