@@ -56,6 +56,7 @@ Literate and modular Doom Emacs configuration.
   - [[#figlet][figlet]]
   - [[#shell-command][shell-command+]]
   - [[#gptel][gptel]]
+  - [[#tldr][tldr]]
 - [[#other-configs][Other configs]]
   - [[#projectile][projectile]]
   - [[#proxy][proxy]]
@@ -152,7 +153,6 @@ The *conventions* of this org file:
 
 Extra packages from [[https://melpa.org][MELPA]]
 #+begin_src emacs-lisp :tangle packages.el :shebang ";; -*- no-byte-compile: t; -*-\n"
-(package! tldr)
 #+end_src
 
 #+PROPERTY: header-args:emacs-lisp :results none
@@ -1849,6 +1849,7 @@ substitute "%" to buffer file in ~shell-command~
   :init
   (global-set-key (kbd "M-!") #'shell-command+))
 #+end_src
+
 ** gptel
 #+begin_src emacs-lisp :tangle packages.el
 (package! gptel)
@@ -1860,6 +1861,11 @@ substitute "%" to buffer file in ~shell-command~
    :host "localhost:11434"               ;Where it's running
    :stream t                             ;Stream responses
    :models '("llama3:latest")))          ;List of models
+#+end_src
+
+** tldr
+#+begin_src emacs-lisp :tangle packages.el
+(package! tldr)
 #+end_src
 
 * Other configs
