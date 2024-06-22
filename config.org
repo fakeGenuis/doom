@@ -475,11 +475,11 @@ Prefer stack at right for following info windows, since they are fill-columned
 #+begin_src emacs-lisp
 (set-popup-rules!
   '(("^\\*\\([Hh]elp\\|Apropos\\)"  ; help messages
-     :side right :size 0.4 :slot 2 :vslot -8 :select t)
+     :side right :size 80 :slot 2 :vslot -8 :select t)
     ("^\\*\\(?:Wo\\)?Man "
-     :side right :size 0.4 :vslot -6 :select t)
+     :side right :size 80 :vslot -6 :select t)
     ("^\\*info\\*$"
-     :side right :size 0.4 :slot 2 :vslot 2 :select t)))
+     :side right :size 80 :slot 2 :vslot 2 :select t)))
 #+end_src
 
 ** unicode
