@@ -158,8 +158,7 @@ Extra packages from [[https://melpa.org][MELPA]]
 #+PROPERTY: header-args:emacs-lisp :results none
 Default tangle to [[file:config.el]]
 #+begin_src emacs-lisp :shebang ";;; $DOOMDIR/config.el -*- lexical-binding: t; -*-\n"
-(setq user-full-name "name"
-      user-mail-address "***REMOVED***")
+(setq user-full-name "fakeGenius")
 #+end_src
 
 Default install all packages in [[file:packages.toml]]
@@ -1600,7 +1599,7 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref email
-(mu4e +***REMOVED*** +org)
+(mu4e +gmail +org)
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
