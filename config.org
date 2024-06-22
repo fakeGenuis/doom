@@ -83,7 +83,7 @@ The *conventions* of this org file:
 #+begin_src emacs-lisp :tangle init.el :noweb tangle :shebang ";;; init.el -*- lexical-binding: t; -*-\n"
 (doom!
  :input
- chinese
+ (chinese +rime +childframe)
 
  :completion
  <<completion>>
