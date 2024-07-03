@@ -56,6 +56,7 @@ Literate and modular Doom Emacs configuration.
   - [[#figlet][figlet]]
   - [[#shell-command][shell-command+]]
   - [[#gptel][gptel]]
+  - [[#telega][telega]]
 - [[#other-configs][Other configs]]
   - [[#projectile][projectile]]
   - [[#proxy][proxy]]
@@ -1861,6 +1862,28 @@ substitute "%" to buffer file in ~shell-command~
   (load-in-doom-dir "private/gpt.el"))
 #+end_src
 
+** telega
+#+begin_src emacs-lisp :tangle packages.el
+(package! telega)
+#+end_src
+
+#+begin_src shell :tangle no
+docker pull zevlg/telega-server:latest
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! telega
+  :init
+  (setq telega-directory (expand-file-name "~/.local/share/telega"))
+  :config
+  (setq telega-use-docker t)
+  ;; ("\\.pdf\\'" . default) is already member in `org-file-apps'
+  ;; Use "xdg-open" to open files by default
+  (setcdr (assq t org-file-apps-gnu) 'browse-url-xdg-open)
+  (setq telega-open-file-function 'org-open-file)
+  (setq telega-proxies '((:server "127.0.0.1" :port 1089 :enable t
+                          :type (:@type "proxyTypeSocks5")))))
+  ;; (setq telega-server-libs-prefix "/usr"))
 #+end_src
 
 * Other configs
