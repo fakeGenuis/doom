@@ -57,6 +57,7 @@ Literate and modular Doom Emacs configuration.
   - [[#shell-command][shell-command+]]
   - [[#gptel][gptel]]
   - [[#tldr][tldr]]
+  - [[#telega][telega]]
 - [[#other-configs][Other configs]]
   - [[#projectile][projectile]]
   - [[#proxy][proxy]]
@@ -1630,7 +1631,7 @@ send email by =msmtp=, see [[file:~/.config/msmtp/config]]
 private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
 #+begin_src emacs-lisp
 (after! mu4e
-  (load-in-doom-dir "mu4e.el"))
+  (load-in-doom-dir "private/mu4e.el"))
 #+end_src
 
 * App
@@ -1856,15 +1857,37 @@ substitute "%" to buffer file in ~shell-command~
 
 #+begin_src emacs-lisp
 (after! gptel
- (gptel-make-ollama "Ollama"             ;Any name of your choosing
-   :host "localhost:11434"               ;Where it's running
-   :stream t                             ;Stream responses
-   :models '("llama3:latest")))          ;List of models
+  (setq gptel-default-mode #'org-mode)
+  (load-in-doom-dir "private/gpt.el"))
 #+end_src
 
 ** tldr
 #+begin_src emacs-lisp :tangle packages.el
 (package! tldr)
+#+end_src
+
+** telega
+#+begin_src emacs-lisp :tangle packages.el
+(package! telega)
+#+end_src
+
+#+begin_src shell :tangle no
+docker pull zevlg/telega-server:latest
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! telega
+  :init
+  (setq telega-directory (expand-file-name "~/.local/share/telega"))
+  :config
+  (setq telega-use-docker t)
+  ;; ("\\.pdf\\'" . default) is already member in `org-file-apps'
+  ;; Use "xdg-open" to open files by default
+  (setcdr (assq t org-file-apps-gnu) 'browse-url-xdg-open)
+  (setq telega-open-file-function 'org-open-file)
+  (setq telega-proxies '((:server "127.0.0.1" :port 1089 :enable t
+                          :type (:@type "proxyTypeSocks5")))))
+  ;; (setq telega-server-libs-prefix "/usr"))
 #+end_src
 
 * Other configs
