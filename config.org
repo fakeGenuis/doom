@@ -128,7 +128,6 @@ The *conventions* of this org file:
  debugger
  ;editorconfig
  (eval +overlay)
- rgb
  ;upload
 
  :os
