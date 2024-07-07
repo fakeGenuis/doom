@@ -353,15 +353,16 @@ Set default font size, =WSL= currently not aware dpi settings in
 #+end_src
 Prefer italic comment font
 
+- [ ] fix italic not applied on vertico pos-frame
 #+begin_src emacs-lisp
 (defun +my/set-comment-font ()
   (set-face-font 'font-lock-comment-face (font-spec :family "Maple NF" :slant 'italic)))
 
-(add-hook 'after-setting-font-hook #'+my/set-comment-font 90)
+(add-hook 'doom-load-theme-hook #'+my/set-comment-font 90)
 #+end_src
 
 Load font setting when (re)load theme
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (add-hook 'doom-load-theme-hook #'doom-init-fonts-h)
 #+end_src
 
@@ -451,13 +452,13 @@ packages=["otf-comicshanns-nerd"]
 modeline
 #+end_src
 
-custom doom-modeline font
+custom doom-modeline font, valid on startup and persist after [[fn:doom/reload-theme]]
 #+begin_src emacs-lisp
 (defun +my/set-mode-line-font ()
   (set-face-font 'mode-line (font-spec :family "ComicShannsMono Nerd Font" :size (+ +my/font-size 1.5)))
   (set-face-font 'mode-line-inactive (font-spec :family "ComicShannsMono Nerd Font" :size (+ +my/font-size 1.5))))
 
-(add-hook 'after-setting-font-hook #'+my/set-mode-line-font 90)
+(add-hook 'doom-load-theme-hook #'+my/set-mode-line-font 90)
 #+end_src
 
 [[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
