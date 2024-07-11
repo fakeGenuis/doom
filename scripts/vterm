@@ -1,3 +1,4 @@
 #!/bin/bash
 
-emacsclient -nc -s utility -e "(progn (setq-local default-directory \"${1:-$HOME}\") (+vterm/here t))" -F "((width . 120) (height . 40))"
+"$(dirname "$0")"/daemon.sh
+emacsclient -c -s utility -e "(progn (setq-local default-directory \"${1:-$HOME}\") (+vterm/here t))" -F "((width . 120) (height . 40))"
