@@ -1,4 +1,10 @@
 #!/bin/bash
 
-"$(dirname "$0")"/daemon.sh
-emacsclient -c -s utility -e "(progn (setq-local default-directory \"${1:-$HOME}\") (+vterm/here t))" -F "((width . 120) (height . 40))"
+ARGS=(-c -s utility)
+
+if "$(dirname "$0")"/daemon.sh; then
+    ARGS+=(-n)
+fi
+emacsclient "${ARGS[@]}" \
+    -e "(progn (setq-local default-directory \"${1:-$HOME}\") (+vterm/here t))" \
+    -F "((width . 120) (height . 40))"

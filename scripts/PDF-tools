@@ -1,4 +1,9 @@
 #!/bin/bash
 
-"$(dirname "$0")"/daemon.sh
-emacsclient -c -s utility -F "((width . 0.5) (height . 0.8))" "$1"
+ARGS=(-c -s utility)
+
+if "$(dirname "$0")"/daemon.sh; then
+    ARGS+=(-n)
+fi
+emacsclient "${ARGS[@]}" \
+    -F "((width . 0.5) (height . 0.8))" "$1"
