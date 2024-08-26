@@ -23,7 +23,6 @@ Literate and modular Doom Emacs configuration.
   - [[#snippets][snippets]]
 - [[#emacs][Emacs]]
   - [[#dired][dired]]
-  - [[#diredfl][diredfl]]
   - [[#dirvish][dirvish]]
 - [[#term][Term]]
   - [[#vterm][vterm]]
@@ -110,6 +109,7 @@ The *conventions* of this org file:
  word-wrap
 
  :emacs
+ <<emacs>>
  ;electric
  ;ibuffer
  (undo +tree)
@@ -634,23 +634,20 @@ snippets
 
 * Emacs
 ** dired
+#+begin_src emacs-lisp :tangle no :noweb-ref emacs
+(dired +dirvish +icons)
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package! dired
-  :commands dired-jump
   :custom
-  (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
-  (dired-clean-confirm-killing-deleted-buffers nil)
-  (dired-kill-when-opening-new-dired-buffer t)
-  (dired-dwim-target t)
-  (dired-listing-switches
-        "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
+  ;; (dired-kill-when-opening-new-dired-buffer t)
   :config
+  (setq dired-listing-switches
+        "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
   ;; Dirvish respects all the keybindings in `dired-mode-map'
-  (map!
-   :map dired-mode-map
-   :ng "h" #'dired-up-directory
-   :ng "l" #'dired-find-file
+  (map! :map dired-mode-map
    :n "." #'dired-omit-mode))
 #+end_src
 
@@ -663,25 +660,15 @@ ignore =dired-mode= buffers in =persp-mode=
 
 #+begin_src emacs-lisp
 (use-package! dired-x
-  :hook (dired-mode . dired-omit-mode)
   :config
   ;; Make dired-omit-mode hide all "dotfiles"
   (setq dired-omit-files
         (concat dired-omit-files "\\|^\\..*$")))
 #+end_src
 
-** diredfl
-#+begin_src emacs-lisp :tangle packages.el
-(package! diredfl)
-#+end_src
-
 Additional syntax highlighting for dired
 #+begin_src emacs-lisp
 (use-package diredfl
-  :hook
-  ((dired-mode . diredfl-mode)
-   ;; highlight parent and directory preview as well
-   (dirvish-directory-view-mode . diredfl-mode))
   :config
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 #+end_src
@@ -699,10 +686,6 @@ packages=[
 ]
 #+end_src
 
-#+begin_src emacs-lisp :tangle packages.el
-(package! dirvish)
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! dirvish
   :commands (dirvish dirvish-side)
@@ -714,13 +697,6 @@ packages=[
     :desc "dirvish-side" "s" #'dirvish-side))
   :custom
   (dirvish-side-width 25)
-  ;; (dirvish-cache-dir "~/.cache/dirvish/")
-  ;; (dirvish-media-auto-cache-threshold '(500 . 6))
-  ;; (dirvish-preview-dispatchers '(image gif video audio epub pdf archive))
-  ;; (dirvish-reuse-session nil)
-  ;; TODO fix line height
-  (dirvish-header-line-height '(20 . 37))
-  (dirvish-mode-line-height '(20 . 37))
   (dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
@@ -733,41 +709,15 @@ packages=[
      ("p" "~/Pictures/"                 "Pictures")
      ("t" "~/.local/share/Trash/files/" "TrashCan")))
   :config
-  (dirvish-override-dired-mode)
   (dirvish-side-follow-mode)
-  ;; (dirvish-header-line-format '(:left (path) :right (free-space)))
-  (setq dirvish-mode-line-format
-        '(:left
-          (sort file-time " " file-size symlink) ; it's ok to place string inside
-          :right
-          ;; For `dired-filter' users, replace `omit' with `filter' segment defined below
-          (omit yank index)))
-  (setq dirvish-attributes '(vc-state subtree-state nerd-icons collapse git-msg file-size))
-  ;; Maybe the icons are too big to your eyes
-  (setq dirvish-nerd-icons-height 0.8)
-  ;; In case you want the details at startup like `dired'
-  (setq dirvish-hide-details t)
-  ;; (dirvish-peek-mode)
+  (appendq! dirvish-attributes '(collapse git-msg))
   (map!
-   :map dired-mode-map
-   :gn "TAB"   #'dirvish-subtree-toggle
-   ;; :gn "r"  #'dirvish-roam
-   :gn "M-e"  #'dirvish-emerge-menu
-   :gn "M-f"  #'dirvish-layout-toggle
+   :map dirvish-mode-map
    :gn "M-l"  #'dirvish-ls-switches-menu
    :gn "M-m"  #'dirvish-mark-menu
-   :gn "M-n"  #'dirvish-history-go-forward
-   :gn "M-p"  #'dirvish-history-go-backward
-   :gn "M-s"  #'dirvish-setup-menu
    :gn "M-v"  #'dirvish-vc-menu
-   :gn "N"    #'dirvish-narrow
-   :gn "a"    #'dirvish-quick-access
-   :gn "b"    #'dirvish-history-jump
-   :gn "f"    #'dirvish-file-info-menu
    :n "g TAB" #'dirvish-emerge-toggle-current-group
-   :n "g z"   #'revert-buffer
    :gn "o"    #'dirvish-quicksort
-   :gn "q"    #'dirvish-quit
    :gn "y"    #'dirvish-yank-menu))
 #+end_src
 
