@@ -1804,9 +1804,33 @@ substitute "%" to buffer file in ~shell-command~
 #+end_src
 
 #+begin_src emacs-lisp
-(after! gptel
+(use-package! gptel
+  :init
+  (map!
+   (:leader
+    :prefix "o"
+    :desc "gptel" "g" #'gptel))
+  (map! "C-c s" #'gptel-quick
+        "C-c g" #'gptel-send)
+  :config
   (setq gptel-default-mode #'org-mode)
-  (load-in-doom-dir "private/gpt.el"))
+  (load-in-doom-dir "private/gpt.el")
+  (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+#+end_src
+
+Chat buffer should be real!
+#+begin_src emacs-lisp
+(defun gptel-buffer-p (buf)
+  (with-current-buffer buf (eq gptel-mode t)))
+(add-hook 'doom-real-buffer-functions 'gptel-buffer-p)
+#+end_src
+
+gptel-quick
+#+begin_src emacs-lisp :tangle packages.el
+(package! gptel-quick
+  :recipe (:host github
+           :repo "karthink/gptel-quick"))
 #+end_src
 
 ** tldr
