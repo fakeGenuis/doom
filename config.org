@@ -651,11 +651,9 @@ snippets
    :n "." #'dired-omit-mode))
 #+end_src
 
-ignore =dired-mode= buffers in =persp-mode=
+no =dired-mode= buffers in [[kbd:SPC b b]]
 #+begin_src emacs-lisp
-(add-hook 'persp-common-buffer-filter-functions
-          #'(lambda (b)
-              (eq (buffer-local-value 'major-mode b) 'dired-mode)))
+(remove-hook 'doom-real-buffer-functions 'doom-dired-buffer-p)
 #+end_src
 
 #+begin_src emacs-lisp
