@@ -21,6 +21,7 @@ Literate and modular Doom Emacs configuration.
   - [[#evil][evil]]
   - [[#format][format]]
   - [[#snippets][snippets]]
+  - [[#fold][fold]]
 - [[#emacs][Emacs]]
   - [[#dired][dired]]
   - [[#dirvish][dirvish]]
@@ -103,7 +104,6 @@ The *conventions* of this org file:
  :editor
  <<editor>>
  ;file-templates
- fold
  ;multiple-cursors
  parinfer
  word-wrap
@@ -632,6 +632,16 @@ snippets
       (expand-file-name "~/Documents/Templates/snippets"))
 #+end_src
 
+** fold
+#+begin_src emacs-lisp :tangle no :noweb-ref editor
+fold
+#+end_src
+
+work for =org-ellipsis= and fold in code mode
+#+begin_src emacs-lisp
+(setq +fold-ellipsis "⤵")
+#+end_src
+
 * Emacs
 ** dired
 #+begin_src emacs-lisp :tangle no :noweb-ref emacs
@@ -1150,7 +1160,6 @@ org file (just because you have that lang src block inside).
       org-log-done 'time
       org-log-into-drawer t
       org-startup-numerated t
-      org-ellipsis "⤵"
       org-image-actual-width 400
       org-duration-format '((special . h:mm))
       org-startup-with-inline-images t
