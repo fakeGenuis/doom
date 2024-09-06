@@ -1828,7 +1828,7 @@ substitute "%" to buffer file in ~shell-command~
 Chat buffer should be real!
 #+begin_src emacs-lisp
 (defun gptel-buffer-p (buf)
-  (with-current-buffer buf (eq gptel-mode t)))
+  (with-current-buffer buf (and (boundp 'gptel-mode) (eq gptel-mode t))))
 (add-hook 'doom-real-buffer-functions 'gptel-buffer-p)
 #+end_src
 
