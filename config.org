@@ -649,11 +649,9 @@ work for =org-ellipsis= and fold in code mode
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! dired
-  :custom
-  (delete-by-moving-to-trash t)
+(after! dired
+  (setq delete-by-moving-to-trash t)
   ;; (dired-kill-when-opening-new-dired-buffer t)
-  :config
   (setq dired-listing-switches
         "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
   ;; Dirvish respects all the keybindings in `dired-mode-map'
@@ -667,8 +665,7 @@ no =dired-mode= buffers in [[kbd:SPC b b]]
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! dired-x
-  :config
+(after! dired-x
   ;; Make dired-omit-mode hide all "dotfiles"
   (setq dired-omit-files
         (concat dired-omit-files "\\|^\\..*$")))
@@ -676,8 +673,7 @@ no =dired-mode= buffers in [[kbd:SPC b b]]
 
 Additional syntax highlighting for dired
 #+begin_src emacs-lisp
-(use-package diredfl
-  :config
+(after! diredfl
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 #+end_src
 
@@ -1370,10 +1366,9 @@ format org-src
 org-format
 #+begin_src emacs-lisp
 (use-package! org-format
-  :init
-  (add-to-list 'load-path (expand-file-name "org-format" org-directory))
   :commands org-format-buffer
   :init
+  (add-to-list 'load-path (expand-file-name "org-format" org-directory))
   (map! :map org-mode-map
         :localleader
         "F" #'org-format-buffer))
@@ -1479,7 +1474,8 @@ notebook open in =dirvish=
 
 wolfram-format
 #+begin_src emacs-lisp
-(load "~/lib/wolframFormatter/wolfram-format.el")
+(after! apheleia
+  (load "~/lib/wolframFormatter/wolfram-format.el"))
 #+end_src
 
 *** =lsp-wl= with =eglot=
@@ -1814,6 +1810,7 @@ substitute "%" to buffer file in ~shell-command~
 
 #+begin_src emacs-lisp
 (use-package! gptel
+  :commands (gptel gptel-send gptel-quick)
   :init
   (map!
    (:leader
@@ -1858,6 +1855,7 @@ docker pull zevlg/telega-server:latest
 
 #+begin_src emacs-lisp
 (use-package! telega
+  :commands telega
   :init
   (setq telega-directory (expand-file-name "~/.local/share/telega"))
   :config
