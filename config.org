@@ -983,11 +983,6 @@ default pdf viewer in emacs
 
 (after! latex (setq +latex-viewers '(pdf-tools evince okular)))
 
-;; to use pdfview with auctex
-(after! auctex
-  (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))
-  (setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))))
-
 ;; to have the buffer refresh after compilation
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
