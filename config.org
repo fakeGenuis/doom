@@ -233,9 +233,8 @@ packages=["words"]
 #+end_src
 
 #+begin_src emacs-lisp
-(map! (:prefix "C-x"
-       :i "C-f" #'cape-file
-       :i "C-d" #'cape-dict))
+(setq corfu-on-exact-match 'show)
+(map! :after cape :i "C-c p" cape-prefix-map)
 #+end_src
 
 ** COMMENT company
