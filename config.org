@@ -974,10 +974,7 @@ default pdf viewer in emacs
 [[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
 
 #+begin_src emacs-lisp
-(use-package! pdf-tools
-  :mode ("\\.pdf\\'" . pdf-view-mode)
-  :magic ("%PDF" . pdf-view-mode)
-  :config
+(after! pdf-tools
   (setq-default pdf-view-display-size 'fit-width))
 
 (after! latex (setq +latex-viewers '(pdf-tools evince okular)))
@@ -1034,13 +1031,11 @@ packages=["miktex", "texlab"]
 
 =cdlatex=
 #+begin_src emacs-lisp
-(map! :after cdlatex :map cdlatex-mode-map
+(map! :map cdlatex-mode-map
   :i "TAB" #'cdlatex-tab)
 #+end_src
 
-word completion along with =(:lang (latex +lsp))=
-see =company-backends= variable docs
-[[https://github.com/hlissner/doom-emacs/issues/5672][set-company-backend! appending instead of prepending · Issue #5672 · doomemac...]]
+[[https://github.com/minad/cape?tab=readme-ov-file#super-capf---merging-multiple-capfs][GitHub - minad/cape: 🦸cape.el - Completion At Point Extensions]]
 #+begin_src emacs-lisp
 (setq-hook! 'LaTeX-mode-hook completion-at-point-functions
             (list (cape-capf-super #'cape-dabbrev #'cape-dict)))
@@ -1056,9 +1051,8 @@ clean intermediate files
 
 add =XeTeX= mode in =TeX/LaTeX=
 [[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
-
 #+begin_src emacs-lisp
-(after! latex
+(after! tex
   (add-to-list 'TeX-command-list
                '("XeLaTeX" "%`xelatex%(mode) %(extraopts) %S%(PDFout)%' %t" TeX-run-TeX nil t)))
 #+end_src
@@ -1241,13 +1235,6 @@ start session only when exactly execute it.
  (org-babel-jupyter-aliases-from-kernelspecs))
 #+end_src
 
-Fix error when [[kbd:M-x]] in org mode
-#+begin_quote
-‘org-element-at-point’ cannot be used in non-Org buffer
-#+end_quote
-[[https://www.reddit.com/r/emacs/comments/18gkx0i/orgelementatpoint_cannot_be_used_in_nonorg_buffer/][orgelementatpoint_cannot_be_used_in_nonorg_buffer]]
-[[https://github.com/steelman/org-mode/issues/1][steelman/org-mode#1 `org-element-at-point` cannot be used in non-Org buffer]]
-
 ~:text/html~ output support
 #+begin_src emacs-lisp :tangle no
 (after! ob-jupyter
@@ -1265,10 +1252,10 @@ To view contents of =.ipynb= file, see
 
 #+begin_src emacs-lisp
 (use-package! jupyter+
-  :commands jupyter-org-transient
-  :init
-  (map! :map jupyter-org-interaction-mode-map
-        :n "\\" #'jupyter-org-transient))
+  :after jupyter)
+
+(map! :map jupyter-org-interaction-mode-map
+      :n "\\" #'jupyter-org-transient)
 #+end_src
 
 Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel lazy load
@@ -1283,7 +1270,6 @@ Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel la
       (when-let ((lang-name (symbol-name lang))
                  (_ (member lang-name +my/jupyter-langs)))
         (require 'jupyter)
-        (require 'jupyter+)
         (require 'ob-jupyter)
         (org-babel-jupyter-override-src-block lang-name))))
   90)
@@ -1352,7 +1338,7 @@ revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
 org-src
 [[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
 #+begin_src emacs-lisp
-(after! org
+(after! org-src
   (setq org-src-window-setup 'reorganize-frame)
   (set-popup-rule! "^\\*Org Src" :ignore t))
 #+end_src
@@ -1454,15 +1440,7 @@ packages=["mathematica"]
 
 #+begin_src emacs-lisp
 (use-package! wolfram-mode
-  :defer t
-  :config
-  (set-ligatures! 'wolfram-mode
-    :and "&&"
-    :or "||"
-    :not "!"
-    :null "None"
-    :true "True"
-    :false "False"))
+  :defer t)
 #+end_src
 
 notebook open in =dirvish=
@@ -1476,6 +1454,18 @@ wolfram-format
 #+begin_src emacs-lisp
 (after! apheleia
   (load "~/lib/wolframFormatter/wolfram-format.el"))
+#+end_src
+
+*** ligatures
+#+begin_src emacs-lisp
+(after! (wolfram-mode ligature)
+  (set-ligatures! 'wolfram-mode
+    :and "&&"
+    :or "||"
+    :not "!"
+    :null "None"
+    :true "True"
+    :false "False"))
 #+end_src
 
 *** =lsp-wl= with =eglot=
