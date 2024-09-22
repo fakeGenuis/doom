@@ -1230,7 +1230,13 @@ the current buffer."
 packages=["jupyter-notebook"]
 #+end_src
 
-[[https://github.com/emacs-jupyter/jupyter/issues/489][emacs-jupyter/jupyter#489 no `org-babel-execute-function` after upgrade]]
+start session only when exactly execute it.
+#+begin_src emacs-lisp
+(after! 'jupyter
+  (setq jupyter-org-auto-connect nil))
+#+end_src
+
+[[https://github.com/doomemacs/doomemacs/issues/7354][doomemacs/doomemacs#7354 Jupyter fails to function after upgrade]]
 #+begin_src emacs-lisp
 (with-eval-after-load 'ob-jupyter
  (org-babel-jupyter-aliases-from-kernelspecs))
