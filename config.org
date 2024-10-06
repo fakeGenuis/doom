@@ -1807,10 +1807,13 @@ substitute "%" to buffer file in ~shell-command~
    (:leader
     :prefix "o"
     :desc "gptel" "g" #'gptel))
-  (map! "C-c s" #'gptel-quick
-        "C-c g" #'gptel-send)
+  (map! "C-c g q" #'gptel-quick
+        "C-c g m" #'gptel-menu
+        "C-c g s" #'gptel-send)
   :config
   (setq gptel-default-mode #'org-mode)
+  ;; prefer level-1 heading
+  (setcdr (assoc 'org-mode gptel-prompt-prefix-alist) "* ")
   (load-in-doom-dir "private/gpt.el")
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
