@@ -1819,6 +1819,14 @@ substitute "%" to buffer file in ~shell-command~
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 #+end_src
 
+#+begin_src emacs-lisp
+(defun gptel--response-add-model-name (begin end)
+  "Add model name right before gptel response."
+  (goto-char begin)
+  (insert (format "*%s*\n" gptel-model)))
+(add-hook 'gptel-post-response-functions #'gptel--response-add-model-name -90)
+#+end_src
+
 Chat buffer should be real!
 #+begin_src emacs-lisp
 (defun gptel-buffer-p (buf)
