@@ -1718,6 +1718,22 @@ packages=[
          :desc "sreenshot within emacs" "S" #'screenshot)))
 #+end_src
 
+Allow attach the screenshot.
+#+begin_src emacs-lisp
+(after! screenshot
+  (screenshot--def-action
+   "attach"
+   (set-process-sentinel
+    ;; NOTE feh not transparent well when shadow is included
+    (start-process "feh" nil "feh"
+                   "--class=attached_window"
+                   screenshot--tmp-file)
+    (lambda (process event) (delete-file screenshot--tmp-file))))
+
+  (transient-append-suffix 'screenshot-transient '(-1 1)
+    '("a" "Attach" screenshot-attach)))
+#+end_src
+
 ** zotxt
 #+begin_src emacs-lisp :tangle packages.el
 (package! zotxt)
