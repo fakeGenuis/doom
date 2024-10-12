@@ -1018,7 +1018,11 @@ also one need to enable [[doom-module::lang ess]], see
 ** Latex
 #+begin_src toml
 [latex]
-packages=["miktex", "texlab"]
+packages=[
+    "miktex", "texlab",
+    # for `latexindent.pl` to work, which is called by `+format/buffer`
+    "perl-yaml-tiny", "perl-file-homedir"
+]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
@@ -1061,6 +1065,20 @@ add =XeTeX= mode in =TeX/LaTeX=
   (add-to-list 'TeX-command-list
                '("XeLaTeX" "%`xelatex%(mode) %(extraopts) %S%(PDFout)%' %t" TeX-run-TeX nil t)))
 #+end_src
+
+[[fn:latex-indent]] [[fn:LaTeX-fill-buffer]]
+[[https://github.com/lassik/emacs-format-all-the-code/issues/127][lassik/emacs-format-all-the-code#127 LaTeX formatting]]
+
+[[fn:+format/buffer]]
+default installed by =miktex=
+[[https://github.com/cmhughes/latexindent.pl][GitHub - cmhughes/latexindent.pl: Perl script to add indentation (leading hor...]]
+#+begin_src emacs-lisp
+(after! apheleia
+  (set-formatter! 'latexindent '("latexindent" "-l" "-r" "--logfile=/dev/null")
+    :modes '(LaTeX-mode)))
+#+end_src
+
+[[https://tex.stackexchange.com/questions/254539/latextidy-in-emacs][formatting - LaTeXTidy in Emacs - TeX - LaTeX Stack Exchange]]
 
 ** lua
 #+begin_src toml
