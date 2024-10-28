@@ -995,6 +995,39 @@ default pdf viewer in emacs
 Selection in =pdf-tools= when evil mode enabled
 [[https://github.com/doomemacs/doomemacs/issues/6286#issuecomment-1870216583][doomemacs/doomemacs#6286 `evil` interfering with PDF text selection/highlight...]]
 
+Correct the file name path if it is a WSL path in Windows or an absolute path
+inadvertently synced with a network disk. For =pdf-sync-view=, the source file
+was correctly identified only after making this adjustment.
+#+begin_src emacs-lisp
+(defun +my/synced-true-path (filename)
+  "Rewrite the FILENAME assuming it from synced netdisk (or WSL).
+
+When from netdisk, ensure they have same directory structure with
+respect to your home."
+  (if (s-starts-with-p "//wsl.localhost" filename)
+      (setq filename (replace-regexp-in-string "^//wsl.localhost/\\w+" "" filename)))
+  (unless (s-starts-with-p (getenv "HOME") filename)
+    (setq filename (replace-regexp-in-string "^/home/\\w+" (getenv "HOME") filename)))
+  filename)
+
+(defun +my/pdf-sync-backward-search (x y)
+  "Go to the source corresponding to image coordinates X, Y.
+
+Try to find the exact position, if
+`pdf-sync-backward-use-heuristic' is non-nil."
+  (cl-destructuring-bind (source finder)
+      (pdf-sync-backward-correlate x y)
+    (setq source (+my/synced-true-path source))
+    (pop-to-buffer (or (find-buffer-visiting source)
+                       (find-file-noselect source))
+                   pdf-sync-backward-display-action)
+    (push-mark)
+    (funcall finder)
+    (run-hooks 'pdf-sync-backward-hook)))
+
+(advice-add 'pdf-sync-backward-search :override #'+my/pdf-sync-backward-search)
+#+end_src
+
 * Lang
 ** COMMENT julia
 #+begin_src toml
