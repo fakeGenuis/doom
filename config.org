@@ -1340,18 +1340,6 @@ Disable doom's "maybe" advice around, run after it add the advice.
 [[kbd:SPC s b]] should work as expected
 [[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
 
-[[https://emacs.stackexchange.com/a/63793][How to copy links OUT of org-mode? - Emacs Stack Exchange]]
-#+begin_src emacs-lisp
-(defun org-copy-link-url ()
-  (interactive)
-  (kill-new (org-element-property :raw-link (org-element-context))))
-
-(after! org
-  (map! :map org-mode-map
-        :localleader
-        "y" #'org-copy-link-url))
-#+end_src
-
 revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
 #+begin_src emacs-lisp
 (after! evil-org
