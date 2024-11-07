@@ -1398,10 +1398,20 @@ org-format
 (use-package! org-format
   :commands org-format-buffer
   :init
-  (add-to-list 'load-path (expand-file-name "org-format" org-directory))
-  (map! :map org-mode-map
-        :localleader
-        "F" #'org-format-buffer))
+  (add-to-list 'load-path (expand-file-name "org-format" org-directory)))
+#+end_src
+
+#+begin_src emacs-lisp
+(cl-defun apheleia-format-org-buffer
+    (&key buffer scratch callback &allow-other-keys)
+  "Copy BUFFER to SCRATCH, then format scratch, then call CALLBACK."
+  (with-current-buffer scratch
+    (let ((buffer-file-name (buffer-local-value 'buffer-file-name buffer)))
+      (org-format-buffer))
+    (funcall callback)))
+
+(after! org
+  (set-formatter! 'orgfmt #'apheleia-format-org-buffer :modes '(org-mode)))
 #+end_src
 
 ** python
