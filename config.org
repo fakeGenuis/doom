@@ -1966,6 +1966,16 @@ For non git project, better add following in project root [[file:.dir-locals.el]
 #+end_src
 and add ignored files in [[file:.projectile]].
 
+** tramp
+[[https://github.com/akermu/emacs-libvterm/issues/689][akermu/emacs-libvterm#689 Tramp-login-shells custom doesn't match type]]
+[[https://github.com/akermu/emacs-libvterm/pull/706][akermu/emacs-libvterm#706 Allow using the default login shell for remote conn...]]
+
+- [ ] something like =$SHELL= is better (in case remote host not have =fish=)
+#+begin_src emacs-lisp
+(after! vterm
+  (add-to-list 'vterm-tramp-shells '("ssh" "/bin/fish")))
+#+end_src
+
 ** proxy
 #+begin_src emacs-lisp
 (setq url-proxy-services
