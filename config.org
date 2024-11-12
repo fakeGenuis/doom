@@ -1067,12 +1067,13 @@ packages=[
             (list (cape-capf-super #'cape-dabbrev #'cape-dict)))
 #+end_src
 
-clean intermediate files
+retain =.bbl= as it required by APS journals.
+=synctex.gz= kept to sync tex view.
 #+begin_src emacs-lisp
 (after! latex
-  (setq LaTeX-clean-intermediate-suffixes (delete "\\.synctex\\.gz"  LaTeX-clean-intermediate-suffixes)
-        LaTeX-clean-intermediate-suffixes (append LaTeX-clean-intermediate-suffixes (list "\\.dvi" "\\.fdb_latexmk"))
-        TeX-clean-confirm nil))
+  (setq LaTeX-clean-intermediate-suffixes
+        (seq-difference LaTeX-clean-intermediate-suffixes
+                        '("\\.bbl" "\\.synctex\\.gz"))))
 #+end_src
 
 add =XeTeX= mode in =TeX/LaTeX=
