@@ -1292,7 +1292,10 @@ To view contents of =.ipynb= file, see
 
 #+begin_src emacs-lisp
 (use-package! jupyter+
-  :after jupyter)
+  :after jupyter
+  :config
+  ;; with multiple output and =:async yes=, text mass up after `example` block
+  (setq org-babel-min-lines-for-block-output 256))
 
 (map! :map jupyter-org-interaction-mode-map
       :n "\\" #'jupyter-org-transient)
