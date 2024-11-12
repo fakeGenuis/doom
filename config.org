@@ -178,22 +178,6 @@ enable_default=true
   (and (daemonp) (boundp 'server-name) (string= server-name "utility")))
 #+end_src
 
-[[https://stackoverflow.com/a/24357106][How to append multiple elements to a list in Emacs lisp - Stack Overflow]]
-#+begin_src emacs-lisp
-(defun +my/append-to-list (list-var elements)
-  "Append ELEMENTS to the end of LIST-VAR.
-
-change to no return value
-The return value is the new value of LIST-VAR."
-  (unless (consp elements)
-    (error "ELEMENTS must be a list"))
-  (let ((list (symbol-value list-var)))
-    (if list
-        (setcdr (last list) elements)
-      (set list-var elements))))
-  ;(symbol-value list-var))
-#+end_src
-
 #+begin_src emacs-lisp
 (defun +my/reverse-words (beg end)
   "Reverse the order of words in region."
@@ -1954,8 +1938,8 @@ docker pull zevlg/telega-server:latest
         ;; (projectile-file-exists-local-cache-expire (* 5 60)))
   (add-to-list 'projectile-globally-ignored-directories
                "*\\.run\\.tmp$")
-  (+my/append-to-list 'projectile-globally-ignored-modes
-                      '("helpful-mode" "dired-mode"))
+  (pushnew! projectile-globally-ignored-modes
+            "helpful-mode" "dired-mode")
   (add-to-list 'projectile-globally-ignored-buffers "*doom*"))
 #+end_src
 
