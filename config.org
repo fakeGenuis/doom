@@ -1012,6 +1012,11 @@ Try to find the exact position, if
 (advice-add 'pdf-sync-backward-search :override #'+my/pdf-sync-backward-search)
 #+end_src
 
+Auto view =.ps= file
+#+begin_src emacs-lisp
+(add-hook 'ps-mode-hook 'doc-view-toggle-display)
+#+end_src
+
 * Lang
 ** COMMENT julia
 #+begin_src toml
