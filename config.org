@@ -410,8 +410,10 @@ doom-dashboard
 (setq fancy-splash-image (expand-file-name "assets/bitmap_512x.png" doom-user-dir))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (defun my-weebery-is-always-greater (splash-file-name)
+  (require 's)
+  (require 'f)
   (let* ((banner (s-split "\n" (f-read splash-file-name) t))
          (longest-line (apply #'max (mapcar #'length banner))))
     (put-text-property
