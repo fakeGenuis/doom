@@ -10,7 +10,8 @@
 [[https://codeberg.org/alifara/doom.d][alifara/doom.d: If you know, you know. - Codeberg.org]]
 
 [[file:Emacs-logo.svg]]
-[[https://commons.wikimedia.org/wiki/File:Emacs-logo.svg][File:Emacs-logo.svg - Wikimedia Commons]]
+Original Emacs logo creator is Luis Fernandes; SVG version by Dmitry Dzhus., GPL
+<http://www.gnu.org/licenses/gpl.html>, via Wikimedia Commons
 
 [[file:TransparentGNU_512x.png]]
 [[https://twitter.com/sawaratsuki1004/status/1782079506083381657]]
