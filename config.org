@@ -853,6 +853,37 @@ No text properties saved.
                           (vterm-mode)))))))
 #+end_src
 
+*** =S= cd into =dirvish= current directory
+like =ranger=
+#+begin_src emacs-lisp
+(defun dirvish-cd-into-vterm ()
+  "Switch into recent vterm buffer, and cd into `default-directory` of dirvish buffer."
+  (interactive)
+  (let ((cur-dirvish-dir default-directory)
+        (vterm-buffer (catch 'foo
+                       (dolist (buffer (+workspace-buffer-list))
+                         (let ((bn (buffer-name buffer)))
+                           (when (and bn
+                                      ;; https://stackoverflow.com/a/2238589
+                                      (with-current-buffer bn
+                                        (eq major-mode 'vterm-mode)))
+                             (throw 'foo bn)))))))
+    (dirvish-quit)
+    (if vterm-buffer
+        (let ((cur-vterm-dir (with-current-buffer vterm-buffer
+                                  default-directory)))
+          (switch-to-buffer vterm-buffer)
+          (unless (string= cur-vterm-dir cur-dirvish-dir)
+            (vterm-send-string (format "cd %s" (+my/home-to-tide cur-dirvish-dir)))
+            (vterm-send-return))
+          (evil-collection-vterm-insert))
+      (with-temp-buffer (setq-local default-directory cur-dirvish-dir)
+                        (+vterm/here t)))))
+
+(map! :map dirvish-mode-map
+      :gn "S" #'dirvish-cd-into-vterm)
+#+end_src
+
 * Checkers
 ** Spell checker
 #+begin_src toml
