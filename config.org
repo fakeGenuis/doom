@@ -43,6 +43,7 @@ Literate and modular Doom Emacs configuration.
   - [[#yaml][yaml]]
   - [[#wolfram][wolfram]]
   - [[#markdown][markdown]]
+  - [[#typst][typst]]
   - [[#others-1][Others]]
 - [[#email][Email]]
   - [[#mu4e][mu4e]]
@@ -1492,20 +1493,6 @@ packages=["yaml-language-server"]
 (yaml +lsp)
 #+end_src
 
-** COMMENT typst
-#+begin_src toml
-["typst-mode"]
-packages=["typst", "typst-lsp-bin"]
-#+end_src
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! typst-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! typst-mode)
-#+end_src
-
 ** wolfram
 #+begin_src toml
 [wolfram]
@@ -1594,6 +1581,57 @@ packages=[
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
 markdown
 #+end_src
+
+** typst
+#+begin_src toml
+["typst-mode"]
+packages=[
+    "typst",
+    "tree-sitter-typst-git", # tree sitter grammar for typst, demand by typst-ts-mode
+    "tinymist" # language server
+    # "typst-lsp-bin" # alternative language server
+]
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! typst-ts-mode
+  :recipe (:host codeberg
+           :repo "meow_king/typst-ts-mode"
+           :files (:defaults "*.el")))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! typst-ts-mode
+  :mode ("\\.typ\\'")
+  :custom
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t)
+  :config
+  (keymap-set typst-ts-mode-map "C-c C-c" #'typst-ts-tmenu))
+#+end_src
+
+use =pdf-tools= to preview
+#+begin_src emacs-lisp
+(defun typst-pdf-tools-preview (&optional buffer)
+  "Use `pdf-tools' to preview compiled pdf."
+  (interactive)
+  (find-file-other-window (typst-ts-compile-get-result-pdf-filename buffer)))
+
+(advice-add 'typst-ts-preview :override #'typst-pdf-tools-preview)
+#+end_src
+
+language server
+#+begin_src emacs-lisp
+(with-eval-after-load 'eglot
+  (with-eval-after-load 'typst-ts-mode
+    (add-to-list 'eglot-server-programs
+                 `((typst-ts-mode) .
+                   ,(eglot-alternatives `(,typst-ts-lsp-download-path
+                                          "tinymist"
+                                          "typst-lsp"))))))
+#+end_src
+more configuration on [[https://myriad-dreamin.github.io/tinymist//frontend/emacs.html][Tinymist Docs]]
 
 ** Others
 css
