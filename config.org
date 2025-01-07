@@ -113,7 +113,7 @@ The *conventions* of this org file:
  <<emacs>>
  ;electric
  ;ibuffer
- (undo +tree)
+ undo
  vc
 
  :term
