@@ -713,7 +713,8 @@ packages=[
    :gn "M-v"  #'dirvish-vc-menu
    :n "g TAB" #'dirvish-emerge-toggle-current-group
    :gn "o"    #'dirvish-quicksort
-   :gn "y"    #'dirvish-yank-menu))
+   :gn "y"    #'dirvish-yank-menu
+   :gn "S"    #'dirvish-cd-into-vterm))
 #+end_src
 
 Replace =/home/$user= to =~=
@@ -874,15 +875,26 @@ like =ranger=
         (let ((cur-vterm-dir (with-current-buffer vterm-buffer
                                   default-directory)))
           (switch-to-buffer vterm-buffer)
-          (unless (string= cur-vterm-dir cur-dirvish-dir)
-            (vterm-send-string (format "cd %s" (+my/home-to-tide cur-dirvish-dir)))
-            (vterm-send-return))
-          (evil-collection-vterm-insert))
+          (unless (or (string= cur-vterm-dir cur-dirvish-dir)
+                      (not (vterm--safe-send-p)))
+            ; NOTE only fish shell support directory jump by dir-name
+            ;      add space to ignore command from history
+            (vterm-send-string (concat " " (file-relative-name cur-dirvish-dir cur-vterm-dir)))
+            (vterm-send-return)))
       (with-temp-buffer (setq-local default-directory cur-dirvish-dir)
                         (+vterm/here t)))))
+#+end_src
 
-(map! :map dirvish-mode-map
-      :gn "S" #'dirvish-cd-into-vterm)
+!!! Just ensure no one type ~rm -rf~ before navigate in =dirvish=.
+#+begin_src emacs-lisp
+(defun vterm--safe-send-p ()
+  "Tell if current point safe to send string (no input after prompt)."
+  (let ((flag (save-excursion
+                (vterm-reset-cursor-point)
+                (evil-collection-vterm-append)
+                (vterm--at-prompt-p))))
+    (evil-normal-state)
+    flag))
 #+end_src
 
 * Checkers
