@@ -242,15 +242,11 @@ packages=["words"]
 
 [[https://github.com/tumashu/vertico-posframe/issues/16][tumashu/vertico-posframe#16 Disable vertico-posframe when Emacs runs in terminal]]
 #+begin_src emacs-lisp
-(use-package! vertico-posframe
-  :hook (vertico-mode . vertico-multiform-mode)
-  :config
-  (remove-hook 'vertico-mode #'vertico-posframe-mode)
-  (setq vertico-multiform-commands
-      '((consult-line
-         posframe
-         (vertico-posframe-fallback-mode . vertico-buffer-mode))
-        (t posframe))))
+(after! vertico-multiform
+  (add-to-list 'vertico-multiform-commands
+               '(consult-line
+                 posframe
+                 (vertico-posframe-fallback-mode . vertico-buffer-mode))))
 #+end_src
 
 * UI
