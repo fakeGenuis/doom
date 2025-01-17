@@ -326,7 +326,7 @@ Set default font size, =WSL= currently not aware dpi settings in
 #+begin_src emacs-lisp
 (setq +my/font-size (* (if IS-WSL 2 1) 12.0))
 
-(setq doom-font (font-spec :family "Maple NF" :size +my/font-size)
+(setq doom-font (font-spec :family "Maple6 NF" :size +my/font-size)
       ;; for quotes in info
       doom-serif-font (font-spec :family "Source Serif Pro" :size +my/font-size)
       ;; for vairable-pitch-mode in text mode
@@ -339,7 +339,7 @@ Prefer italic comment font
 - [ ] fix italic not applied on vertico pos-frame
 #+begin_src emacs-lisp
 (defun +my/set-comment-font ()
-  (set-face-font 'font-lock-comment-face (font-spec :family "Maple NF" :slant 'italic)))
+  (set-face-font 'font-lock-comment-face (font-spec :family "Maple6 NF" :slant 'italic)))
 
 (add-hook 'doom-load-theme-hook #'+my/set-comment-font 90)
 #+end_src
@@ -365,7 +365,7 @@ Visual effect preview
 #+begin_src python :tangle no
 Emacs is the advanced, extensible, customizable, self-documenting editor.
 # Emacs is the advanced, extensible, customizable, self-documenting editor.
-# Emacs 是一款可扩展可自定义且自带文档的高级editor.
+# Emacs 是一款可扩展可自定义且自带文档的高级 editor.
 #+end_src
 
 - [ ] display =text-scale-mode-amount= in mode-line
@@ -526,7 +526,7 @@ see more in [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and
 (defun +my/cjk-font ()
   (dolist (charset '(han))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Maple SC NF"))))
+                      (font-spec :family "Maple6 SC NF"))))
 
 (add-hook 'after-setting-font-hook #'+my/cjk-font)
 #+end_src
