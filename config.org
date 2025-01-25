@@ -6,6 +6,8 @@ Literate and modular Doom Emacs configuration.
 - [[#about][About]]
 - [[#tangle][Tangle]]
 - [[#predefined][Predefined]]
+- [[#input][Input]]
+  - [[#chinese][Chinese]]
 - [[#completion][Completion]]
   - [[#corfu][corfu]]
   - [[#vertico][vertico]]
@@ -85,7 +87,7 @@ The *conventions* of this org file:
 #+begin_src emacs-lisp :tangle init.el :noweb tangle :shebang ";;; init.el -*- lexical-binding: t; -*-\n"
 (doom!
  :input
- (chinese +rime +childframe)
+ <<input>>
 
  :completion
  <<completion>>
@@ -188,6 +190,19 @@ enable_default=true
    (reverse
     (split-string
      (delete-and-extract-region beg end) "\\b"))))
+#+end_src
+
+* Input
+** Chinese
+#+begin_src toml
+[chinese]
+packages=["base-devel",
+    "librime" # for +rime
+]
+#+end_src
+
+#+begin_src emacs-lisp :tangle no :noweb-ref input
+(chinese +rime +childframe)
 #+end_src
 
 * Completion
