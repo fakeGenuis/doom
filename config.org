@@ -1367,7 +1367,7 @@ To view contents of =.ipynb= file, see
   (setq org-babel-min-lines-for-block-output 256))
 
 (map! :map jupyter-org-interaction-mode-map
-      :n "\\" #'jupyter-org-transient)
+      :n ";" #'jupyter-org-transient)
 #+end_src
 
 Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel lazy load
