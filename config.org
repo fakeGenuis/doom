@@ -205,6 +205,12 @@ packages=["base-devel",
 (chinese +rime +childframe)
 #+end_src
 
+Default simplified Chinese input
+#+begin_src emacs-lisp
+(after! liberime
+  (liberime-try-select-schema "luna_pinyin_simp")
+  (setq pyim-default-scheme 'rime-quanpin))
+#+end_src
 * Completion
 ** corfu
 #+begin_src toml
