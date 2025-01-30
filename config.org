@@ -205,6 +205,11 @@ packages=["base-devel",
 (chinese +rime +childframe)
 #+end_src
 
+[[https://github.com/coldnew/pangu-spacing/pull/46][coldnew/pangu-spacing#46 Keep compatibility since Emacs has removed typo. by ...]]
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! pangu-spacing)
+#+end_src
+
 Default simplified Chinese input
 #+begin_src emacs-lisp
 (after! liberime
