@@ -598,6 +598,12 @@ notify initial time
   (add-hook 'doom-init-ui-hook #'notify-init-time))
 #+end_src
 
+Ensure first workspace is =main= in daemon mode.
+#+begin_src emacs-lisp
+(if (daemonp)
+    (add-hook 'doom-first-input-hook #'+workspace/kill-session))
+#+end_src
+
 * Editor
 ** evil
 #+begin_src emacs-lisp :tangle no :noweb-ref editor
