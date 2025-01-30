@@ -447,6 +447,12 @@ doom-dashboard
     (setq +doom-dashboard-ascii-banner-fn (lambda () (my-weebery-is-always-greater splash-file-name)))))
 #+end_src
 
+- [ ] splash image not loaded in the first frame of daemon mode
+[[https://www.reddit.com/r/emacs/comments/uvjbgl/splash_image_not_visible_initially/]]
+[[https://discourse.doomemacs.org/t/splash-image-tinted-only-on-emacs-daemon-launch/3574][Splash image tinted only on emacs daemon launch - User Support - Doom Emacs D...]]
+[[https://github.com/doomemacs/doomemacs/issues/6221][doomemacs/doomemacs#6221 Theme differences in daemon vs standard GUI for the ...]]
+[[https://github.com/doomemacs/doomemacs/issues/7301][doomemacs/doomemacs#7301 {cosmetic bug} fancy-splash-image not loaded at firs...]]
+
 ** modeline
 #+begin_src toml
 [modeline]
