@@ -298,9 +298,7 @@ doom
 #+begin_src toml
 [doom]
 packages=[
-    "ttf-lxgw-wenkai",      # fixed-patch-serif font
-    "ttf-sarasa-gothic-sc", # variable-pitch-font
-    "ttf-firacode-nerd"     # for org section 1-2 and lambda
+    "adobe-source-serif-fonts" # fixed-patch-serif font
 ]
 #+end_src
 
@@ -354,11 +352,7 @@ Set default font size, =WSL= currently not aware dpi settings in
 
 (setq doom-font (font-spec :family "Maple6 NF" :size +my/font-size)
       ;; for quotes in info
-      doom-serif-font (font-spec :family "Source Serif Pro" :size +my/font-size)
-      ;; for vairable-pitch-mode in text mode
-      doom-variable-pitch-font (font-spec :family "Open Sans" :size +my/font-size)
-      ;; doom-emoji-font (font-spec :family "Noto Color Emoji")
-      doom-symbol-font (font-spec :family "FiraCode Nerd Font"))
+      doom-serif-font (font-spec :family "Source Serif Pro" :size +my/font-size))
 #+end_src
 Prefer italic comment font
 
@@ -498,10 +492,10 @@ Prefer stack at right for following info windows, since they are fill-columned
 #+begin_src toml
 [unicode]
 packages=[
-    "quivira",              # org ellipsis ⤵
+    "quivira",              # org ellipsis ⤵, ℤ...
+    "ttf-dejavu",           # org section 1 ◉ 3 ✸
     "ttf-sarasa-gothic-sc", # ￢
-    "ttf-dejavu-nerd",      # org section 3 ✸
-    "tex-gyre-fonts"        # ∈
+    "tex-gyre-fonts"        # ∈...
 ]
 #+end_src
 
