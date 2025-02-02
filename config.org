@@ -295,13 +295,6 @@ emacs-client -e "(load-theme 'ewal-doom-themes t)"
 doom
 #+end_src
 
-#+begin_src toml
-[doom]
-packages=[
-    "adobe-source-serif-fonts" # fixed-patch-serif font
-]
-#+end_src
-
 *** Themes
 restore last selected theme
 #+begin_src emacs-lisp
@@ -350,23 +343,15 @@ Set default font size, =WSL= currently not aware dpi settings in
 #+begin_src emacs-lisp
 (setq +my/font-size (* (if IS-WSL 1.5 1) 12.0))
 
-(setq doom-font (font-spec :family "Maple6 NF" :size +my/font-size)
-      ;; for quotes in info
-      doom-serif-font (font-spec :family "Source Serif Pro" :size +my/font-size))
+(setq doom-font (font-spec :family "Maple6 NF" :size +my/font-size))
 #+end_src
-Prefer italic comment font
 
-- [ ] fix italic not applied on vertico pos-frame
 #+begin_src emacs-lisp
-(defun +my/set-comment-font ()
-  (set-face-font 'font-lock-comment-face (font-spec :family "Maple6 NF" :slant 'italic)))
-
-(add-hook 'doom-load-theme-hook #'+my/set-comment-font 90)
-#+end_src
-
-Load font setting when (re)load theme
-#+begin_src emacs-lisp :tangle no
-(add-hook 'doom-load-theme-hook #'doom-init-fonts-h)
+(custom-set-faces
+ ;; quoted text in info
+ '(fixed-pitch-serif ((t (:slant italic :foreground "tomato"))))
+ ;; prefer italic comment font
+ '(font-lock-comment-face ((t (:slant italic)))))
 #+end_src
 
 ** COMMENT emacs-gfs
@@ -380,13 +365,6 @@ Load font setting when (re)load theme
            :repo "ndw/emacs-gfs"))
 #+end_src
 Conflict with [[var:nerd-icons-scale-factor]]
-
-Visual effect preview
-#+begin_src python :tangle no
-Emacs is the advanced, extensible, customizable, self-documenting editor.
-# Emacs is the advanced, extensible, customizable, self-documenting editor.
-# Emacs 是一款可扩展可自定义且自带文档的高级 editor.
-#+end_src
 
 - [ ] display =text-scale-mode-amount= in mode-line
 #+begin_src emacs-lisp
@@ -547,6 +525,13 @@ see more in [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and
 *** Chinese fonts
 - [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]]
 - [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
+
+Check alignment between Chinese and English.
+#+begin_src python :tangle no
+Emacs is the advanced, extensible, customizable, self-documenting editor.
+# Emacs is the advanced, extensible, customizable, self-documenting editor.
+Emacs 是一款可扩展可自定义且自带文档的高级 editor.
+#+end_src
 
 #+begin_src emacs-lisp
 (defun +my/cjk-font ()
