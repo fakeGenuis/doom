@@ -21,7 +21,6 @@ Literate and modular Doom Emacs configuration.
   - [[#others][Others]]
 - [[#editor][Editor]]
   - [[#evil][evil]]
-  - [[#format][format]]
   - [[#snippets][snippets]]
   - [[#fold][fold]]
 - [[#emacs][Emacs]]
@@ -106,6 +105,7 @@ The *conventions* of this org file:
 
  :editor
  <<editor>>
+ (format +onsave)
  ;file-templates
  ;multiple-cursors
  parinfer
@@ -606,23 +606,6 @@ Ensure first workspace is =main= in daemon mode.
   (setq evil-kill-on-visual-paste nil)
   ;; Disabling cursor movement when exiting insert mode
   (setq evil-move-cursor-back nil))
-#+end_src
-
-** format
-#+begin_src emacs-lisp :tangle no :noweb-ref editor
-(format +onsave)
-#+end_src
-
-- [ ] Add packages from headings in [[* Lang]] section
-
-#+begin_src toml
-[format]
-packages=[
-    "prettier",
-    "shfmt",
-    "clang-format-static-bin",
-    "python-black"
-]
 #+end_src
 
 ** snippets
@@ -1487,7 +1470,7 @@ packages=[
 ** sh
 #+begin_src toml
 [sh]
-packages=["shellcheck-bin", "bash-language-server"]
+packages=["shellcheck-bin", "bash-language-server", "shfmt"]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
