@@ -902,8 +902,14 @@ packages=["aspell", "aspell-en"]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref checkers
-(spell +flyspell
+(spell +aspell
        +everywhere)
+#+end_src
+
+#+begin_src emacs-lisp
+(after! ispell
+  (setq ispell-personal-dictionary
+        (expand-file-name ".pws" "~/.Nextcloud/ispell/")))
 #+end_src
 
 ** COMMENT grammar
