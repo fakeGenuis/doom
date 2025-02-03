@@ -59,7 +59,6 @@ Literate and modular Doom Emacs configuration.
   - [[#shell-command][shell-command+]]
   - [[#gptel][gptel]]
   - [[#tldr][tldr]]
-  - [[#telega][telega]]
 - [[#other-configs][Other configs]]
   - [[#projectile][projectile]]
   - [[#proxy][proxy]]
@@ -1987,9 +1986,14 @@ gptel-quick
 (package! tldr)
 #+end_src
 
-** telega
+** COMMENT telega
 #+begin_src emacs-lisp :tangle packages.el
 (package! telega)
+#+end_src
+
+#+begin_src toml :tangle packages.toml
+[telega]
+packages=["docker"]
 #+end_src
 
 #+begin_src shell :tangle no
