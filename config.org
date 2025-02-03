@@ -60,6 +60,7 @@ Literate and modular Doom Emacs configuration.
   - [[#gptel][gptel]]
   - [[#tldr][tldr]]
 - [[#other-configs][Other configs]]
+  - [[#transient][transient]]
   - [[#projectile][projectile]]
   - [[#proxy][proxy]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
@@ -2017,6 +2018,20 @@ docker pull zevlg/telega-server:latest
 #+end_src
 
 * Other configs
+** transient
+[[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
+[[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is s...]]
+#+begin_src emacs-lisp
+(after! transient
+  (setq transient-display-buffer-action
+        '(display-buffer-below-selected
+          (dedicated . t)
+          (inhibit-same-window . t)))
+  (setq transient-show-during-minibuffer-read t))
+#+end_src
+
+see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
+
 ** projectile
 [[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
 #+begin_src emacs-lisp
