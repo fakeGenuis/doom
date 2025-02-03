@@ -62,6 +62,7 @@ Literate and modular Doom Emacs configuration.
 - [[#other-configs][Other configs]]
   - [[#transient][transient]]
   - [[#projectile][projectile]]
+  - [[#tramp][tramp]]
   - [[#proxy][proxy]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
   - [[#insert-arxiv-links][insert arxiv links]]
@@ -426,7 +427,7 @@ doom-dashboard
 #+end_src
 
 - [ ] splash image not loaded in the first frame of daemon mode
-[[https://www.reddit.com/r/emacs/comments/uvjbgl/splash_image_not_visible_initially/]]
+[[https://www.reddit.com/r/emacs/comments/uvjbgl/splash_image_not_visible_initially/][Splash image not visible initially]]
 [[https://discourse.doomemacs.org/t/splash-image-tinted-only-on-emacs-daemon-launch/3574][Splash image tinted only on emacs daemon launch - User Support - Doom Emacs D...]]
 [[https://github.com/doomemacs/doomemacs/issues/6221][doomemacs/doomemacs#6221 Theme differences in daemon vs standard GUI for the ...]]
 [[https://github.com/doomemacs/doomemacs/issues/7301][doomemacs/doomemacs#7301 {cosmetic bug} fancy-splash-image not loaded at firs...]]
@@ -1155,6 +1156,7 @@ default installed by =miktex=
 ** lua
 #+begin_src toml
 [lua]
+enabled="not is_wsl"
 packages=["lua-language-server"]
 #+end_src
 
