@@ -1082,6 +1082,7 @@ also one need to enable [[doom-module::lang ess]], see
 ** Latex
 #+begin_src toml
 [latex]
+enabled="not is_wsl"
 packages=[
     "miktex", "texlab",
     # for `latexindent.pl` to work, which is called by `+format/buffer`
@@ -1094,6 +1095,12 @@ packages=[
  +lsp
  +fold
  +cdlatex)
+#+end_src
+
+Invoke =latex.exe= on windows.
+#+begin_src emacs-lisp
+(if IS-WSL (setq LaTeX-command "latex.exe"
+                 TeX-command "latex.exe"))
 #+end_src
 
 #+begin_src emacs-lisp
