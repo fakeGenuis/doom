@@ -477,10 +477,10 @@ Prefer stack at right for following info windows, since they are fill-columned
 #+begin_src toml
 [unicode]
 packages=[
-    "quivira",              # org ellipsis ⤵, ℤ...
-    "ttf-dejavu",           # org section 1 ◉ 3 ✸
+    "quivira",              # org ellipsis ⤵, ℤ
+    "ttf-dejavu",           # org heading ◉ ✸ ∈
     "ttf-sarasa-gothic-sc", # ￢
-    "tex-gyre-fonts"        # ∈...
+    "noto-fonts-emoji",     # color emoji
 ]
 #+end_src
 
@@ -494,10 +494,20 @@ code, and search in [[https://en.wikipedia.org/wiki/Plane_(Unicode)][Plane (Unic
 
 Doom's way of change unicode font, but it will be shadowed by
 [[fn:doom-init-fonts-h]] if [[var:doom-symbol-font]] is set.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (after! unicode-fonts
-  (dolist (unicode-block '("Letterlike Symbols" "Supplemental Arrows-B"))
-    (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+  ;; ℕ, ⤵, 𝔹
+  (dolist (unicode-block '("Letterlike Symbols" "Supplemental Arrows-B" "Mathematical Alphanumeric Symbols"))
+    (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  ;; ⨂
+  (dolist (unicode-block '("Supplemental Mathematical Operators"))
+    (push "DejaVu Math TeX Gyre" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  ;; ∈ ∅
+  (dolist (unicode-block '("Mathematical Operators"))
+    (push "DejaVu Sans" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  ;; ￢
+  (dolist (unicode-block '("Halfwidth and Fullwidth Forms"))
+    (push "Sarasa Gothic SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+end_src
 
 Add to [[var:after-setting-font-hook]] not work well, font display diffs after
@@ -510,22 +520,22 @@ Add to [[var:after-setting-font-hook]] not work well, font display diffs after
 #+end_src
 
 Add hook but with [[fn:set-fontset-font]] succeed
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun +my/unicode-fonts ()
-  (dolist (range '((#x2900 . #x297f))) (set-fontset-font t range "Quivira"))
-  (dolist (chars '("￢")) ; keywords in code ligatures
-     (set-fontset-font t (string-to-char chars) "Sarasa Gothic SC"))
-  (dolist (chars '("∈" "∉" "⋃" "∖" "⨂"))
-     (set-fontset-font t (string-to-char chars) "TeX Gyre Adventor"))
-  (dolist (chars '("𝔹" "ℕ" "ℝ" "𝕊" "ℤ"))
-     (set-fontset-font t (string-to-char chars) "Quivira")))
+  ; Supplemental Arrows-B, include ⤵
+  (set-fontset-font t '(#x2900 . #x297f) "Quivira")
+  ; Mathematical symbols, 𝔹
+  (set-fontset-font t '(#x1d400 . #x1d7ff) "Quivira")
+  ; Mathematical operators, ⨂
+  (set-fontset-font t '(#x2208 . #x22ff) "DejaVu Math TeX Gyre")
+  (dolist (chars '("￢")) ; keywords =not= in code ligatures
+     (set-fontset-font t (string-to-char chars) "Sarasa Gothic SC")))
 (add-hook 'after-setting-font-hook #'+my/unicode-fonts 60)
 #+end_src
 see more in [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
 
 *** Chinese fonts
-- [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]]
-- [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
+[[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]]
 
 Check alignment between Chinese and English.
 #+begin_src python :tangle no
@@ -534,11 +544,22 @@ Emacs is the advanced, extensible, customizable, self-documenting editor.
 Emacs 是一款可扩展可自定义且自带文档的高级 editor.
 #+end_src
 
+These settings will not work in daemon mode if added instead to
+=doom-init-ui-hook=, as they might be overridden by =unicode-fonts-setup=.
+Additionally, consider changing the font for all =fontset= instead of just
+~(frame-parameter nil 'font)~. If the emoji font is not set here, you will need
+to use =doom/reload-font= later to enable proper color emoji display.
+
+[[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
+[[https://emacs.stackexchange.com/questions/62219/how-do-i-get-colour-emoji-to-display-in-emacs][fonts - How do I get colour emoji to display in Emacs - Emacs Stack Exchange]]
+
 #+begin_src emacs-lisp
 (defun +my/cjk-font ()
-  (dolist (charset '(han))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Maple6 SC NF"))))
+  (dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font t charset
+                      (font-spec :family "Maple6 SC NF")))
+  ;; why not set color emoji font at the same time
+  (set-fontset-font t 'emoji "Noto Color Emoji"))
 
 (add-hook 'after-setting-font-hook #'+my/cjk-font)
 #+end_src
