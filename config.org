@@ -1489,6 +1489,12 @@ org-format
   (set-formatter! 'orgfmt #'apheleia-format-org-buffer :modes '(org-mode)))
 #+end_src
 
+org-archive
+#+begin_src emacs-lisp
+(after! org
+  (setq org-archive-location ".bak/%s_archive::"))
+#+end_src
+
 ** python
 #+begin_src toml
 [python]
