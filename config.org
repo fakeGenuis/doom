@@ -247,6 +247,10 @@ packages=["words"]
 #+begin_src emacs-lisp
 (setq corfu-on-exact-match 'show)
 (map! :after cape :i "C-c p" cape-prefix-map)
+
+;; dabb_ only match dabbrev not Dabbrev!
+(after! dabbrev
+  (setq dabbrev-case-fold-search nil))
 #+end_src
 
 ** COMMENT company
