@@ -609,16 +609,12 @@ notify initial time
    :image-path (expand-file-name "assets/notify.jpg" doom-user-dir)
    :title "Daemon"
    :sound-name "bell"
-   :body (format "Initialed in %0.3fs" doom-init-time)))
+   :body (format "%s initialed in %0.3fs" server-name doom-init-time)))
 
-(if (+my/is-utility-daemon)
-  (add-hook 'doom-init-ui-hook #'notify-init-time))
-#+end_src
-
-Ensure first workspace is =main= in daemon mode.
-#+begin_src emacs-lisp
-(if (daemonp)
-    (add-hook 'doom-first-input-hook #'+workspace/kill-session))
+;; NOTE Why this keep one workspace in `emacsclient -c'?
+(add-hook! 'doom-init-ui-hook
+  (if (and (daemonp) (not (+my/is-utility-daemon)))
+      (notify-init-time)))
 #+end_src
 
 * Editor
