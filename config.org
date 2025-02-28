@@ -5,6 +5,7 @@ Literate and modular Doom Emacs configuration.
 * Table of contents :TOC:
 - [[#about][About]]
 - [[#tangle][Tangle]]
+- [[#301-specific][30.1 specific]]
 - [[#predefined][Predefined]]
 - [[#input][Input]]
   - [[#chinese][Chinese]]
@@ -171,6 +172,12 @@ Default install all packages in [[file:packages.toml]]
 enable_default=true
 #+end_src
 
+* 30.1 specific
+#+begin_src emacs-lisp :tangle packages.el
+(package! eldoc :built-in t)
+(package! track-changes :built-in t)
+#+end_src
+
 * Predefined
 #+begin_src emacs-lisp
 (setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
@@ -217,6 +224,7 @@ Default simplified Chinese input
   (liberime-try-select-schema "luna_pinyin_simp")
   (setq pyim-default-scheme 'rime-quanpin))
 #+end_src
+
 * Completion
 ** corfu
 #+begin_src toml
