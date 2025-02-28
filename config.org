@@ -134,6 +134,7 @@ The *conventions* of this org file:
  ;editorconfig
  (eval +overlay)
  ;upload
+ tree-sitter
 
  :os
  ;tty
@@ -157,7 +158,7 @@ The *conventions* of this org file:
 *The order of modules in above list make sense*
 
 Extra packages from [[https://melpa.org][MELPA]]
-#+begin_src emacs-lisp :tangle packages.el :shebang ";; -*- no-byte-compile: t; -*-\n"
+#+begin_src emacs-lisp :tangle packages.el :shebang ";; -*- no-byte-compile: t; -*-"
 #+end_src
 
 #+PROPERTY: header-args:emacs-lisp :results none
@@ -237,22 +238,6 @@ packages=["words"]
 #+end_src
 
 #+begin_src emacs-lisp
-(after! cape
-  ;; cape-dict trigger easily
-  (setq cape-dict-limit 233)
-
-  ;; orderless completion in dict makes me crazy
-  (advice-add 'cape-dict :around
-              (defun +my/cape-dict (orig-fun &rest args)
-                (let ((completion-styles '(basic)))
-                  (apply orig-fun args)))))
-
-;; (add-hook! org-mode
-;;   (setq-local completion-at-point-functions (list (cape-capf-super #'yasnippet-capf
-;;                                                                    #'cape-dabbrev #'cape-dict))))
-#+end_src
-
-#+begin_src emacs-lisp
 (setq corfu-on-exact-match 'show)
 (map! :after cape :i "C-c p" cape-prefix-map)
 
@@ -326,7 +311,8 @@ difficult to choose theme? random it
   (interactive)
   (let* ((all-themes (custom-available-themes))
          (next-theme (nth (random (length all-themes)) all-themes)))
-    (consult-theme next-theme)))
+    (consult-theme next-theme)
+    (message (format "switch to theme: %s" next-theme))))
 
 (map! :leader
       (:prefix "t"
@@ -776,7 +762,7 @@ vterm
 #+end_src
 
 tweak from ~doom doctor~
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq shell-file-name (executable-find "bash"))
 (setq-default vterm-shell "/usr/bin/fish")
 (setq-default explicit-shell-file-name  "/usr/bin/fish")
@@ -1145,12 +1131,6 @@ Invoke =latex.exe= on windows.
   :i "TAB" #'cdlatex-tab)
 #+end_src
 
-[[https://github.com/minad/cape?tab=readme-ov-file#super-capf---merging-multiple-capfs][GitHub - minad/cape: 🦸cape.el - Completion At Point Extensions]]
-#+begin_src emacs-lisp
-(setq-hook! 'LaTeX-mode-hook completion-at-point-functions
-            (list (cape-capf-super #'cape-dabbrev #'cape-dict)))
-#+end_src
-
 retain =.bbl= as it required by APS journals.
 =synctex.gz= kept to sync tex view.
 #+begin_src emacs-lisp
@@ -1508,7 +1488,7 @@ packages=[
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
-(python +lsp +pyright)
+(python +lsp +pyright +tree-sitter)
 #+end_src
 
 ** sh
@@ -1616,7 +1596,11 @@ Completion seems not work with =12.3=.
 (add-to-list '+my/jupyter-langs "Wolfram-Language")
 
 (after! org-src
-  (add-to-list 'org-src-lang-modes '("Wolfram-Language" . wolfram)))
+  (add-to-list 'org-src-lang-modes '("Wolfram-Language" . wolfram))
+  (setq org-babel-default-header-args:jupyter-Wolfram-Language
+        '((:kernel . "wolframforjupyter")
+          (:async . "yes")
+          (:results . "scalar"))))
 #+end_src
 
 - error when run after execute hook
