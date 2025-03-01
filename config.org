@@ -353,45 +353,6 @@ Set default font size, =WSL= currently not aware dpi settings in
  '(font-lock-comment-face ((t (:slant italic)))))
 #+end_src
 
-** COMMENT emacs-gfs
-- [[https://emacs.stackexchange.com/questions/29511/text-scale-for-all-faces-in-buffer][text-scale for all faces in buffer - Emacs Stack Exchange]]
-- [[https://so.nwalsh.com/2020/01/08-gfs][Emacs “Global Face Scaling”]]
-- [[https://github.com/doomemacs/doomemacs/issues/4211][doomemacs/doomemacs#4211 Make `doom/increase-font-size` to adjust more fonts]]
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! emacs-gfs
-  :recipe (:host github
-           :repo "ndw/emacs-gfs"))
-#+end_src
-Conflict with [[var:nerd-icons-scale-factor]]
-
-- [ ] display =text-scale-mode-amount= in mode-line
-#+begin_src emacs-lisp
-;; set a rescale font to cjk charset fonts,
-;; so no explicit font size is needed
-;; rescale doom-font cause bold font size != regular
-(dolist (rescales '(("Ubuntu" . 1.05)
-                    ("mononoki" . 1.00)
-                    ("Cascadia" . 0.95)
-                    ("Sarasa" . 0.95)
-                    ("Symbols" . 0.85)
-                    ("Kosefont" . 1.10)
-                    ("小濑字体" . 1.10)))
-  (push rescales face-font-rescale-alist))
-
-(use-package! emacs-gfs
-  :config
-  (setq gfs/default-face-height 140)
-  (setq gfs/resizeable-ignore-faces nil)
-  :bind
-  (:map evil-normal-state-map
-        ("C--" . gfs/shrink-faces)
-        ("C-=" . gfs/magnify-faces)))
-#+end_src
-
-- [ ] fix font scale in big-font/zen mode
-  [[https://emacs.stackexchange.com/a/47092][How to automatically remove a hook provided by a minor mode after disabling t...]]
-
 ** doom-dashboard
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
 doom-dashboard
@@ -440,8 +401,6 @@ custom doom-modeline font, valid on startup and persist after [[fn:doom/reload-t
 
 (add-hook 'doom-load-theme-hook #'+my/set-mode-line-font 90)
 #+end_src
-
-[[https://github.com/seagle0128/doom-modeline/issues/194][one single modeline when split]]
 
 ** popup
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
@@ -938,16 +897,6 @@ disable annoying =writegood-mode=
 #+end_src
 
 * Tools
-** COMMENT editorconfig
-#+begin_src toml
-[editorconfig]
-packages=["emacs-editorconfig-git"]
-#+end_src
-
-#+begin_src emacs-lisp :tangle no :noweb-ref tools
-editorconfig
-#+end_src
-
 ** COMMENT docker
 #+begin_src toml
 [docker]
