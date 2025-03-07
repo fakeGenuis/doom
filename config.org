@@ -1407,8 +1407,10 @@ org-format
 (cl-defun apheleia-format-org-buffer
     (&key buffer scratch callback &allow-other-keys)
   "Copy BUFFER to SCRATCH, then format scratch, then call CALLBACK."
+  ;; ugly implement!
   (with-current-buffer scratch
-    (let ((buffer-file-name (buffer-local-value 'buffer-file-name buffer)))
+    (let ((buffer-file-name (buffer-local-value 'buffer-file-name buffer))
+          (org-format-ignore-link (and (boundp 'org-format-ignore-link) (buffer-local-value 'org-format-ignore-link buffer))))
       (org-format-buffer))
     (funcall callback)))
 
