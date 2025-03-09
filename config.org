@@ -1997,6 +1997,13 @@ docker pull zevlg/telega-server:latest
 #+end_src
 
 * Other configs
+** tramp
+thank you, fish 4.0😄️
+#+begin_src emacs-lisp
+(after! tramp
+  (add-to-list 'process-environment "SHELL=/bin/bash"))
+#+end_src
+
 ** transient
 [[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
 [[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is s...]]
