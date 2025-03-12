@@ -1932,12 +1932,34 @@ substitute "%" to buffer file in ~shell-command~
         "C-c g s" #'gptel-send)
   :config
   (setq gptel-default-mode #'org-mode)
+  (setq gptel-include-reasoning 'ignore)
   ;; prefer level-1 heading
-  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "* ")
-  (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** ")
+  ;; (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
   (load-in-doom-dir "private/gpt.el")
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+#+end_src
+
+After [[fn:gptel-org-set-topic]], remove the top heading for collect conversation.
+#+begin_src emacs-lisp
+(defun +my/gptel-org-rm-upper-heading ()
+  "Remove upper level heading line."
+  (while (re-search-backward "\\(?:^\\* .+$\\)[[:space:]]+" nil t)
+    (delete-region (match-beginning 0) (match-end 0))))
+
+(add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-rm-upper-heading)
+#+end_src
+
+Ask standalone question anywhere.
+#+begin_src emacs-lisp
+(defun +my/gptel-org-make-standalone ()
+  "Restrict prompt to system message and things belong previous heading only."
+  (when (and (org-back-to-heading t) (member "standalone" (org-get-tags)))
+    (org-set-tags nil)
+    (delete-region (point-min) (point))))
+
+(add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-make-standalone)
 #+end_src
 
 Chat buffer should be real!
