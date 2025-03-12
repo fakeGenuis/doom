@@ -1938,6 +1938,7 @@ substitute "%" to buffer file in ~shell-command~
   ;; prefer level-1 heading
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** ")
   ;; (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
+  (setq gptel--known-backends (assoc-delete-all "ChatGPT" gptel--known-backends))
   (load-in-doom-dir "private/gpt.el")
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
