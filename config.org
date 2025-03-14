@@ -1805,63 +1805,76 @@ Allow attach the screenshot.
     '("a" "Attach" screenshot-attach)))
 #+end_src
 
+=alias --save convert magick= in fish shell to suppress the warning
+#+begin_quote
+WARNING: The convert command is deprecated in IMv7, use "magick" instead of
+"convert" or "magick convert"
+#+end_quote
+
+*Issues*
+1. Region not correctly selected in =vterm= buffer
+2. When select in visual line mode, newline not stripped
+
 ** zotxt
 #+begin_src emacs-lisp :tangle packages.el
 (package! zotxt)
 #+end_src
 
+#+begin_src emacs-lisp
+(defun org-zotxt-get-attachment-path ()
+  "Get attachment file path"
+  (interactive "P")
+  (let ((item-id (org-zotxt-extract-link-id-at-point)))
+    (deferred:$
+      (zotxt--request-deferred
+       (format "%s/items" zotxt-url-base)
+       :params `(("key" . ,item-id) ("format" . "paths"))
+       :parser 'json-read)
+      (deferred:nextc it
+        (lambda (response)
+          (let ((paths (cdr (assq 'paths (elt (request-response-data response) 0)))))
+            (org-zotxt-choose-path paths))))
+      (deferred:error it #'zotxt--deferred-handle-error)
+      (if zotxt--debug-sync (deferred:sync! it)
+        (deferred:nextc it
+          (lambda (path) path))))))
+
+(defun +my/tilde-home-path (path)
+  "covert path starts with /home/$usr/ to '~'"
+  (interactive)
+  (let ((home (getenv "HOME")))
+    (if (string-prefix-p home path)
+        (string-join `("~" ,(string-remove-prefix home path)) "")
+      path)))
+
+(defun org-zotxt-copy-attachment-path ()
+  "Open attachment of Zotero items linked at point.
+Opens with `org-open-file', see for more information about ARG."
+  (interactive)
+  (deferred:$
+    (deferred:next
+      (lambda ()
+        (org-zotxt-get-attachment-path)))
+    (deferred:nextc it
+      (lambda (path)
+        (let ((new-path (+my/tilde-home-path path)))
+          (kill-new new-path)
+          (message "\"%s\" send to system clipboard!" new-path))))))
+#+end_src
+
 [[http://www.mkbehr.com/posts/a-research-workflow-with-zotero-and-org-mode/][A research workflow with Zotero and Org mode | mkbehr.com]]
 #+begin_src emacs-lisp
 (use-package zotxt
-  :hook (org-mode . (lambda () (org-zotxt-mode 1)))
+  :hook (org-mode . org-zotxt-mode)
   :config
-  (setq zotxt-default-bibliography-style "mkbehr-short")
+  (setq zotxt-default-bibliography-style "american-physical-society-et-al"))
 
-  (defun org-zotxt-get-attachment-path ()
-    "Get attachment file path"
-    (interactive "P")
-    (let ((item-id (org-zotxt-extract-link-id-at-point)))
-      (deferred:$
-        (zotxt--request-deferred
-         (format "%s/items" zotxt-url-base)
-         :params `(("key" . ,item-id) ("format" . "paths"))
-         :parser 'json-read)
-        (deferred:nextc it
-          (lambda (response)
-            (let ((paths (cdr (assq 'paths (elt (request-response-data response) 0)))))
-              (org-zotxt-choose-path paths))))
-        (deferred:error it #'zotxt--deferred-handle-error)
-        (if zotxt--debug-sync (deferred:sync! it)
-          (deferred:nextc it
-            (lambda (path) path))))))
-
-  (defun +my/tilde-home-path (path)
-    "covert path starts with /home/$usr/ to '~'"
-    (interactive)
-    (let ((home (getenv "HOME")))
-      (if (string-prefix-p home path)
-          (string-join `("~" ,(string-remove-prefix home path)) "")
-        path)))
-
-  (defun org-zotxt-copy-attachment-path ()
-    "Open attachment of Zotero items linked at point.
-  Opens with `org-open-file', see for more information about ARG."
-    (interactive)
-    (deferred:$
-      (deferred:next
-        (lambda ()
-          (org-zotxt-get-attachment-path)))
-      (deferred:nextc it
-        (lambda (path)
-          (let ((new-path (+my/tilde-home-path path)))
-            (kill-new new-path)
-            (message "\"%s\" send to system clipboard!" new-path))))))
-
-  (map! (:map org-zotxt-mode-map
-         :desc "org-zotxt-insert-selected"
-         "C-c \" \"" (cmd!! #'org-zotxt-insert-reference-link '(4))
-         :desc "org-zotxt-copy-attachment-path"
-         "C-c \" c" #'org-zotxt-copy-attachment-path)))
+(map! :map org-zotxt-mode-map
+      :desc "org-zotxt-insert-selected"
+      ;; use <quote> in in case it pollute balanced brackets
+      "C-c <quote> <quote>" (cmd!! #'org-zotxt-insert-reference-link '(4))
+      :desc "org-zotxt-copy-attachment-path"
+      "C-c <quote> c" #'org-zotxt-copy-attachment-path)
 #+end_src
 
 open attachment with point at arxiv link
