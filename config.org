@@ -1397,8 +1397,10 @@ format org-src
 
 org-format
 #+begin_src emacs-lisp
-(use-package! org-format
-  :commands org-format-buffer
+(use-package org-format
+  :defer 10
+  ;; dawn lazy load
+  ;; :commands (apheleia-format-org-buffer)
   :init
   (add-to-list 'load-path (expand-file-name "org-format" org-directory)))
 #+end_src
@@ -1409,8 +1411,10 @@ org-format
   "Copy BUFFER to SCRATCH, then format scratch, then call CALLBACK."
   ;; ugly implement!
   (with-current-buffer scratch
+    ;; FIXME so many local value to copy
     (let ((buffer-file-name (buffer-local-value 'buffer-file-name buffer))
-          (org-format-ignore-link (and (boundp 'org-format-ignore-link) (buffer-local-value 'org-format-ignore-link buffer))))
+          (org-format-ignore-link (buffer-local-value 'org-format-ignore-link buffer))
+          (org-format-keep-empty-below-heading (buffer-local-value 'org-format-keep-empty-below-heading buffer)))
       (org-format-buffer))
     (funcall callback)))
 
