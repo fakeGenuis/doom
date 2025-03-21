@@ -61,6 +61,7 @@ Literate and modular Doom Emacs configuration.
   - [[#gptel][gptel]]
   - [[#tldr][tldr]]
 - [[#other-configs][Other configs]]
+  - [[#unfill][unfill]]
   - [[#transient][transient]]
   - [[#projectile][projectile]]
   - [[#tramp][tramp]]
@@ -2032,6 +2033,23 @@ docker pull zevlg/telega-server:latest
 #+end_src
 
 * Other configs
+** unfill
+[[https://www.emacswiki.org/emacs/UnfillParagraph][EmacsWiki: Unfill Paragraph]]
+[[https://github.com/purcell/unfill][GitHub - purcell/unfill: Functions providing the inverse of Emacs' fill-parag...]]
+#+begin_src emacs-lisp
+;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
+(defun unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (fill-paragraph nil region)))
+
+;; Handy key definition
+(define-key global-map "\M-Q" 'unfill-paragraph)
+#+end_src
+
 ** tramp
 thank you, fish 4.0😄️
 #+begin_src emacs-lisp
