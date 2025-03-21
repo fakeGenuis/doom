@@ -59,6 +59,7 @@ Literate and modular Doom Emacs configuration.
   - [[#figlet][figlet]]
   - [[#shell-command][shell-command+]]
   - [[#gptel][gptel]]
+  - [[#gptel-quick][=gptel-quick=]]
   - [[#tldr][tldr]]
 - [[#other-configs][Other configs]]
   - [[#unfill][unfill]]
@@ -1991,11 +1992,19 @@ Chat buffer should be real!
 (add-hook 'doom-real-buffer-functions 'gptel-buffer-p)
 #+end_src
 
-gptel-quick
+** =gptel-quick=
 #+begin_src emacs-lisp :tangle packages.el
 (package! gptel-quick
   :recipe (:host github
            :repo "karthink/gptel-quick"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! gptel-quick
+  :commands (gptel-quick)
+  :config
+  (setq gptel-quick-model 'olmo2:13b)
+  (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
 #+end_src
 
 ** tldr
