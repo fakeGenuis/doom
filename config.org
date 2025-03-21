@@ -68,6 +68,7 @@ Literate and modular Doom Emacs configuration.
   - [[#proxy][proxy]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
   - [[#insert-arxiv-links][insert arxiv links]]
+  - [[#search-online][search online]]
   - [[#shortcuts][shortcuts]]
 
 * About
@@ -2126,6 +2127,11 @@ Open link with host =Librewolf= browser
                (read-string "Input arxiv id:"))))
     (insert " ")
     (org-insert-link nil (concat "https://arxiv.org/abs/" id) id)))
+#+end_src
+
+** search online
+#+begin_src emacs-lisp
+(add-to-list '+lookup-provider-url-alist '("Inspire" "https://inspirehep.net/literature?q=%s"))
 #+end_src
 
 ** shortcuts
