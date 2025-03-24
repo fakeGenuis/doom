@@ -53,6 +53,7 @@ Literate and modular Doom Emacs configuration.
   - [[#rss][rss]]
   - [[#everywhere][everywhere]]
 - [[#other-packages][Other packages]]
+  - [[#go-translate][go-translate]]
   - [[#keycast][keycast]]
   - [[#screenshot][screenshot]]
   - [[#zotxt][zotxt]]
@@ -1727,6 +1728,19 @@ packages=[
 #+end_src
 
 * Other packages
+** go-translate
+#+begin_src emacs-lisp :tangle packages.el
+(package! go-translate)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package go-translate
+  :bind ("C-c t" . gt-do-translate)
+  :config
+  (setq gt-langs '(en zh))
+  (setq gt-default-translator (gt-translator :engines (gt-google-engine))))
+#+end_src
+
 ** keycast
 #+begin_src emacs-lisp :tangle packages.el
 (package! keycast)
