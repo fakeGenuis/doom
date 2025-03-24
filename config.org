@@ -609,19 +609,10 @@ work for =org-ellipsis= and fold in code mode
 
 #+begin_src emacs-lisp
 (after! dired
-  (setq delete-by-moving-to-trash t)
-  ;; (dired-kill-when-opening-new-dired-buffer t)
-  (setq dired-listing-switches
-        "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
+  (setq delete-by-moving-to-trash nil)
   ;; Dirvish respects all the keybindings in `dired-mode-map'
   (map! :map dired-mode-map
-        :n "e" #'dired-create-empty-file
         :n "." #'dired-omit-mode))
-#+end_src
-
-no =dired-mode= buffers in [[kbd:SPC b b]]
-#+begin_src emacs-lisp
-(remove-hook 'doom-real-buffer-functions 'doom-dired-buffer-p)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -629,12 +620,6 @@ no =dired-mode= buffers in [[kbd:SPC b b]]
   ;; Make dired-omit-mode hide all "dotfiles"
   (setq dired-omit-files
         (concat dired-omit-files "\\|^\\..*$")))
-#+end_src
-
-Additional syntax highlighting for dired
-#+begin_src emacs-lisp
-(after! diredfl
-  (set-face-attribute 'diredfl-dir-name nil :bold t))
 #+end_src
 
 ** dirvish
@@ -651,17 +636,8 @@ packages=[
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! dirvish
-  :commands (dirvish dirvish-side)
-  :init
-  (map!
-   (:leader
-    :desc "dirvish" "-" #'dirvish
-    :prefix "o"
-    :desc "dirvish-side" "s" #'dirvish-side))
-  :custom
-  (dirvish-side-width 25)
-  (dirvish-quick-access-entries
+(after! dirvish
+  (setq dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
      ("c" "~/.config/"                  "Config")
@@ -672,18 +648,20 @@ packages=[
      ("n" "~/.Nextcloud/"               "Nextcloud")
      ("p" "~/Pictures/"                 "Pictures")
      ("t" "~/.local/share/Trash/files/" "TrashCan")))
+  (remove-hook 'dired-mode-hook #'+dired-update-mode-line-height-h))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! dirvish
+  :commands (dirvish dirvish-side)
+  :custom
+  (dirvish-side-width 25)
   :config
-  (dirvish-side-follow-mode)
-  (appendq! dirvish-attributes '(collapse git-msg))
   (map!
    :map dirvish-mode-map
-   :gn "M-l"  #'dirvish-ls-switches-menu
-   :gn "M-m"  #'dirvish-mark-menu
-   :gn "M-v"  #'dirvish-vc-menu
-   :n "g TAB" #'dirvish-emerge-toggle-current-group
-   :gn "o"    #'dirvish-quicksort
-   :gn "y"    #'dirvish-yank-menu
-   :gn "S"    #'dirvish-cd-into-vterm))
+   :gn "S"    #'dirvish-cd-into-vterm
+   ;; remap previous =S= to =o=
+   :gn "o" #'dirvish-quicksort))
 #+end_src
 
 Replace =/home/$user= to =~=
