@@ -1501,13 +1501,6 @@ packages=["mathematica"]
   :defer t)
 #+end_src
 
-notebook open in =dirvish=
-#+begin_src emacs-lisp
-(after! dirvish
-  (push '(("nb") "/usr/local/bin/mathematica" "%f")
-        dirvish-open-with-programs))
-#+end_src
-
 wolfram-format
 #+begin_src emacs-lisp
 (after! apheleia
