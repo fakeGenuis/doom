@@ -1961,8 +1961,11 @@ Ask standalone question anywhere.
 #+begin_src emacs-lisp
 (defun +my/gptel-org-make-standalone ()
   "Restrict prompt to system message and things belong previous heading only."
-  (when (and (org-back-to-heading t) (member "standalone" (org-get-tags)))
-    (org-set-tags nil)
+  (when (and (org-back-to-heading t)
+             (member "standalone"
+                     (mapcar #'substring-no-properties (org-get-tags))))
+    (forward-line)
+    ;; (org-set-tags nil)
     (delete-region (point-min) (point))))
 
 (add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-make-standalone)
