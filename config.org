@@ -185,10 +185,6 @@ enable_default=true
 
 * Predefined
 #+begin_src emacs-lisp
-(setq IS-WSL (string-match "WSL" (shell-command-to-string "uname -a")))
-#+end_src
-
-#+begin_src emacs-lisp
 (defun +my/is-utility-daemon ()
   "If current session run from daemon called `utility`."
   (and (daemonp) (boundp 'server-name) (string= server-name "utility")))
@@ -344,7 +340,7 @@ Set default font size, =WSL= currently not aware dpi settings in
 
 [[https://github.com/doomemacs/doomemacs/blob/master/docs/faq.org#change-my-fonts][Change my fonts - doom/docs/faq]]
 #+begin_src emacs-lisp
-(setq +my/font-size (* (if IS-WSL 1.5 1) 12.0))
+(setq +my/font-size (* (if (featurep :system 'wsl) 1.5 1) 12.0))
 
 (setq doom-font (font-spec :family "Maple6 NF" :size +my/font-size))
 #+end_src
@@ -1046,8 +1042,9 @@ packages=[
 
 Invoke =latex.exe= on windows.
 #+begin_src emacs-lisp
-(if IS-WSL (setq LaTeX-command "latex.exe"
-                 TeX-command "latex.exe"))
+(if (featurep :system 'wsl)
+    (setq LaTeX-command "latex.exe"
+          TeX-command "latex.exe"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2103,7 +2100,7 @@ and add ignored files in [[file:.projectile]].
 ** Windows =Librewolf= in wsl
 Open link with host =Librewolf= browser
 #+begin_src emacs-lisp
-(if IS-WSL
+(if (featurep :system 'wsl)
   (setq browse-url-firefox-program "librewolf.exe"))
 #+end_src
 
