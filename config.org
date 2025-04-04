@@ -607,6 +607,8 @@ work for =org-ellipsis= and fold in code mode
 #+begin_src emacs-lisp
 (after! dired
   (setq delete-by-moving-to-trash nil)
+  (setq dired-listing-switches
+        "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
   ;; Dirvish respects all the keybindings in `dired-mode-map'
   (map! :map dired-mode-map
         :n "." #'dired-omit-mode))
