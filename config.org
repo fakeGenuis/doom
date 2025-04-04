@@ -137,6 +137,7 @@ The *conventions* of this org file:
  debugger
  ;editorconfig
  (eval +overlay)
+ tree-sitter
  ;upload
  tree-sitter
 
@@ -147,6 +148,7 @@ The *conventions* of this org file:
  <<lang>>
  ;(cc +lsp)
  emacs-lisp
+ json
 
  :email
  <<email>>
@@ -1464,6 +1466,8 @@ wolfram-format
 (after! apheleia
   (load "~/lib/wolframFormatter/wolfram-format.el"))
 #+end_src
+Note that =apheleia-formatter= not work well with org-src block, turn
+=org-indent-mode= off and then run [[kbd:g Q]] and then turn on =org-indent-mode=.
 
 *** ligatures
 #+begin_src emacs-lisp
