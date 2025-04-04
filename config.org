@@ -1918,7 +1918,7 @@ substitute "%" to buffer file in ~shell-command~
 
 ** gptel
 #+begin_src emacs-lisp :tangle packages.el
-(package! gptel)
+(package! gptel :recipe (:nonrecursive t))
 #+end_src
 
 #+begin_src emacs-lisp
