@@ -1335,6 +1335,14 @@ Disable doom's "maybe" advice around, run after it add the advice.
       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
 #+end_src
 
+#+begin_src emacs-lisp
+(after! org-roam
+  (setq org-roam-graph-viewer "librewolf")
+  (setq org-roam-graph-link-hidden-types
+        '("file" "http" "https" "attachment" "zotero"
+          "fuzzy" "doom-module" "kbd" "fn")))
+#+end_src
+
 *** others
 [[kbd:SPC s b]] should work as expected
 [[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
