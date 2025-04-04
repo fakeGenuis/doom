@@ -430,6 +430,7 @@ packages=[
     "ttf-dejavu",           # org heading ◉ ✸ ∈
     "ttf-sarasa-gothic-sc", # ￢
     "noto-fonts-emoji",     # color emoji
+    "ttf-nerd-fonts-symbols-mono" # nerd font
 ]
 #+end_src
 
@@ -624,7 +625,7 @@ work for =org-ellipsis= and fold in code mode
 packages=[
     "fd",
     "imagemagick",
-    # "ffmpegthumbnailer", # may require pipewire-jack
+    "ffmpegthumbnailer", # may require pipewire-jack
     "mediainfo",
     # "tar", # include in =base=
     "unzip"
@@ -888,7 +889,7 @@ docker
 ** lookup
 #+begin_src toml
 [lookup]
-packages=["sqlite", "wordnet-cli"]
+packages=["sqlite", "wordnet-common"]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
