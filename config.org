@@ -701,13 +701,6 @@ packages=[
 vterm
 #+end_src
 
-tweak from ~doom doctor~
-#+begin_src emacs-lisp :tangle no
-(setq shell-file-name (executable-find "bash"))
-(setq-default vterm-shell "/usr/bin/fish")
-(setq-default explicit-shell-file-name  "/usr/bin/fish")
-#+end_src
-
 [[https://emacs.stackexchange.com/questions/24330/have-a-function-to-disable-close-confirmation-on-terms-work-on-all-terms-but-sh][have a function to disable close confirmation on terms. work on all terms but...]]
 #+begin_src emacs-lisp
 (defun set-no-process-query-on-exit ()
