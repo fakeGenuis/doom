@@ -1513,8 +1513,14 @@ Completion seems not work with =12.3=.
           (:results . "scalar"))))
 #+end_src
 
-- error when run after execute hook
-  [[https://github.com/emacs-jupyter/jupyter/issues/492][emacs-jupyter/jupyter#492 org-babel-after-execute-hook not executed in contex...]]
+*** snippets
+#+begin_src emacs-lisp
+(after! (wolfram-mode yasnippet)
+  (let ((key-templates '()))
+    (dolist (key wolfram-structure-keywords)
+      (push `(,key ,(format "(* ::%s:: *)\n(*$1*)\n\n" key)) key-templates))
+    (yas-define-snippets 'wolfram-mode key-templates)))
+#+end_src
 
 ** markdown
 #+begin_src toml
