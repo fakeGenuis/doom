@@ -395,7 +395,7 @@ packages=["otf-comicshanns-nerd"]
 modeline
 #+end_src
 
-custom doom-modeline font, valid on startup and persist after [[fn:doom/reload-theme]]
+custom doom-modeline font, valid on startup and persist after [[cmd:doom/reload-theme]]
 #+begin_src emacs-lisp
 (defun +my/set-mode-line-font ()
   (set-face-font 'mode-line (font-spec :family "ComicShannsMono Nerd Font" :size (+ +my/font-size 1.5)))
@@ -463,7 +463,7 @@ Doom's way of change unicode font, but it will be shadowed by
 #+end_src
 
 Add to [[var:after-setting-font-hook]] not work well, font display diffs after
-[[fn:doom/reload-theme]]
+[[cmd:doom/reload-theme]]
 #+begin_src emacs-lisp :tangle no
 (defun +my/unicode-fonts ()
   (dolist (unicode-block '("Letterlike Symbols" "Supplemental Arrows-B"))
@@ -933,8 +933,8 @@ magit
 
 If you use =fish= shell, you may change ~fish_prompt~. see [[file:~/.config/fish/config.fish]]
 
-[[fn:magit-stage]] (visually stage hunks) may not work in =yadm=, which cause emacs
-to hang, use [[kbd:E s]] ([[fn:magit-ediff-stage]]) instead.
+[[cmd:magit-stage]] (visually stage hunks) may not work in =yadm=, which cause emacs
+to hang, use [[kbd:E s]] ([[cmd:magit-ediff-stage]]) instead.
 [[https://github.com/magit/magit/issues/719][magit/magit#719 Magit process hangs when trying to stage a hunk]]
 
 ** pdf
@@ -1074,10 +1074,10 @@ add =XeTeX= mode in =TeX/LaTeX=
                '("XeLaTeX" "%`xelatex%(mode) %(extraopts) %S%(PDFout)%' %t" TeX-run-TeX nil t)))
 #+end_src
 
-[[fn:latex-indent]] [[fn:LaTeX-fill-buffer]]
+[[fn:latex-indent]] [[cmd:LaTeX-fill-buffer]]
 [[https://github.com/lassik/emacs-format-all-the-code/issues/127][lassik/emacs-format-all-the-code#127 LaTeX formatting]]
 
-[[fn:+format/buffer]]
+[[cmd:+format/buffer]]
 default installed by =miktex=
 [[https://github.com/cmhughes/latexindent.pl][GitHub - cmhughes/latexindent.pl: Perl script to add indentation (leading hor...]]
 #+begin_src emacs-lisp
@@ -1146,6 +1146,13 @@ packages=[
 #+end_src
 
 *** org modern
+Fix function link recognized as footnote.
+#+begin_src emacs-lisp
+(use-package org-modern
+  :init
+  (setq org-modern-footnote nil))
+#+end_src
+
 #+begin_src emacs-lisp
 (after! org-modern
   (setq org-modern-star 'replace))
@@ -1302,7 +1309,7 @@ Session async have been include in org mode, see how to implement async using bu
 [[https://github.com/jackkamm/ob-session-async][GitHub - jackkamm/ob-session-async: Asynchronous org-mode session evaluation]]
 [[https://github.com/emacs-mirror/emacs/blob/a7cb220523d881449a2dba683e7358b3312fd482/etc/ORG-NEWS#L863][emacs/etc/ORG-NEWS at a7cb220523d881449a2dba683e7358b3312fd482 · emacs-mirror...]]
 
-This branch mainly fix =apply: Wrong number of arguments= of advice [[fn:ob-async-org-babel-execute-src-block]]
+This branch mainly fix =apply: Wrong number of arguments= of advice [[cmd:ob-async-org-babel-execute-src-block]]
 [[https://github.com/astahlman/ob-async/pull/96][astahlman/ob-async#96 Update signature and skip :session blocks by stsquad]]
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -1945,7 +1952,7 @@ substitute "%" to buffer file in ~shell-command~
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 #+end_src
 
-After [[fn:gptel-org-set-topic]], remove the top heading for collect conversation.
+After [[cmd:gptel-org-set-topic]], remove the top heading for collect conversation.
 #+begin_src emacs-lisp
 (defun +my/gptel-org-rm-upper-heading ()
   "Remove upper level heading line."
