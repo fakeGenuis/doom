@@ -598,6 +598,10 @@ fold
 work for =org-ellipsis= and fold in code mode
 #+begin_src emacs-lisp
 (setq +fold-ellipsis "⤵")
+(after! org
+  (setq org-startup-folded 'fold
+        org-hide-drawer-startup nil))
+      ;; org-hide-block-startup nil
 #+end_src
 
 * Emacs
