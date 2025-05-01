@@ -1266,9 +1266,15 @@ the current subtree, passing over the prefix argument ARG."
 packages=["jupyter-notebook"]
 #+end_src
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! jupyter
+  :pin nil
+  :recipe (:host github :repo "fakeGenuis/jupyter"))
+#+end_src
+
 start session only when exactly execute it.
 #+begin_src emacs-lisp
-(after! 'jupyter
+(after! jupyter
   (setq jupyter-org-auto-connect nil))
 #+end_src
 
@@ -1288,6 +1294,11 @@ start session only when exactly execute it.
 
 To view contents of =.ipynb= file, see
 - [[https://github.com/astoff/code-cells.el][GitHub - astoff/code-cells.el: Emacs utilities for code split into cells, inc...]]
+
+Possible issues
+- [[https://github.com/emacs-jupyter/jupyter/issues/584][emacs-jupyter/jupyter#584 `jupyter-or...]]
+- [[https://github.com/doomemacs/doomemacs/issues/3171][doomemacs/doomemacs#3171 if: Need a v...]]
+- [[https://github.com/emacs-jupyter/jupyter/issues/575][emacs-jupyter/jupyter#575 Remote kern...]]
 
 *** jupyter-ext
 #+begin_src emacs-lisp :tangle packages.el
