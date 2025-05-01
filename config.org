@@ -1978,14 +1978,13 @@ substitute "%" to buffer file in ~shell-command~
     :desc "gptel" "g" #'gptel))
   (map! "C-c g q" #'gptel-quick
         "C-c g m" #'gptel-menu
-        "C-c g s" #'gptel-send)
+        "C-c g t" #'gptel-org-set-topic)
   :config
   (setq gptel-default-mode #'org-mode)
   (setq gptel-include-reasoning 'ignore)
   ;; prefer level-1 heading
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** ")
-  ;; (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
-  (setq gptel--known-backends (assoc-delete-all "ChatGPT" gptel--known-backends))
+  (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n")
   (load-in-doom-dir "private/gpt.el")
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
@@ -2019,7 +2018,7 @@ Chat buffer should be real!
 #+begin_src emacs-lisp
 (defun gptel-buffer-p (buf)
   (with-current-buffer buf (and (boundp 'gptel-mode) (eq gptel-mode t))))
-(add-hook 'doom-real-buffer-functions 'gptel-buffer-p)
+(add-hook 'doom-real-buffer-functions #'gptel-buffer-p)
 #+end_src
 
 ** =gptel-quick=
