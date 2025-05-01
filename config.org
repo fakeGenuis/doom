@@ -244,19 +244,6 @@ packages=["words"]
   (setq dabbrev-case-fold-search nil))
 #+end_src
 
-** COMMENT company
-+ [ ] fix scroll bar width
-
-=company-ispell= needs word dictionary
-#+begin_src toml
-[company]
-packages=["words"]
-#+end_src
-
-#+begin_src emacs-lisp :tangle no :noweb-ref completion
-(company +childframe)
-#+end_src
-
 ** vertico
 #+begin_src emacs-lisp :tangle no :noweb-ref completion
 (vertico +icons +childframe)
