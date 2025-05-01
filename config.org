@@ -847,6 +847,12 @@ packages=["aspell", "aspell-en"]
         (expand-file-name ".pws" "~/.Nextcloud/ispell/")))
 #+end_src
 
+#+begin_src emacs-lisp
+(setf (alist-get 'org-mode +spell-excluded-faces-alist)
+      (append '(org-level-1 org-level-2 org-level-3 font-lock-function-name-face help-key-binding)
+              (alist-get 'org-mode +spell-excluded-faces-alist)))
+#+end_src
+
 ** COMMENT grammar
 #+begin_src toml
 [grammar]
@@ -861,6 +867,9 @@ disable annoying =writegood-mode=
 #+begin_src emacs-lisp :tangle packages.el
 (package! writegood-mode
   :disable t)
+(setf (alist-get 'latex-mode +spell-excluded-faces-alist)
+      (append '(font-lock-constant-face tex-math font-lock-comment-face)
+              (alist-get 'latex-mode +spell-excluded-faces-alist)))
 #+end_src
 
 * Tools
