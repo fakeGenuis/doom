@@ -1441,6 +1441,12 @@ org-archive
   (setq org-archive-location ".bak/%s_archive::"))
 #+end_src
 
+Avoid lengthy title
+#+begin_src emacs-lisp
+(after! org-cliplink
+  (setq org-cliplink-max-length 40))
+#+end_src
+
 ** python
 #+begin_src toml
 [python]
