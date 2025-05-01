@@ -649,6 +649,7 @@ packages=[
   :custom
   (dirvish-side-width 25)
   :config
+  (setq dirvish-reuse-session nil)
   (map!
    :map dirvish-mode-map
    :gn "S"    #'dirvish-cd-into-vterm
@@ -677,6 +678,16 @@ If MULTI-LINE, make every path occupy a new line."
 
 (after! dirvish
  (advice-add 'dirvish-copy-file-path :override #'+my/dirvish-copy-file-path))
+#+end_src
+
+Goto random line, use with [[fn:dirvish-fd]]
+#+begin_src emacs-lisp
+(defun goto-random-line ()
+  "Go to a random line in the current buffer."
+  (interactive)
+  (let* ((total-lines (count-lines (point-min) (point-max)))
+         (random-line (1+ (random total-lines))))
+    (goto-line random-line)))
 #+end_src
 
 * Term
