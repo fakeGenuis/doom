@@ -1353,18 +1353,12 @@ This branch mainly fix =apply: Wrong number of arguments= of advice
 [[cmd:ob-async-org-babel-execute-src-block]]
 - [[https://github.com/astahlman/ob-async/pull/96][astahlman/ob-async#96 Update signature and skip :session blocks by stsquad]]
 
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! ob-async
+  :pin nil
   :recipe (:host github
            :repo "stsquad/ob-async"
            :branch "update-signature-skip-session"))
-#+end_src
-
-Disable doom's "maybe" advice around, run after it add the advice.
-#+begin_src emacs-lisp
-(add-hook 'org-load-hook
-          (lambda ()
-            (advice-remove 'ob-async-org-babel-execute-src-block #'+org-babel-disable-async-maybe-a)) 90)
 #+end_src
 
 *** org-noter
@@ -1575,6 +1569,10 @@ Completion seems not work with =12.3=.
         '((:kernel . "wolframforjupyter")
           (:async . "yes")
           (:results . "scalar"))))
+#+end_src
+
+#+begin_src emacs-lisp
+(add-to-list '+org-babel-native-async-langs 'Wolfram-Language)
 #+end_src
 
 *** snippets
