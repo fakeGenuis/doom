@@ -180,6 +180,7 @@ enable_default=true
 #+end_src
 
 * 30.1 specific
+[[https://github.com/doomemacs/doomemacs/issues/8287][doomemacs/doomemacs#8287 eldoc error: (invalid-function incf)]]
 #+begin_src emacs-lisp :tangle packages.el
 (package! eldoc :built-in t)
 (package! track-changes :built-in t)
@@ -214,11 +215,6 @@ packages=["base-devel",
 
 #+begin_src emacs-lisp :tangle no :noweb-ref input
 (chinese +rime +childframe)
-#+end_src
-
-[[https://github.com/coldnew/pangu-spacing/pull/46][coldnew/pangu-spacing#46 Keep compatibility since Emacs has removed typo. by ...]]
-#+begin_src emacs-lisp :tangle packages.el
-(unpin! pangu-spacing)
 #+end_src
 
 Default simplified Chinese input
@@ -289,6 +285,8 @@ load wal theme from command line
 #+begin_src fish :tangle no
 emacs-client -e "(load-theme 'ewal-doom-themes t)"
 #+end_src
+
+[[https://github.com/donniebreve/rose-pine-doom-emacs][GitHub - donniebreve/rose-pine-doom-emacs: Soho vibes for DOOM Emacs]]
 
 ** doom
 #+begin_src emacs-lisp :tangle no :noweb-ref ui
@@ -633,6 +631,7 @@ work for =org-ellipsis= and fold in code mode
 [dirvish]
 packages=[
     "fd",
+    "libvips",
     "imagemagick",
     "ffmpegthumbnailer", # may require pipewire-jack
     "mediainfo",
@@ -1350,7 +1349,6 @@ This branch mainly fix =apply: Wrong number of arguments= of advice
 - [[https://github.com/astahlman/ob-async/pull/96][astahlman/ob-async#96 Update signature and skip :session blocks by stsquad]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(unpin! ob-async)
 (package! ob-async
   :recipe (:host github
            :repo "stsquad/ob-async"
@@ -1615,6 +1613,7 @@ packages=[
   (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
   (typst-ts-mode-enable-raw-blocks-highlight t)
   :config
+  (setq typst-ts-mode-indent-offset 2)
   (keymap-set typst-ts-mode-map "C-c C-c" #'typst-ts-tmenu))
 #+end_src
 
@@ -1754,9 +1753,9 @@ packages=[
         (gt-translator
          :engines (gt-google-engine)
          :render (gt-buffer-render)))
-  (set-popup-rules!
-    '(("^\\*gt-result\\*"  ; help messages
-       :side left :size 80 :slot -2 :select t))))
+  (set-popup-rule!
+    "^\\*gt-result\\*"
+    :side 'left :size 80 :slot -2 :select t))
 #+end_src
 
 ** keycast
