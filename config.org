@@ -338,9 +338,10 @@ track current theme for later load
 
 Set default font size, =WSL= currently not aware dpi settings in
 [[file:~/.Xresources]] while float size makes it work on Linux.
-[[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
 
-[[https://github.com/doomemacs/doomemacs/blob/master/docs/faq.org#change-my-fonts][Change my fonts - doom/docs/faq]]
+- [[https://github.com/doomemacs/doomemacs/issues/6131][doomemacs/doomemacs#6131 DPI settings are not respected by "setq doom-font"]]
+- [[https://github.com/doomemacs/doomemacs/blob/master/docs/faq.org#change-my-fonts][Change my fonts - doom/docs/faq]]
+
 #+begin_src emacs-lisp
 (setq +my/font-size (* (if (featurep :system 'wsl) 1.5 1) 12.0))
 
@@ -367,11 +368,11 @@ doom-dashboard
 (setq fancy-splash-image (expand-file-name "assets/bitmap_512x.png" doom-user-dir))
 #+end_src
 
-- splash image not loaded in the first frame of daemon mode
-[[https://www.reddit.com/r/emacs/comments/uvjbgl/splash_image_not_visible_initially/][Splash image not visible initially]]
-[[https://discourse.doomemacs.org/t/splash-image-tinted-only-on-emacs-daemon-launch/3574][Splash image tinted only on emacs daemon launch - User Support - Doom Emacs D...]]
-[[https://github.com/doomemacs/doomemacs/issues/6221][doomemacs/doomemacs#6221 Theme differences in daemon vs standard GUI for the ...]]
-[[https://github.com/doomemacs/doomemacs/issues/7301][doomemacs/doomemacs#7301 {cosmetic bug} fancy-splash-image not loaded at firs...]]
+splash image not loaded in the first frame of daemon mode
+- [[https://www.reddit.com/r/emacs/comments/uvjbgl/splash_image_not_visible_initially/][Splash image not visible initially]]
+- [[https://discourse.doomemacs.org/t/splash-image-tinted-only-on-emacs-daemon-launch/3574][Splash image tinted only on emacs daemon launch - User Support - Doom Emacs D...]]
+- [[https://github.com/doomemacs/doomemacs/issues/6221][doomemacs/doomemacs#6221 Theme differences in daemon vs standard GUI for the ...]]
+- [[https://github.com/doomemacs/doomemacs/issues/7301][doomemacs/doomemacs#7301 {cosmetic bug} fancy-splash-image not loaded at firs...]]
 
 #+begin_src emacs-lisp
 ;; Refresh the Doom dashboard on the first frame in daemon mode.
@@ -502,8 +503,8 @@ Additionally, consider changing the font for all =fontset= instead of just
 ~(frame-parameter nil 'font)~. If the emoji font is not set here, you will need
 to use =doom/reload-font= later to enable proper color emoji display.
 
-[[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
-[[https://emacs.stackexchange.com/questions/62219/how-do-i-get-colour-emoji-to-display-in-emacs][fonts - How do I get colour emoji to display in Emacs - Emacs Stack Exchange]]
+- [[https://github.com/hick/emacs-chinese#org-的中文问题][GitHub - hick/emacs-chinese: Emacs 相关中文问题以及解决方案]]
+- [[https://emacs.stackexchange.com/questions/62219/how-do-i-get-colour-emoji-to-display-in-emacs][fonts - How do I get colour emoji to display in Emacs - Emacs Stack Exchange]]
 
 #+begin_src emacs-lisp
 (defun +my/cjk-font ()
@@ -774,10 +775,10 @@ If no vterm buffer in `Term' workspace, create it."
 #+end_src
 
 *** save vterm buffers with command history
-[[https://github.com/akermu/emacs-libvterm/issues/666][akermu/emacs-libvterm#666 Integrate with desktop-save-mode]]
-[[https://bmag.github.io/2015/12/26/desktop.html][Desktop-Save Mode]]
-[[https://github.com/Bad-ptr/persp-mode.el#custom-saveload-buffer-function-example][GitHub - Bad-ptr/persp-mode.el: named perspectives(set of buffers/window conf...]]
-[[doom:modules/ui/workspaces/config.el::263][examples in doom config]]
+- [[https://github.com/akermu/emacs-libvterm/issues/666][akermu/emacs-libvterm#666 Integrate with desktop-save-mode]]
+- [[https://bmag.github.io/2015/12/26/desktop.html][Desktop-Save Mode]]
+- [[https://github.com/Bad-ptr/persp-mode.el#custom-saveload-buffer-function-example][GitHub - Bad-ptr/persp-mode.el: named perspectives(set of buffers/window conf...]]
+- [[doom:modules/ui/workspaces/config.el::263][examples in doom config]]
 
 No text properties saved.
 #+begin_src emacs-lisp
@@ -913,8 +914,8 @@ packages=["sqlite", "wordnet-common"]
 magit
 #+end_src
 
-[[https://github.com/TheLocehiliosan/yadm][GitHub - TheLocehiliosan/yadm: Yet Another Dotfiles Manager]]
-[[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
+- [[https://github.com/TheLocehiliosan/yadm][GitHub - TheLocehiliosan/yadm: Yet Another Dotfiles Manager]]
+- [[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
 
 #+begin_src emacs-lisp
 (use-package! tramp
@@ -927,6 +928,7 @@ magit
         (:prefix "g"
          :desc "yadm-status" "a" #'yadm-status))
   :config
+  ;; see `man yadm'
   (add-to-list 'tramp-methods
                '("yadm"
                  (tramp-remote-shell "/bin/bash")
@@ -947,7 +949,7 @@ pdf
 #+end_src
 
 default pdf viewer in emacs
-[[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
+- [[http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html][pdf-tools as the default PDF viewer in Emacs]]
 
 #+begin_src emacs-lisp
 (after! pdf-tools
@@ -964,7 +966,7 @@ default pdf viewer in emacs
 #+end_src
 
 Selection in =pdf-tools= when evil mode enabled
-[[https://github.com/doomemacs/doomemacs/issues/6286#issuecomment-1870216583][doomemacs/doomemacs#6286 `evil` interfering with PDF text selection/highlight...]]
+- [[https://github.com/doomemacs/doomemacs/issues/6286#issuecomment-1870216583][doomemacs/doomemacs#6286 `evil` interfering with PDF text selection/highlight...]]
 
 Correct the file name path if it is a WSL path in Windows or an absolute path
 inadvertently synced with a network disk. For =pdf-sync-view=, the source file
@@ -1071,7 +1073,7 @@ retain =.bbl= as it required by APS journals.
 #+end_src
 
 add =XeTeX= mode in =TeX/LaTeX=
-[[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
+- [[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
 #+begin_src emacs-lisp
 (after! tex
   (add-to-list 'TeX-command-list
@@ -1079,11 +1081,10 @@ add =XeTeX= mode in =TeX/LaTeX=
 #+end_src
 
 [[fn:latex-indent]] [[cmd:LaTeX-fill-buffer]]
-[[https://github.com/lassik/emacs-format-all-the-code/issues/127][lassik/emacs-format-all-the-code#127 LaTeX formatting]]
+- [[https://github.com/lassik/emacs-format-all-the-code/issues/127][lassik/emacs-format-all-the-code#127 LaTeX formatting]]
 
-[[cmd:+format/buffer]]
-default installed by =miktex=
-[[https://github.com/cmhughes/latexindent.pl][GitHub - cmhughes/latexindent.pl: Perl script to add indentation (leading hor...]]
+[[cmd:+format/buffer]] default installed by =miktex=
+- [[https://github.com/cmhughes/latexindent.pl][GitHub - cmhughes/latexindent.pl: Perl script to add indentation (leading hor...]]
 #+begin_src emacs-lisp
 (after! apheleia
   (set-formatter! 'latexindent '("latexindent" "-l" "-r" "--logfile=/dev/null")
@@ -1191,7 +1192,7 @@ Fix function link recognized as footnote.
 #+end_src
 
 custom agenda view from
-[[https://www.labri.fr/perso/nrougier/GTD/index.html#org9f2e38c][Get Things Done with Emacs]]
+- [[https://www.labri.fr/perso/nrougier/GTD/index.html#org9f2e38c][Get Things Done with Emacs]]
 #+begin_src emacs-lisp
 (setq org-agenda-custom-commands
       '(("g" "Get Things Done (GTD)"
@@ -1224,11 +1225,12 @@ custom agenda view from
            "* TODO [%a] %? %^G\n%U\n%i" :empty-lines 1 :prepend t))))
 #+end_src
 
-[[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
-[[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
+- [[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
+- [[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
 
 *** org-babel
-Skip executing org source blocks within commented headings. To optimize, consider advicing [[fn:org-babel-map-executables]]
+Skip executing org source blocks within commented headings. To optimize,
+consider advising [[fn:org-babel-map-executables]]
 #+begin_src emacs-lisp
 (defun +my/org-babel-execute-buffer (&optional arg)
   "Execute source code blocks in a buffer.
@@ -1248,8 +1250,8 @@ the current buffer."
 #+end_src
 
 Restore window-start after execute subtree. For hook based implement for all
-[[fn:narrow-to-region]] see: \\
-[[https://emacs.stackexchange.com/questions/13556/restoring-position-in-window-after-narrowing][Restoring position in window after narrowing - Emacs Stack Exchange]]
+[[fn:narrow-to-region]] see:
+- [[https://emacs.stackexchange.com/questions/13556/restoring-position-in-window-after-narrowing][Restoring position in window after narrowing - Emacs Stack Exchange]]
 
 #+begin_src emacs-lisp
 (defun +my/org-babel-execute-subtree (&optional arg)
@@ -1294,7 +1296,7 @@ start session only when exactly execute it.
 #+end_src
 
 To view contents of =.ipynb= file, see
-[[https://github.com/astoff/code-cells.el][GitHub - astoff/code-cells.el: Emacs utilities for code split into cells, inc...]]
+- [[https://github.com/astoff/code-cells.el][GitHub - astoff/code-cells.el: Emacs utilities for code split into cells, inc...]]
 
 *** jupyter-ext
 #+begin_src emacs-lisp :tangle packages.el
@@ -1338,12 +1340,14 @@ Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel la
 #+end_src
 
 *** ob-async
-Session async have been include in org mode, see how to implement async using built in method.
-[[https://github.com/jackkamm/ob-session-async][GitHub - jackkamm/ob-session-async: Asynchronous org-mode session evaluation]]
-[[https://github.com/emacs-mirror/emacs/blob/a7cb220523d881449a2dba683e7358b3312fd482/etc/ORG-NEWS#L863][emacs/etc/ORG-NEWS at a7cb220523d881449a2dba683e7358b3312fd482 · emacs-mirror...]]
+Session async have been include in org mode, see how to implement async using
+built in method.
+- [[https://github.com/jackkamm/ob-session-async][GitHub - jackkamm/ob-session-async: Asynchronous org-mode session evaluation]]
+- [[https://github.com/emacs-mirror/emacs/blob/a7cb220523d881449a2dba683e7358b3312fd482/etc/ORG-NEWS#L863][emacs/etc/ORG-NEWS at a7cb220523d881449a2dba683e7358b3312fd482 · emacs-mirror...]]
 
-This branch mainly fix =apply: Wrong number of arguments= of advice [[cmd:ob-async-org-babel-execute-src-block]]
-[[https://github.com/astahlman/ob-async/pull/96][astahlman/ob-async#96 Update signature and skip :session blocks by stsquad]]
+This branch mainly fix =apply: Wrong number of arguments= of advice
+[[cmd:ob-async-org-babel-execute-src-block]]
+- [[https://github.com/astahlman/ob-async/pull/96][astahlman/ob-async#96 Update signature and skip :session blocks by stsquad]]
 
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! ob-async)
@@ -1385,7 +1389,7 @@ Disable doom's "maybe" advice around, run after it add the advice.
 
 *** others
 [[kbd:SPC s b]] should work as expected
-[[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
+- [[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
 
 revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
 #+begin_src emacs-lisp
@@ -1393,7 +1397,6 @@ revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
   (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
 #+end_src
 
-org-src
 [[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
 #+begin_src emacs-lisp
 (after! org-src
@@ -1542,7 +1545,7 @@ PacletInstall["ZeroMQLink"] (* 1.2.6+ *)
 #+end_src
 
 =eglot= is far faster than =LSP=!
-[[https://github.com/kenkangxgwe/lsp-wl/wiki#eglot][Home · kenkangxgwe/lsp-wl Wiki · GitHub]]
+- [[https://github.com/kenkangxgwe/lsp-wl/wiki#eglot][Home · kenkangxgwe/lsp-wl Wiki · GitHub]]
 #+begin_src emacs-lisp
 (let ((wlserver (expand-file-name "~/.local/lib/lsp-wl/init.wls")))
   (when (and (file-exists-p wlserver) (executable-find "wolframscript"))
@@ -1914,7 +1917,7 @@ Opens with `org-open-file', see for more information about ARG."
 #+end_src
 
 open attachment with point at arxiv link
-[[https://emacs.stackexchange.com/a/38297][Get description of an org-mode link - Emacs Stack Exchange]]
+- [[https://emacs.stackexchange.com/a/38297][Get description of an org-mode link - Emacs Stack Exchange]]
 #+begin_src emacs-lisp
 (defun org-zotxt-open-arxiv-attachment ()
   "open attachment from arxiv link, by zotxt"
@@ -1953,8 +1956,8 @@ This package is located in =GNU ELPA=, but it cannot be installed, see
 [[https://www.reddit.com/r/DoomEmacs/comments/q4jrer/cant_install_elpa_package/][cant install elpa package]]
 
 substitute "%" to buffer file in ~shell-command~
-[[https://puntoblogspot.blogspot.com/2021/05/current-file-name-on-emacss-shell.html][puntoblogspot: Current file name on emacs's shell-command]]
-[[https://unix.stackexchange.com/questions/45125/how-to-get-current-buffers-filename-in-emacs][function - How to get current buffer's filename in emacs? - Unix & Linux Stac...]]
+- [[https://puntoblogspot.blogspot.com/2021/05/current-file-name-on-emacss-shell.html][puntoblogspot: Current file name on emacs's shell-command]]
+- [[https://unix.stackexchange.com/questions/45125/how-to-get-current-buffers-filename-in-emacs][function - How to get current buffer's filename in emacs? - Unix & Linux Stac...]]
 
 #+begin_src emacs-lisp
 (use-package! shell-command+
@@ -2073,8 +2076,8 @@ docker pull zevlg/telega-server:latest
 
 * Other configs
 ** unfill
-[[https://www.emacswiki.org/emacs/UnfillParagraph][EmacsWiki: Unfill Paragraph]]
-[[https://github.com/purcell/unfill][GitHub - purcell/unfill: Functions providing the inverse of Emacs' fill-parag...]]
+- [[https://www.emacswiki.org/emacs/UnfillParagraph][EmacsWiki: Unfill Paragraph]]
+- [[https://github.com/purcell/unfill][GitHub - purcell/unfill: Functions providing the inverse of Emacs' fill-parag...]]
 #+begin_src emacs-lisp
 ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
 (defun unfill-paragraph (&optional region)
@@ -2096,9 +2099,12 @@ thank you, fish 4.0😄️
   (add-to-list 'process-environment "SHELL=/bin/bash"))
 #+end_src
 
+- [[https://github.com/akermu/emacs-libvterm/issues/689][akermu/emacs-libvterm#689 Tramp-login-shells custom doesn't match type]]
+- [[https://github.com/akermu/emacs-libvterm/pull/706][akermu/emacs-libvterm#706 Allow using the default login shell for remote conn...]]
+
 ** transient
-[[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
-[[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is s...]]
+- [[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
+- [[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is s...]]
 #+begin_src emacs-lisp
 (after! transient
   (setq transient-display-buffer-action
@@ -2128,8 +2134,8 @@ see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Tran
   (add-to-list 'projectile-globally-ignored-buffers "*doom*"))
 #+end_src
 
-[[https://emacs.stackexchange.com/questions/16497/how-to-exclude-files-from-projectile][How to exclude files from Projectile? - Emacs Stack Exchange]]
 For non git project, better add following in project root [[file:.dir-locals.el]]
+- [[https://emacs.stackexchange.com/questions/16497/how-to-exclude-files-from-projectile][How to exclude files from Projectile? - Emacs Stack Exchange]]
 #+begin_src emacs-lisp :tangle no
 ((nil . ((projectile-indexing-method . hybrid))))
 #+end_src
