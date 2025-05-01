@@ -1274,21 +1274,28 @@ start session only when exactly execute it.
 To view contents of =.ipynb= file, see
 [[https://github.com/astoff/code-cells.el][GitHub - astoff/code-cells.el: Emacs utilities for code split into cells, inc...]]
 
-*** jupyter+
+*** jupyter-ext
 #+begin_src emacs-lisp :tangle packages.el
-(package! jupyter+
-  :recipe (:local-repo "~/lib/jupyter+/"))
+(package! jupyter-ext
+  :recipe (:host github
+           :repo "fakeGenuis/jupyter-ext"))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! jupyter+
-  :after jupyter
+(use-package! jupyter-ext
+  :commands jupyter-org-transient
+  :init
+  (map! :map jupyter-org-interaction-mode-map
+        :n ";" #'jupyter-org-transient)
   :config
+  ;; A tweaked completion at point function for corfu
+  (advice-add 'jupyter-completion-at-point :override #'jupyter-ext-completion-at-point))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! ob-core
   ;; with multiple output and =:async yes=, text mass up after `example` block
   (setq org-babel-min-lines-for-block-output 256))
-
-(map! :map jupyter-org-interaction-mode-map
-      :n ";" #'jupyter-org-transient)
 #+end_src
 
 Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel lazy load
