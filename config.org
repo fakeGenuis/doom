@@ -657,6 +657,20 @@ packages=[
    :gn "o" #'dirvish-quicksort))
 #+end_src
 
+#+begin_src emacs-lisp
+(defun dirvish-open-binaries-externally (file fn)
+  "When FN is not `dired', open binary FILE externally."
+  (when-let* (((not (eq fn 'dired)))
+              ((file-exists-p file))
+              ((not (file-directory-p file)))
+              ((member (downcase (or (file-name-extension file) ""))
+                       dirvish-binary-exts)))
+    ;; return t to terminate `dirvish--find-entry'.
+    (prog1 t (dired-do-open))))
+
+(add-hook 'dirvish-find-entry-hook #'dirvish-open-binaries-externally)
+#+end_src
+
 Replace =/home/$user= to =~=
 #+begin_src emacs-lisp
 (defun +my/home-to-tide (file)
