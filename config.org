@@ -563,7 +563,16 @@ notify initial time
   ;; Disabling cursor movement when exiting insert mode
   (setq evil-move-cursor-back nil)
   ;; keep previous layout, always!
-  (setq evil-auto-balance-windows nil))
+  (setq evil-auto-balance-windows nil)
+  ;; I want surround (..), not ( .. )
+  (evil--add-to-alist
+   evil-surround-pairs-alist
+   ?\( '("(" . ")")
+   ?\[ '("[" . "]")
+   ?\{ '("{" . "}")
+   ?\) '("( " . " )")
+   ?\] '("[ " . " ]")
+   ?\} '("{ " . " }")))
 #+end_src
 
 ** snippets
