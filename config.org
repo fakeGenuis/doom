@@ -602,6 +602,19 @@ work for =org-ellipsis= and fold in code mode
       ;; org-hide-block-startup nil
 #+end_src
 
+** COMMENT meow
+[[https://github.com/meow-edit/doom-meow][GitHub - meow-edit/doom-meow: Meow in...]]
+#+begin_src emacs-lisp :tangle no :noweb-ref editor
+(meow +qwerty)
+#+end_src
+
+Be quiet!
+#+begin_src emacs-lisp
+(after! meow
+  (setq meow-cursor-type-normal 'box)
+  (setq +meow-want-blink-cursor-in-insert nil))
+#+end_src
+
 * Emacs
 ** dired
 #+begin_src emacs-lisp :tangle no :noweb-ref emacs
