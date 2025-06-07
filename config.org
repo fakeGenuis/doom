@@ -678,6 +678,10 @@ packages=[
     (prog1 t (dired-do-open))))
 
 (add-hook 'dirvish-find-entry-hook #'dirvish-open-binaries-externally)
+
+(after! dirvish
+  ;; remove pdf
+  (setq dirvish-binary-exts (remove "pdf" dirvish-binary-exts)))
 #+end_src
 
 Replace =/home/$user= to =~=
