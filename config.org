@@ -1685,6 +1685,15 @@ Completion seems not work with =12.3=.
 (add-to-list '+org-babel-native-async-langs 'Wolfram-Language)
 #+end_src
 
+=<>= in =Wolfram= org-src break parentheses match.
+#+begin_src emacs-lisp
+(defun +my/remove-angle-brackets-from-syntax ()
+  (modify-syntax-entry ?< "." (syntax-table))  ;; Treat < as punctuation
+  (modify-syntax-entry ?> "." (syntax-table))) ;; Treat > as punctuation
+
+(add-hook 'org-mode-hook #'+my/remove-angle-brackets-from-syntax)
+#+end_src
+
 *** snippets
 #+begin_src emacs-lisp
 (after! (wolfram-mode yasnippet)
