@@ -955,13 +955,19 @@ Should always catch up with newest commit.
       "C-c g t" #'gptel-org-set-topic)
 #+end_src
 
+Who in their right mind would map =enter= in =org-mode= to =gptel-send=?
+#+begin_src emacs-lisp
+(after! gptel
+  (evil-define-key 'normal gptel-mode-map (kbd "RET") nil))
+#+end_src
+
 #+begin_src emacs-lisp
 (after! gptel
   (setq gptel-default-mode #'org-mode)
   (setq gptel-include-reasoning 'ignore)
   ;; avoid headings as prompt
-  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "*Prompt*: "
-        (alist-get 'org-mode gptel-response-prefix-alist) "*Response*:\n")
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** "
+        (alist-get 'org-mode gptel-response-prefix-alist) "*Response:*\n")
   (load-in-doom-dir "private/gpt.el")
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
