@@ -579,6 +579,14 @@ notify initial time
    ?\} '("{ " . " }")))
 #+end_src
 
+Shortcut for evil normal mode
+#+begin_src emacs-lisp
+(map! :n "g U" #'browse-url-xdg-open
+      :n "g u" #'evil-upcase
+      :n "g d" #'evil-downcase)
+
+#+end_src
+
 ** snippets
 #+begin_src emacs-lisp :tangle no :noweb-ref editor
 snippets
@@ -629,6 +637,7 @@ Be quiet!
         "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
   ;; Dirvish respects all the keybindings in `dired-mode-map'
   (map! :map dired-mode-map
+        :n "e" #'dired-create-empty-file
         :n "." #'dired-omit-mode))
 #+end_src
 
