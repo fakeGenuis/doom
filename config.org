@@ -1057,6 +1057,19 @@ If the last line at END starts with '** ', exclude it from shifting."
 (add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
 
+#+begin_src emacs-lisp
+(after! gptel
+  (set-popup-rule!
+    (lambda (bname _action)
+      (and (null gptel-display-buffer-action)
+           (buffer-local-value 'gptel-mode (get-buffer bname))))
+    :select t
+    :side 'right
+    :size 80
+    :quit nil
+    :ttl nil))
+#+end_src
+
 ** lsp
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
 (lsp +eglot)
