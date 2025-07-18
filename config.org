@@ -264,6 +264,20 @@ packages=["words"]
                  (vertico-posframe-fallback-mode . vertico-buffer-mode))))
 #+end_src
 
+#+begin_src emacs-lisp
+(defun my-posframe-poshandler-frame-top-center-n-lines (info)
+  (let* ((pos (posframe-poshandler-frame-top-center info))
+         (y (cdr pos)))
+    (cons (car pos)
+          (+ y (* 3 (frame-char-height))))))  ;; 3 lines offset
+#+end_src
+
+#+begin_src emacs-lisp
+(after! vertico-posframe
+  (setq vertico-posframe-poshandler #'my-posframe-poshandler-frame-top-center-n-lines)
+  (setq vertico-posframe-width 88))
+#+end_src
+
 * UI
 ** Extra themes
 #+begin_src emacs-lisp :tangle packages.el
