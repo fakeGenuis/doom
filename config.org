@@ -213,9 +213,15 @@ packages=["base-devel",
 ]
 #+end_src
 
-#+begin_src emacs-lisp :tangle no :noweb-ref input
-(chinese +rime +childframe)
+#+begin_src emacs-lisp :tangle no :noweb-ref input :noweb yes
+(chinese<<chinese-flags()>>)
 #+end_src
+
+#+NAME: chinese-flags
+#+BEGIN_SRC emacs-lisp :results value :exports none :tangle no
+(if (featurep :system 'wsl)
+    " +rime +childframe" "")
+#+END_SRC
 
 Default simplified Chinese input
 #+begin_src emacs-lisp
