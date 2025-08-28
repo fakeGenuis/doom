@@ -1954,21 +1954,21 @@ packages=[
 * Other packages
 ** go-translate
 #+begin_src emacs-lisp :tangle packages.el
-(package! go-translate)
+(package! gt)
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package go-translate
-  :bind ("C-c t" . gt-do-translate)
+(use-package gt
+  :bind ("C-c t" . gt-translate)
   :config
   (setq gt-langs '(en zh))
   (setq gt-default-translator
         (gt-translator
-         :engines (gt-google-engine)
+         :engines (list (gt-youdao-dict-engine) (gt-youdao-suggest-engine))
          :render (gt-buffer-render)))
   (set-popup-rule!
     "^\\*gt-result\\*"
-    :side 'left :size 80 :slot -2 :select t))
+    :side 'left :size 60 :slot -2 :select t))
 #+end_src
 
 ** keycast
