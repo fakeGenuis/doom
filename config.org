@@ -604,7 +604,6 @@ Shortcut for evil normal mode
 (map! :n "g U" #'browse-url-xdg-open
       :n "g u" #'evil-upcase
       :n "g d" #'evil-downcase)
-
 #+end_src
 
 ** snippets
@@ -699,12 +698,8 @@ packages=[
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! dirvish
-  :commands (dirvish dirvish-side)
-  :custom
-  (dirvish-side-width 25)
-  :config
-  (setq dirvish-reuse-session nil)
+(after! dirvish
+  (setq dirvish-side-width 25)
   (map!
    :map dirvish-mode-map
    :gn "S"    #'dirvish-cd-into-vterm
@@ -761,6 +756,16 @@ Goto random line, use with [[fn:dirvish-fd]]
   (let* ((total-lines (count-lines (point-min) (point-max)))
          (random-line (1+ (random total-lines))))
     (goto-line random-line)))
+#+end_src
+
+[[https://github.com/alexluigit/dirvish/issues/353#issuecomment-3235438864][alexluigit/dirvish#353 When opening m...]]
+#+begin_src emacs-lisp :tangle no
+(defun dirvish-pre-redisplay-h (window)
+  "Record root WINDOW and redisplay sessions in selected frame."
+  (when (eq (frame-selected-window) window)
+    (setq dirvish--selected-window (frame-selected-window))
+    (when-let* ((dv (dirvish-curr))) (setf (dv-root-window dv) window))
+    (dirvish--redisplay)))
 #+end_src
 
 * Term
