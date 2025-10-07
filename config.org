@@ -59,7 +59,6 @@ Literate and modular Doom Emacs configuration.
   - [[#screenshot][screenshot]]
   - [[#zotxt][zotxt]]
   - [[#figlet][figlet]]
-  - [[#shell-command][shell-command+]]
   - [[#tldr][tldr]]
 - [[#other-configs][Other configs]]
   - [[#unfill][unfill]]
@@ -2163,7 +2162,9 @@ packages=["figlet"]
   (setq figlet-options '("-W" "-f" "script")))
 #+end_src
 
-** shell-command+
+** COMMENT shell-command+
+repository is gone?!
+
 #+begin_src emacs-lisp :tangle packages.el
 (package! shell-command+
   :recipe (:host sourcehut
