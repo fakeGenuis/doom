@@ -937,7 +937,7 @@ packages=["aspell", "aspell-en"]
 
 #+begin_src emacs-lisp
 (setf (alist-get 'org-mode +spell-excluded-faces-alist)
-      (append '(org-level-1 org-level-2 org-level-3 font-lock-function-name-face help-key-binding)
+      (append '(org-level-1 font-lock-function-name-face help-key-binding)
               (alist-get 'org-mode +spell-excluded-faces-alist)))
 
 (setf (alist-get 'latex-mode +spell-excluded-faces-alist)
@@ -1339,7 +1339,7 @@ packages=[
  +present
  +pandoc
  +pretty
- +roam2)
+ +roam)
 #+end_src
 
 *** org modern
@@ -1971,6 +1971,7 @@ packages=[
   (setq gt-default-translator
         (gt-translator
          :engines (list (gt-youdao-dict-engine) (gt-youdao-suggest-engine))
+         ;; :engines (gt-google-engine)
          :render (gt-buffer-render)))
   (set-popup-rule!
     "^\\*gt-result\\*"
