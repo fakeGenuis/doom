@@ -2258,8 +2258,9 @@ thank you, fish 4.0😄️
 ** transient
 - [[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
 - [[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is s...]]
-#+begin_src emacs-lisp
-(after! transient
+- [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue wh...]]
+#+begin_src emacs-lisp :tangle no
+(after! (transient magit gptel)
   (setq transient-display-buffer-action
         '(display-buffer-below-selected
           (dedicated . t)
