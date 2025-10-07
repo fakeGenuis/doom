@@ -980,6 +980,7 @@ llm
 Should always catch up with newest commit.
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! gptel)
+(package! gptel :recipe (:nonrecursive t))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -999,16 +1000,17 @@ Who in their right mind would map =enter= in =org-mode= to =gptel-send=?
 (after! gptel
   (setq gptel-default-mode #'org-mode)
   (setq gptel-include-reasoning 'ignore)
+  (setq gptel-expert-commands t)
   ;; avoid headings as prompt
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** "
         (alist-get 'org-mode gptel-response-prefix-alist) "*Response:*\n")
-  (load-in-doom-dir "private/gpt.el")
-  (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
-  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+  (load-in-doom-dir "private/gpt.el"))
+  ;; (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
+  ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 #+end_src
 
 After [[cmd:gptel-org-set-topic]], remove the top heading for collect conversation.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (defun +my/gptel-org-rm-upper-heading ()
   "Remove upper level heading line."
   (while (re-search-backward "\\(?:^\\* .+$\\)[[:space:]]+" nil t)
@@ -1089,8 +1091,8 @@ If the last line at END starts with '** ', exclude it from shifting."
            (buffer-local-value 'gptel-mode (get-buffer bname))))
     :select t
     :side 'right
-    :size 80
-    :quit nil
+    :size 88
+    :quit 'current
     :ttl nil))
 #+end_src
 
