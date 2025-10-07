@@ -1665,6 +1665,13 @@ packages=[
 (python +lsp +pyright +tree-sitter)
 #+end_src
 
+[[https://github.com/doomemacs/doomemacs/issues/3171][doomemacs/doomemacs#3171 if: Need a v...]]
+#+begin_src emacs-lisp
+(with-eval-after-load 'ob-core
+  (setq org-babel-default-header-args:jupyter-python
+        '((:kernel . "python3"))))
+#+end_src
+
 ** sh
 #+begin_src toml
 [sh]
@@ -1862,6 +1869,12 @@ more configuration on [[https://myriad-dreamin.github.io/tinymist//frontend/emac
 css
 #+begin_src emacs-lisp
 (prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
+#+end_src
+
+defer is not work, same to immediate!
+#+begin_src emacs-lisp :tangle no
+(after! parinfer-rust-mode
+  (setq parinfer-rust-check-before-enable 'defer))
 #+end_src
 
 * Email
@@ -2187,7 +2200,9 @@ substitute "%" to buffer file in ~shell-command~
   (global-set-key (kbd "M-!") #'shell-command+))
 #+end_src
 
+** tldr
 #+begin_src emacs-lisp :tangle packages.el
+(package! tldr)
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
