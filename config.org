@@ -1352,12 +1352,23 @@ Fix function link recognized as footnote.
 #+begin_src emacs-lisp
 (use-package org-modern
   :init
-  (setq org-modern-footnote nil))
+  (setq org-modern-footnote nil)
+  :config
+  (setq org-modern-star 'replace))
 #+end_src
 
+*** org appear
+Very useful package for "automatic visibility toggling depending on cursor
+position"! Move on following latex to test.
+#+begin_quote
+\alpha_{1} + \beta^{2}
+#+end_quote
+
 #+begin_src emacs-lisp
-(after! org-modern
-  (setq org-modern-star 'replace))
+(after! org-appear
+  (setq org-appear-autolinks t
+        org-appear-autosubmarkers t
+        org-appear-inside-latex t))
 #+end_src
 
 *** agenda
@@ -1642,9 +1653,7 @@ org-format
 
 #+begin_src emacs-lisp
 (after! org
-  (setq org-archive-location ".bak/%s_archive::")
-  ;; always display _{} and ^{}, please
-  (setq org-pretty-entities-include-sub-superscripts nil))
+  (setq org-archive-location ".bak/%s_archive::"))
 #+end_src
 
 Avoid lengthy title
