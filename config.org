@@ -1285,6 +1285,11 @@ add =XeTeX= mode in =TeX/LaTeX=
 
 [[https://tex.stackexchange.com/questions/254539/latextidy-in-emacs][formatting - LaTeXTidy in Emacs - TeX - LaTeX Stack Exchange]]
 
+#+begin_src emacs-lisp
+(after! cdlatex
+  (setq cdlatex-insert-auto-labels-in-env-templates nil))
+#+end_src
+
 ** lua
 #+begin_src toml
 [lua]
