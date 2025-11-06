@@ -1666,13 +1666,8 @@ Avoid lengthy title
 #+begin_src toml
 [python]
 packages=[
-    "python-pytest",
-    "python-nose",
-    "python-black",
-    "python-pyflakes",
-    "python-isort",
-    "python-pipenv",
-    "pyright"
+    "pyright",
+    "tree-sitter-python"
 ]
 #+end_src
 
