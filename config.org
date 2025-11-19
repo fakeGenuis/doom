@@ -64,6 +64,7 @@ Literate and modular Doom Emacs configuration.
   - [[#unfill][unfill]]
   - [[#tramp][tramp]]
   - [[#transient][transient]]
+  - [[#transient-posframe][transient-posframe]]
   - [[#projectile][projectile]]
   - [[#proxy][proxy]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
@@ -2294,6 +2295,46 @@ thank you, fish 4.0😄️
 #+end_src
 
 see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
+
+** transient-posframe
+[[https://github.com/yanghaoxie/transient-posframe/blob/master/transient-posframe.el][transient-posframe/transient-posframe...]]
+#+begin_src emacs-lisp
+(defun my/transient-posframe-display-buffer (buffer alist)
+  "Display transient BUFFER in a child frame at bottom-center of the current frame.
+Return the window showing BUFFER, or nil to let display-buffer try other actions."
+  (when (and (fboundp 'posframe-show) (posframe-workable-p))
+    (let* ((pf (posframe-show
+                buffer
+                :poshandler #'posframe-poshandler-frame-bottom-center
+                ;; :timeout 7
+                :font "ComicShannsMono Nerd Font 10"
+                :min-width 40
+                :border-width 2
+                :border-color "gray50")))
+      (when (frame-live-p pf)
+        (frame-root-window pf)))))
+#+end_src
+
+- [ ] still buggy, only work after manually execute this block. And sometimes
+  makes =minibuffer= height increase unintended.
+#+begin_src emacs-lisp
+;; (after! (:and transient magit dirvish) 
+(after! transient
+  (setq transient-display-buffer-action
+        '(my/transient-posframe-display-buffer
+          (dedicated . t)
+          (inhibit-same-window . t))))
+#+end_src
+
+- [ ] try to fixed transient menu in =dirvish=
+#+begin_src emacs-lisp
+(defun transient-posframe--delete ()
+  "Delete transient posframe."
+  (posframe-delete-frame transient--buffer-name)
+  (posframe--kill-buffer transient--buffer-name))
+
+(advice-add 'transient--delete-window :override #'transient-posframe--delete)
+#+end_src
 
 ** projectile
 [[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
