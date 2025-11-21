@@ -997,21 +997,28 @@ Should always catch up with newest commit.
 
 Who in their right mind would map =enter= in =org-mode= to =gptel-send=?
 #+begin_src emacs-lisp
-(after! gptel
-  (evil-define-key 'normal gptel-mode-map (kbd "RET") nil))
+(evil-define-key 'normal gptel-mode-map (kbd "RET") nil)
 #+end_src
 
 #+begin_src emacs-lisp
 (after! gptel
-  (setq gptel-default-mode #'org-mode)
-  (setq gptel-include-reasoning 'ignore)
-  (setq gptel-expert-commands t)
+  (set-popup-rule!
+    (lambda (bname _action)
+      (and (null gptel-display-buffer-action)
+           (buffer-local-value 'gptel-mode (get-buffer bname))))
+    :select t :modeline nil :side 'right :width 0.4 :quit 'other)
+  (setq gptel-default-mode #'org-mode
+        gptel-include-reasoning 'ignore
+        gptel-expert-commands t
+        gptel-track-media t
+        gptel-log-level 'info)
   ;; avoid headings as prompt
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** "
         (alist-get 'org-mode gptel-response-prefix-alist) "*Response:*\n")
-  (load-in-doom-dir "private/gpt.el"))
+  (add-hook! 'gptel-pre-response-hook (recenter-top-bottom 1))
   ;; (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+  (load-in-doom-dir "private/gpt.el"))
 #+end_src
 
 After [[cmd:gptel-org-set-topic]], remove the top heading for collect conversation.
@@ -1056,6 +1063,7 @@ If the last line at END starts with '** ', exclude it from shifting."
             (replace-match (make-string (+ (length (match-string 1)) shift) ?*) t t)))))))
 
 (add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-make-standalone)
+(add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
 
 Chat buffer should be real!
@@ -1073,20 +1081,9 @@ gptel-quick
 #+end_src
 
 
-(add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
 
 #+begin_src emacs-lisp
-(after! gptel
-  (set-popup-rule!
-    (lambda (bname _action)
-      (and (null gptel-display-buffer-action)
-           (buffer-local-value 'gptel-mode (get-buffer bname))))
-    :select t
-    :side 'right
-    :size 88
-    :quit 'current
-    :ttl nil))
 #+end_src
 
 ** lsp
