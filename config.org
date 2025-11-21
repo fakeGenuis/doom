@@ -759,13 +759,17 @@ Goto random line, use with [[fn:dirvish-fd]]
 #+end_src
 
 [[https://github.com/alexluigit/dirvish/issues/353#issuecomment-3235438864][alexluigit/dirvish#353 When opening m...]]
-#+begin_src emacs-lisp :tangle no
-(defun dirvish-pre-redisplay-h (window)
-  "Record root WINDOW and redisplay sessions in selected frame."
-  (when (eq (frame-selected-window) window)
-    (setq dirvish--selected-window (frame-selected-window))
-    (when-let* ((dv (dirvish-curr))) (setf (dv-root-window dv) window))
-    (dirvish--redisplay)))
+#+begin_src emacs-lisp
+(use-package dirvish
+  :commands dirvish
+  :preface
+  (defun +my/dirvish-pre-redisplay-h (window)
+    "Record root WINDOW and redisplay sessions in selected frame."
+    (when (eq (frame-selected-window) window)
+      (setq dirvish--selected-window (frame-selected-window))
+      (when-let* ((dv (dirvish-curr))) (setf (dv-root-window dv) window))
+      (dirvish--redisplay)))
+  (advice-add 'dirvish-pre-redisplay-h :override #'+my/dirvish-pre-redisplay-h))
 #+end_src
 
 * Term
