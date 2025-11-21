@@ -1034,6 +1034,26 @@ Ask standalone question anywhere.
     (forward-line)
     ;; (org-set-tags nil)
     (delete-region (point-min) (point))))
+#+begin_src elisp
+(defun gptel-shift-response-heading-level (start end)
+  "Shift all Org headings in region so smallest is level 3 (***).
+If the last line at END starts with '** ', exclude it from shifting."
+  (interactive "r")
+  (save-excursion
+    ;; Adjust end if needed
+    (goto-char end)
+    (when (and (beginning-of-line) (looking-at "^\\*\\* "))
+      (setq end (max start (line-end-position -1))))
+    ;; Find min level and shift
+    (let ((min-level (save-excursion
+                       (goto-char start)
+                       (cl-loop while (re-search-forward "^\\(\\*+\\) " end t)
+                                minimize (length (match-string 1))))))
+      (when (and min-level (< min-level 3))
+        (let ((shift (- 3 min-level)))
+          (goto-char start)
+          (while (re-search-forward "^\\(\\*+\\) " end t)
+            (replace-match (make-string (+ (length (match-string 1)) shift) ?*) t t)))))))
 
 (add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-make-standalone)
 #+end_src
@@ -1052,38 +1072,6 @@ gptel-quick
   (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
 #+end_src
 
-#+begin_src elisp
-(defun gptel-shift-response-heading-level (start end)
-  "Shift all Org headings in region so smallest is level 3 (***).
-If the last line at END starts with '** ', exclude it from shifting."
-  (interactive "r")
-  (save-excursion
-    ;; Exclude end line if starting with '** '
-    (let* ((orig-end end))
-      (goto-char end)
-      (beginning-of-line)
-      (when (looking-at "^\\*\\* ")
-        ;; Move END to previous line's end (but not before START)
-        (forward-line -1)
-        (end-of-line)
-        (setq end (max start (point))))
-      ;; STEP 1: Find minimum heading level in adjusted region
-      (let ((min-level nil)
-            (heading-re "^\\(\\*+\\) "))
-        (goto-char start)
-        (while (re-search-forward heading-re end t)
-          (let ((level (length (match-string 1))))
-            (when (or (null min-level) (< level min-level))
-              (setq min-level level))))
-        ;; STEP 2: Shift all headings, if needed
-        (when (and min-level (< min-level 3))
-          (let ((shift (- 3 min-level)))
-            (goto-char start)
-            (while (re-search-forward heading-re end t)
-              (let ((level (length (match-string 1))))
-                (replace-match
-                 (concat (make-string (+ level shift) ?*) " ")
-                 t t)))))))))
 
 (add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
