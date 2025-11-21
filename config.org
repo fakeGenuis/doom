@@ -1056,6 +1056,22 @@ If the last line at END starts with '** ', exclude it from shifting."
 (add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
 
+*** =gptel= tools
+#+begin_src emacs-lisp :tangle packages.el
+(package! ob-gptel
+  :recipe (:type git :host github :repo "jwiegley/ob-gptel"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ob-gptel
+  :hook ((org-mode . ob-gptel-install-completions))
+  :defines ob-gptel-install-completions
+  :config
+  (add-to-list 'org-babel-load-languages '(gptel . t))
+  ;; Optional, for better completion-at-point
+  (defun ob-gptel-install-completions ()
+    (add-hook 'completion-at-point-functions
+              'ob-gptel-capf nil t)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1064,11 +1080,33 @@ If the last line at END starts with '** ', exclude it from shifting."
   (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
 #+end_src
 
-
+*** Tools Collection
+[[https://github.com/karthink/gptel/wiki/Tools-collection][Tools collection · karthink/gptel Wik...]]
+#+begin_src emacs-lisp :tangle packages.el
+(package! gptel-got
+  :recipe (:host nil
+	   :repo "https://codeberg.org/bajsicki/gptel-got"))
 #+end_src
 
 #+begin_src emacs-lisp
+(use-package gptel-got :after gptel)
 #+end_src
+
+=codel= have merged into this =llm-tool-collection= fork. see [[https://github.com/ultronozm/codel.el/issues/2][ultronozm/codel.el#2 Errors with gpte...]] 
+#+begin_src emacs-lisp :tangle packages.el
+(package! llm-tool-collection
+  :recipe (:type git :host github :repo "ultronozm/llm-tool-collection"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package llm-tool-collection
+  :after gptel
+  :config
+  (mapcar (apply-partially #'apply #'gptel-make-tool)
+        (llm-tool-collection-get-all)))
+#+end_src
+
+And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitHub - munen/emacs.d: My emacs conf...]]
 
 ** lsp
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
