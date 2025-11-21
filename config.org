@@ -2329,8 +2329,7 @@ Return the window showing BUFFER, or nil to let display-buffer try other actions
 - [ ] still buggy, only work after manually execute this block. And sometimes
   makes =minibuffer= height increase unintended.
 #+begin_src emacs-lisp
-;; (after! (:and transient magit dirvish) 
-(after! transient
+(after! (:or magit dirvish gptel)
   (setq transient-display-buffer-action
         '(my/transient-posframe-display-buffer
           (dedicated . t)
