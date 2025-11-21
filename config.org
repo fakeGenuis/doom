@@ -1021,6 +1021,7 @@ Who in their right mind would map =enter= in =org-mode= to =gptel-send=?
   (load-in-doom-dir "private/gpt.el"))
 #+end_src
 
+*** gptel tweaks
 After [[cmd:gptel-org-set-topic]], remove the top heading for collect conversation.
 #+begin_src emacs-lisp
 (defun +my/gptel-org-rm-upper-heading ()
@@ -1031,16 +1032,6 @@ After [[cmd:gptel-org-set-topic]], remove the top heading for collect conversati
 (add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-rm-upper-heading)
 #+end_src
 
-Ask standalone question anywhere.
-#+begin_src emacs-lisp :tangle no
-(defun +my/gptel-org-make-standalone ()
-  "Restrict prompt to system message and things belong previous heading only."
-  (when (and (org-back-to-heading t)
-             (member "standalone"
-                     (mapcar #'substring-no-properties (org-get-tags))))
-    (forward-line)
-    ;; (org-set-tags nil)
-    (delete-region (point-min) (point))))
 #+begin_src elisp
 (defun gptel-shift-response-heading-level (start end)
   "Shift all Org headings in region so smallest is level 3 (***).
@@ -1062,18 +1053,11 @@ If the last line at END starts with '** ', exclude it from shifting."
           (while (re-search-forward "^\\(\\*+\\) " end t)
             (replace-match (make-string (+ (length (match-string 1)) shift) ?*) t t)))))))
 
-(add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-make-standalone)
 (add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
 
-Chat buffer should be real!
-#+begin_src emacs-lisp :tangle no
-(defun gptel-buffer-p (buf)
-  (with-current-buffer buf (and (boundp 'gptel-mode) (eq gptel-mode t))))
-(add-hook 'doom-real-buffer-functions #'gptel-buffer-p)
 #+end_src
 
-gptel-quick
 #+begin_src emacs-lisp
 (after! gptel-quick
   (setq gptel-quick-model 'qwen3:14b)
