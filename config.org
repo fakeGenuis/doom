@@ -1006,7 +1006,7 @@ Who in their right mind would map =enter= in =org-mode= to =gptel-send=?
     (lambda (bname _action)
       (and (null gptel-display-buffer-action)
            (buffer-local-value 'gptel-mode (get-buffer bname))))
-    :select t :modeline nil :side 'right :width 0.4 :quit 'other)
+    :select t :modeline nil :side 'right :width 0.4 :quit nil :ttl nil)
   (setq gptel-default-mode #'org-mode
         gptel-include-reasoning 'ignore
         gptel-expert-commands t
@@ -1015,7 +1015,9 @@ Who in their right mind would map =enter= in =org-mode= to =gptel-send=?
   ;; avoid headings as prompt
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "** "
         (alist-get 'org-mode gptel-response-prefix-alist) "*Response:*\n")
-  (add-hook! 'gptel-pre-response-hook (recenter-top-bottom 1))
+  (add-hook! 'gptel-pre-response-hook
+    (outline-previous-heading)
+    (recenter-top-bottom 1))
   ;; (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
   ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
   (load-in-doom-dir "private/gpt.el"))
