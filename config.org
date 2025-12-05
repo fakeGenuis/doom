@@ -1676,6 +1676,17 @@ Avoid lengthy title
   (setq org-cliplink-max-length 40))
 #+end_src
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-modern-indent
+  :recipe (:type git :host github :repo "jdtsmith/org-modern-indent"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package org-modern-indent
+  :config ; add late to hook
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+#+end_src
+
 ** python
 #+begin_src toml
 [python]
