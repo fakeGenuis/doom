@@ -54,6 +54,7 @@ Literate and modular Doom Emacs configuration.
   - [[#rss][rss]]
   - [[#everywhere][everywhere]]
 - [[#other-packages][Other packages]]
+  - [[#rainbow-mode][rainbow-mode]]
   - [[#go-translate][go-translate]]
   - [[#keycast][keycast]]
   - [[#screenshot][screenshot]]
@@ -70,7 +71,7 @@ Literate and modular Doom Emacs configuration.
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
   - [[#insert-arxiv-links][insert arxiv links]]
   - [[#search-online][search online]]
-  - [[#shortcuts][shortcuts]]
+  - [[#shortcuts][Shortcuts]]
 
 * About
 The *conventions* of this org file:
@@ -2020,6 +2021,11 @@ packages=[
 #+end_src
 
 * Other packages
+** rainbow-mode
+#+begin_src emacs-lisp :tangle packages.el
+(package! rainbow-mode)
+#+end_src
+
 ** go-translate
 #+begin_src emacs-lisp :tangle packages.el
 (package! gt)
@@ -2435,7 +2441,7 @@ Open link with host =Librewolf= browser
 (add-to-list '+lookup-provider-url-alist '("Inspire" "https://inspirehep.net/literature?q=%s"))
 #+end_src
 
-** shortcuts
+** Shortcuts
 #+begin_src emacs-lisp
 (map! :leader
       :desc "Eval expression"       ":"    #'pp-eval-expression
