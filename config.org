@@ -1371,6 +1371,20 @@ Fix function link recognized as footnote.
   (setq org-modern-star 'replace))
 #+end_src
 
+Not the configuration of =org-modern= package, but they should be in same
+category.
+
+#+begin_src emacs-lisp
+(defun +my/org-stronger-emphasis ()
+  "Make *bold* and /italic/ stand out more in org buffers."
+  (face-remap-add-relative 'bold
+                           '(:foreground "orange red" :weight extra-bold))
+  (face-remap-add-relative 'italic
+                           '(:foreground "deep sky blue" :slant italic)))
+
+(add-hook 'org-mode-hook #'+my/org-stronger-emphasis)
+#+end_src
+
 *** org appear
 Very useful package for "automatic visibility toggling depending on cursor
 position"! Move on following latex to test.
