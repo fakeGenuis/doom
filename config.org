@@ -1515,8 +1515,8 @@ packages=["jupyter-notebook"]
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! jupyter
-  :pin nil
-  :recipe (:host github :repo "fakeGenuis/jupyter"))
+  :pin nil)
+  ;; :recipe (:host github :repo "fakeGenuis/jupyter"))
 #+end_src
 
 start session only when exactly execute it.
@@ -1546,6 +1546,8 @@ Possible issues
 - [[https://github.com/emacs-jupyter/jupyter/issues/584][emacs-jupyter/jupyter#584 `jupyter-or...]]
 - [[https://github.com/doomemacs/doomemacs/issues/3171][doomemacs/doomemacs#3171 if: Need a v...]]
 - [[https://github.com/emacs-jupyter/jupyter/issues/575][emacs-jupyter/jupyter#575 Remote kern...]]
+- [ ] [[https://github.com/emacs-jupyter/jupyter/issues/558][emacs-jupyter/jupyter#558 Jupyter and...]]
+- [ ] =(wrong-type-argument stringp nil)=
 
 *** jupyter-ext
 #+begin_src emacs-lisp :tangle packages.el
@@ -1558,7 +1560,7 @@ Possible issues
 (use-package! jupyter-ext
   :commands jupyter-org-transient
   :init
-  (map! :map jupyter-org-interaction-mode-map
+  (map! :map org-mode-map
         :n ";" #'jupyter-org-transient)
   :config
   ;; A tweaked completion at point function for corfu
