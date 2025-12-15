@@ -662,6 +662,25 @@ Be quiet!
         :n "." #'dired-omit-mode))
 #+end_src
 
+Better trash/restore file with =trash-put=, =trash-restore= from =trash-cli= package.
+[[https://emacs.stackexchange.com/questions/37492/how-restore-file-from-trash][How restore file from trash?]]
+
+~gio trash~ in =dired=
+#+begin_src emacs-lisp
+(defun system-move-file-to-trash (filename)
+  "Trash FILENAME using the 'gio trash' command.
+FILENAME should be an absolute path or resolvable from the
+current 'default-directory'."
+  (interactive "fTrash file: ")
+  (let ((expanded-file (expand-file-name filename)))
+    (unless (executable-find "gio")
+      (error "'gio' command not found in your PATH."))
+    (let ((exit-status (call-process "gio" nil nil nil "trash" expanded-file)))
+      (unless (zerop exit-status)
+        (error "Command 'gio trash %s' failed with exit status %d"
+               (shell-quote-argument expanded-file) exit-status)))))
+#+end_src
+
 #+begin_src emacs-lisp
 (after! dired-x
   ;; Make dired-omit-mode hide all "dotfiles"
