@@ -509,24 +509,26 @@ to use =doom/reload-font= later to enable proper color emoji display.
 
 Transparency
 #+begin_src emacs-lisp
-(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
-(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
-
-(defun toggle-transparency ()
+(defun my/toggle-transparency ()
+  "Toggle between opaque and semi-transparent frame."
   (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-                    ((numberp (cdr alpha)) (cdr alpha))
-                    ;; Also handle undocumented (<active> <inactive>) form.
-                    ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         '(85 . 50) '(100 . 100)))))
+  (let* ((opaque 100)
+         (transparent 97)
+         (cur (or (frame-parameter nil 'alpha-background)
+                  (let ((a (frame-parameter nil 'alpha)))
+                    (cond ((numberp a) a)
+                          ((consp a) (or (cdr a) (car a)))
+                          (t opaque)))
+                  opaque))
+         (new (if (= cur opaque) transparent opaque)))
+    ;; Wayland (pgtk)
+    (set-frame-parameter nil 'alpha-background new)
+    ;; X11/Xwayland
+    (set-frame-parameter nil 'alpha (cons new new))))
 
 (map! :leader
       (:prefix "t"
-       :desc "Toggle transparency"    "T" #'toggle-transparency))
+       :desc "Toggle transparency" "T" #'my/toggle-transparency))
 #+end_src
 
 Line numbers
