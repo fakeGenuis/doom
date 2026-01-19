@@ -1280,10 +1280,11 @@ retain =.bbl= as it required by APS journals.
 
 add =XeTeX= mode in =TeX/LaTeX=
 - [[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
-#+begin_src emacs-lisp
-(after! tex
-  (add-to-list 'TeX-command-list
-               '("XeLaTeX" "%`xelatex%(mode) %(extraopts) %S%(PDFout)%' %t" TeX-run-TeX nil t)))
+- [[https://stackoverflow.com/a/65179402][emacs - Add XeLaTeX to the command li...]]
+
+Most convenient way, still use =LATEX= as compile command.
+#+begin_src tex
+% -*- TeX-engine: xetex; -*-
 #+end_src
 
 [[fn:latex-indent]] [[cmd:LaTeX-fill-buffer]]
