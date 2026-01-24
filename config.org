@@ -211,6 +211,13 @@ Default simplified Chinese input
   (setq pyim-default-scheme 'rime-quanpin))
 #+end_src
 
+This is useful for allowing breaking after CJK characters and improves the
+word-wrapping for CJK text mixed with Latin text.
+#+begin_src emacs-lisp
+;; (global-visual-line-mode 1)
+(setq word-wrap-by-category t)
+#+end_src
+
 * Completion
 ** corfu
 #+begin_src toml
