@@ -2391,6 +2391,23 @@ docker pull zevlg/telega-server:latest
 (package! track-changes :built-in t)
 #+end_src
 
+** Workspace
+#+begin_src emacs-lisp
+;; Define the function
+(defun +my/kill-emacs-without-persp-save ()
+  "Kill Emacs without saving perspectives."
+  (interactive)
+  (let ((persp-auto-save-opt 0)
+        (confirm-kill-emacs nil))
+    (save-buffers-kill-emacs t)))
+
+;; Bind to SPC q Q
+(map! :leader
+      :desc "Kill Emacs (no persp save)"
+      :prefix "q"
+      "Q" #'+my/kill-emacs-without-persp-save)
+#+end_src
+
 ** Predefined
 :PROPERTIES:
 :header-args:emacs-lisp: :noweb-ref predefines
