@@ -53,6 +53,7 @@ Literate and modular Doom Emacs configuration.
   - [[#everywhere][everywhere]]
 - [[#other-packages][Other packages]]
   - [[#cns][cns]]
+  - [[#kdl][kdl]]
   - [[#rainbow-mode][rainbow-mode]]
   - [[#go-translate][go-translate]]
   - [[#keycast][keycast]]
@@ -2067,6 +2068,15 @@ packages=[
         cns-dict-directory (expand-file-name "dict" cns-packages-path))
   :hook
   (find-file . cns-auto-enable))
+#+end_src
+
+** kdl
+#+begin_src emacs-lisp :tangle packages.el
+(package! kdl-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package kdl-mode)
 #+end_src
 
 ** rainbow-mode
