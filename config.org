@@ -611,6 +611,11 @@ work for =org-ellipsis= and fold in code mode
       ;; org-hide-block-startup nil
 #+end_src
 
+** Others
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+#+end_src
+
 ** COMMENT meow
 [[https://github.com/meow-edit/doom-meow][GitHub - meow-edit/doom-meow: Meow in...]]
 #+begin_src emacs-lisp :tangle no :noweb-ref editor
