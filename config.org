@@ -700,6 +700,7 @@ packages=[
 #+begin_src emacs-lisp
 (after! dirvish
   (setq dirvish-side-width 25)
+  (setq dirvish-reuse-session 'quit)
   (map!
    :map dirvish-mode-map
    :gn "S"    #'dirvish-cd-into-vterm
@@ -1189,13 +1190,13 @@ respect to your home."
     (setq filename (replace-regexp-in-string "^/home/\\w+" (getenv "HOME") filename)))
   filename)
 
-(defun +my/pdf-sync-backward-search (x y)
+(defun +my/pdf-sync-backward-search (x y &optional page)
   "Go to the source corresponding to image coordinates X, Y.
 
 Try to find the exact position, if
 `pdf-sync-backward-use-heuristic' is non-nil."
   (cl-destructuring-bind (source finder)
-      (pdf-sync-backward-correlate x y)
+      (pdf-sync-backward-correlate x y page)
     (setq source (+my/synced-true-path source))
     (pop-to-buffer (or (find-buffer-visiting source)
                        (find-file-noselect source))
@@ -1283,7 +1284,7 @@ add =XeTeX= mode in =TeX/LaTeX=
 - [[https://stackoverflow.com/a/65179402][emacs - Add XeLaTeX to the command li...]]
 
 Most convenient way, still use =LATEX= as compile command.
-#+begin_src tex
+#+begin_src tex :tangle no
 % -*- TeX-engine: xetex; -*-
 #+end_src
 
@@ -1704,6 +1705,14 @@ Avoid lengthy title
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 #+end_src
 
+Smaller org src-block font size, more contents displayed.
+#+begin_src emacs-lisp
+(add-hook! org-mode
+  (set-face-attribute 'org-code nil :height 0.85)
+  ;; max height of org-indent and org-code will be applied
+  (set-face-attribute 'org-indent nil :height 0.85))
+#+end_src
+
 ** python
 #+begin_src toml
 [python]
@@ -1746,6 +1755,13 @@ fish shell ligatures
     :true "true"
     :false "false"
     :for "for"))
+#+end_src
+
+#+begin_src emacs-lisp
+(setq shell-file-name (executable-find "bash"))
+
+(setq-default vterm-shell "/bin/fish")
+(setq-default explicit-shell-file-name "/bin/fish")
 #+end_src
 
 ** yaml
