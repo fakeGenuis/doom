@@ -965,6 +965,15 @@ packages=["aspell", "aspell-en"]
               (alist-get 'latex-mode +spell-excluded-faces-alist)))
 #+end_src
 
+Only hint spell error for English words!
+#+begin_src emacs-lisp
+(with-eval-after-load 'spell-fu
+  (setq-default spell-fu-word-regexp "\\b\\([A-Za-z]+\\(['’][A-Za-z]+\\)?\\)\\b")
+  (add-hook 'spell-fu-mode-hook
+            (lambda ()
+              (setq-local spell-fu-word-regexp spell-fu-word-regexp))))
+#+end_src
+
 * Tools
 ** COMMENT docker
 #+begin_src toml
