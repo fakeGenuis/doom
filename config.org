@@ -109,7 +109,7 @@ The *conventions* of this org file:
  (ligatures +extra)
  nav-flash
  ophints
- (smooth-scroll +interpolate)
+ (smooth-scroll)
  (vc-gutter +pretty)
  (window-select +numbers)
  workspaces
