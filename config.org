@@ -1533,12 +1533,6 @@ the current subtree, passing over the prefix argument ARG."
 packages=["jupyter-notebook"]
 #+end_src
 
-#+begin_src emacs-lisp :tangle packages.el
-(package! jupyter
-  :pin nil)
-  ;; :recipe (:host github :repo "fakeGenuis/jupyter"))
-#+end_src
-
 start session only when exactly execute it.
 #+begin_src emacs-lisp
 (after! jupyter
