@@ -110,7 +110,7 @@ The *conventions* of this org file:
  (ligatures +extra)
  nav-flash
  ophints
- (smooth-scroll)
+ smooth-scroll
  (vc-gutter +pretty)
  (window-select +numbers)
  workspaces
@@ -425,6 +425,7 @@ Prefer stack at right for following info windows, since they are fill-columned
 #+begin_src toml
 [unicode]
 packages=[
+    "ttf-symbola",          # required by doom
     "quivira",              # org ellipsis ⤵, ℤ
     "ttf-dejavu",           # org heading ◉ ✸ ∈
     "ttf-sarasa-gothic-sc", # ￢
