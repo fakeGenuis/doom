@@ -1360,6 +1360,21 @@ Most convenient way, still use =LATEX= as compile command.
   (setq cdlatex-insert-auto-labels-in-env-templates nil))
 #+end_src
 
+#+begin_src emacs-lisp
+(with-eval-after-load 'cdlatex
+  ;; add/override math modifier after "=":
+  ;;  =b  -> \mathbm{...}
+  ;;  =B  -> \mathbbm{...}
+  ;;
+  ;; Note: you still need the corresponding LaTeX packages:
+  ;;   \usepackage{bm}   for \mathbm (usually via \bm / \boldsymbol)
+  ;;   \usepackage{bbm}  for \mathbbm
+  (dolist (it '((?b "\\mathbm" nil t nil nil)
+                (?B "\\mathbbm" nil t nil nil)))
+    (setf (alist-get (car it) cdlatex-math-modify-alist)
+          (cdr it))))
+#+end_src
+
 ** lua
 #+begin_src toml
 [lua]
