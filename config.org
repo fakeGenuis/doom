@@ -1016,26 +1016,8 @@ Should always catch up with newest commit.
 #+end_src
 
 #+begin_src emacs-lisp
-(map! (:leader :prefix "o" :desc "gptel" "g" #'gptel))
-(map! "C-c g q" #'gptel-quick
-      "C-c g m" #'gptel-menu
-      "C-c g t" #'gptel-org-set-topic)
-#+end_src
-
-Who in their right mind would map =enter= in =org-mode= to =gptel-send=?
-#+begin_src emacs-lisp
-(evil-define-key 'normal gptel-mode-map (kbd "RET") nil)
-#+end_src
-
-#+begin_src emacs-lisp
-(after! gptel
-  (set-popup-rule!
-    (lambda (bname _action)
-      (and (null gptel-display-buffer-action)
-           (buffer-local-value 'gptel-mode (get-buffer bname))))
-    :select t :modeline nil :side 'right :width 0.4 :quit nil :ttl nil)
-  (setq gptel-default-mode #'org-mode
-        gptel-include-reasoning 'ignore
+(with-eval-after-load 'gptel
+  (setq gptel-include-reasoning 'ignore
         gptel-expert-commands t
         gptel-track-media t
         gptel-log-level 'info)
@@ -1085,30 +1067,6 @@ If the last line at END starts with '** ', exclude it from shifting."
 (add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
 
-*** =gptel= tools
-#+begin_src emacs-lisp :tangle packages.el
-(package! ob-gptel
-  :recipe (:type git :host github :repo "jwiegley/ob-gptel"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package ob-gptel
-  :hook ((org-mode . ob-gptel-install-completions))
-  :defines ob-gptel-install-completions
-  :config
-  (add-to-list 'org-babel-load-languages '(gptel . t))
-  ;; Optional, for better completion-at-point
-  (defun ob-gptel-install-completions ()
-    (add-hook 'completion-at-point-functions
-              'ob-gptel-capf nil t)))
-#+end_src
-
-#+begin_src emacs-lisp
-(after! gptel-quick
-  (setq gptel-quick-model 'qwen3:14b)
-  (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
-#+end_src
-
 *** Tools Collection
 [[https://github.com/karthink/gptel/wiki/Tools-collection][Tools collection · karthink/gptel Wik...]]
 #+begin_src emacs-lisp :tangle packages.el
@@ -1121,7 +1079,7 @@ If the last line at END starts with '** ', exclude it from shifting."
 (use-package gptel-got :after gptel)
 #+end_src
 
-=codel= have merged into this =llm-tool-collection= fork. see [[https://github.com/ultronozm/codel.el/issues/2][ultronozm/codel.el#2 Errors with gpte...]] 
+=codel= have merged into this =llm-tool-collection= fork. see [[https://github.com/ultronozm/codel.el/issues/2][ultronozm/codel.el#2 Errors with gpte...]]
 #+begin_src emacs-lisp :tangle packages.el
 (package! llm-tool-collection
   :recipe (:type git :host github :repo "ultronozm/llm-tool-collection"))
@@ -1163,6 +1121,13 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
   ;; Optional: Set up Magit integration for AI commands in Magit popups
   (with-eval-after-load 'magit
     (ai-code-magit-setup-transients)))
+#+end_src
+
+*** Others
+#+begin_src emacs-lisp
+(after! gptel-quick
+  (setq gptel-quick-model 'qwen3:14b)
+  (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
 #+end_src
 
 ** lsp
