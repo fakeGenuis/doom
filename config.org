@@ -53,6 +53,7 @@ Literate and modular Doom Emacs configuration.
   - [[#rss][rss]]
   - [[#everywhere][everywhere]]
 - [[#other-packages][Other packages]]
+  - [[#tramp-rpc][tramp-rpc]]
   - [[#cns][cns]]
   - [[#kdl][kdl]]
   - [[#rainbow-mode][rainbow-mode]]
@@ -2064,6 +2065,34 @@ packages=[
 #+end_src
 
 * Other packages
+** tramp-rpc
+[[https://github.com/ArthurHeymans/emacs-tramp-rpc/issues/28#issuecomment-3775255423][ArthurHeymans/emacs-tramp-rpc#28 Clar...]]
+#+begin_src emacs-lisp :tangle packages.el
+(package! tramp-rpc
+  :recipe (:host github
+           :repo "ArthurHeymans/emacs-tramp-rpc"
+           :files ("lisp/*.el")
+           :build (:not autoloads)))
+
+(package! msgpack)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package tramp-rpc
+  :after tramp
+  :config
+  ;; Local cache directory (default: ~/.emacs.d/tramp-rpc/)
+  (setq tramp-rpc-deploy-local-cache-directory "~/.cache/tramp-rpc-binaries")
+  ;; Remote installation directory (default: ~/.cache/tramp-rpc)
+  (setq tramp-rpc-deploy-remote-directory "~/.local/bin/tramp-rpc"))
+#+end_src
+
+File preview is not supported in this connection.
+1. Please check if you have GNU ls installed over remote host.
+2. Adjust your `direct-async' tramp settings, for example:
+
+See (info "(tramp) Improving performance of asynchronous remote processes") for details.
+
 ** cns
 [[https://github.com/kanglmf/emacs-chinese-word-segmentation][GitHub - kanglmf/emacs-chinese-word-s...]]
 
