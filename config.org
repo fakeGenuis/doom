@@ -996,12 +996,6 @@ packages=["sqlite", "wordnet-common"]
 llm
 #+end_src
 
-Should always catch up with newest commit.
-#+begin_src emacs-lisp :tangle packages.el
-(unpin! gptel)
-(package! gptel :recipe (:nonrecursive t))
-#+end_src
-
 #+begin_src emacs-lisp
 (with-eval-after-load 'gptel
   (setq gptel-include-reasoning 'ignore
