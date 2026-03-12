@@ -22,7 +22,6 @@ Literate and modular Doom Emacs configuration.
   - [[#evil][evil]]
   - [[#snippets][snippets]]
   - [[#fold][fold]]
-  - [[#others-1][Others]]
 - [[#emacs][Emacs]]
   - [[#dired][dired]]
   - [[#dirvish][dirvish]]
@@ -46,7 +45,7 @@ Literate and modular Doom Emacs configuration.
   - [[#wolfram][wolfram]]
   - [[#markdown][markdown]]
   - [[#typst][typst]]
-  - [[#others-2][Others]]
+  - [[#others-1][Others]]
 - [[#email][Email]]
   - [[#mu4e][mu4e]]
 - [[#app][App]]
@@ -217,7 +216,6 @@ Default simplified Chinese input
 This is useful for allowing breaking after CJK characters and improves the
 word-wrapping for CJK text mixed with Latin text.
 #+begin_src emacs-lisp
-;; (global-visual-line-mode 1)
 (setq word-wrap-by-category t)
 #+end_src
 
@@ -1568,7 +1566,7 @@ This branch mainly fix =apply: Wrong number of arguments= of advice
           "fuzzy" "doom-module" "kbd" "fn")))
 #+end_src
 
-*** others
+*** Others
 [[kbd:SPC s b]] should work as expected
 - [[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
 
