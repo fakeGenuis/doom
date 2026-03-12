@@ -969,7 +969,7 @@ If the last line at END starts with '** ', exclude it from shifting."
         (let ((shift (- 3 min-level)))
           (goto-char start)
           (while (re-search-forward "^\\(\\*+\\) " end t)
-            (replace-match (make-string (+ (length (match-string 1)) shift) ?*) t t)))))))
+            (replace-match (concat (make-string (+ (length (match-string 1)) shift) ?*) " ") t t)))))))
 
 (add-hook 'gptel-post-response-functions #'gptel-shift-response-heading-level)
 #+end_src
