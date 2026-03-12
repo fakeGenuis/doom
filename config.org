@@ -358,28 +358,9 @@ doom-dashboard
 #+end_src
 
 - [[https://discourse.doomemacs.org/t/how-to-change-your-splash-screen/57][How to change your splash screen - Configuration - Doom Emacs Discourse]]
-- [[https://stackoverflow.com/a/25158644][elisp - Read from a file into a Emacs lisp list - Stack Overflow]]
 
 #+begin_src emacs-lisp
 (setq fancy-splash-image (expand-file-name "assets/bitmap_512x.png" doom-user-dir))
-#+end_src
-
-splash image not loaded in the first frame of daemon mode
-- [[https://www.reddit.com/r/emacs/comments/uvjbgl/splash_image_not_visible_initially/][Splash image not visible initially]]
-- [[https://discourse.doomemacs.org/t/splash-image-tinted-only-on-emacs-daemon-launch/3574][Splash image tinted only on emacs daemon launch - User Support - Doom Emacs D...]]
-- [[https://github.com/doomemacs/doomemacs/issues/6221][doomemacs/doomemacs#6221 Theme differences in daemon vs standard GUI for the ...]]
-- [[https://github.com/doomemacs/doomemacs/issues/7301][doomemacs/doomemacs#7301 {cosmetic bug} fancy-splash-image not loaded at firs...]]
-
-#+begin_src emacs-lisp
-;; Refresh the Doom dashboard on the first frame in daemon mode.
-(defun +my/load-doom-theme (frame)
-  (select-frame frame)
-  (load-theme doom-theme t))
-
-(add-hook 'after-make-frame-functions #'+my/load-doom-theme 90)
-;; Remove make frame hook to avoid delays when opening a new frame.
-(add-hook! 'doom-first-buffer-hook
-           (remove-hook 'after-make-frame-functions #'+my/load-doom-theme))
 #+end_src
 
 ** modeline
