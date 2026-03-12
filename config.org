@@ -2493,8 +2493,8 @@ Return the window showing BUFFER, or nil to let display-buffer try other actions
         ;; (projectile-file-exists-local-cache-expire (* 5 60)))
   (add-to-list 'projectile-globally-ignored-directories
                "*\\.run\\.tmp$")
-  (pushnew! projectile-globally-ignored-modes
-            "helpful-mode" "dired-mode")
+  (dolist (m '("helpful-mode" "dired-mode"))
+    (cl-pushnew m projectile-globally-ignored-modes :test #'equal))
   (add-to-list 'projectile-globally-ignored-buffers "*doom*"))
 #+end_src
 
