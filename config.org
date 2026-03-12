@@ -901,16 +901,6 @@ Only hint spell error for English words!
 #+end_src
 
 * Tools
-** COMMENT docker
-#+begin_src toml
-[docker]
-packages=["dockfmt"]
-#+end_src
-
-#+begin_src emacs-lisp :tangle no :noweb-ref tools
-docker
-#+end_src
-
 ** lookup
 #+begin_src toml
 [lookup]
