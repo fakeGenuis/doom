@@ -1008,6 +1008,7 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
 #+begin_src emacs-lisp
 (use-package ai-code
   ;; :straight (:host github :repo "tninja/ai-code-interface.el") ;; if you want to use straight to install, no need to have MELPA setting above
+  :commands ai-code-menu
   :config
   ;; use codex as backend, other options are 'claude-code, 'gemini, 'github-copilot-cli, 'opencode, 'grok, 'cursor, 'kiro, 'codebuddy, 'aider, 'claude-code-ide, 'claude-code-el
   (ai-code-set-backend 'codex)
