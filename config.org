@@ -57,6 +57,7 @@ Literate and modular Doom Emacs configuration.
   - [[#kdl][kdl]]
   - [[#rainbow-mode][rainbow-mode]]
   - [[#go-translate][go-translate]]
+  - [[#pacdiff][pacdiff]]
   - [[#keycast][keycast]]
   - [[#screenshot][screenshot]]
   - [[#zotxt][zotxt]]
@@ -2071,6 +2072,15 @@ See (info "(tramp) Improving performance of asynchronous remote processes") for 
   (set-popup-rule!
     "^\\*gt-result\\*"
     :side 'left :size 60 :slot -2 :select t))
+#+end_src
+
+** pacdiff
+#+begin_src emacs-lisp :tangle packages.el
+(package! pacdiff)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! pacdiff)
 #+end_src
 
 ** keycast
