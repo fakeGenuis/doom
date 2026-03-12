@@ -1000,6 +1000,14 @@ If the last line at END starts with '** ', exclude it from shifting."
 
 And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitHub - munen/emacs.d: My emacs conf...]]
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! gptel-agent)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package gptel-agent :defer t)
+#+end_src
+
 *** codex
 #+begin_src emacs-lisp :tangle packages.el
 (package! ai-code)
