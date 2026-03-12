@@ -676,14 +676,12 @@ packages=[
      ("m" "/mnt/"                       "Mounts")
      ("n" "~/.Nextcloud/"               "Nextcloud")
      ("p" "~/Pictures/"                 "Pictures")
-     ("t" "~/.local/share/Trash/files/" "TrashCan")))
-  (remove-hook 'dired-mode-hook #'+dired-update-mode-line-height-h))
+     ("t" "~/.local/share/Trash/files/" "TrashCan"))))
 #+end_src
 
 #+begin_src emacs-lisp
 (after! dirvish
   (setq dirvish-side-width 25)
-  (setq dirvish-reuse-session 'quit)
   (map!
    :map dirvish-mode-map
    :gn "S"    #'dirvish-cd-into-vterm
