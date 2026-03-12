@@ -549,22 +549,6 @@ Line numbers
 (setq display-line-numbers-type nil)
 #+end_src
 
-notify initial time
-#+begin_src emacs-lisp
-(defun notify-init-time ()
-  (require 'notifications)
-  (notifications-notify
-   :image-path (expand-file-name "assets/notify.jpg" doom-user-dir)
-   :title "Daemon"
-   :sound-name "bell"
-   :body (format "%s initialed in %0.3fs" server-name doom-init-time)))
-
-;; NOTE Why this keep one workspace in `emacsclient -c'?
-(add-hook! 'doom-init-ui-hook
-  (if (and (daemonp) (not (+my/is-utility-daemon)))
-      (notify-init-time)))
-#+end_src
-
 * Editor
 ** evil
 #+begin_src emacs-lisp :tangle no :noweb-ref editor
