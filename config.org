@@ -1986,6 +1986,8 @@ packages=[
 
 * Other packages
 ** tramp-rpc
+[[https://github.com/ArthurHeymans/emacs-tramp-rpc][GitHub - ArthurHeymans/emacs-tramp-rp...]]
+
 [[https://github.com/ArthurHeymans/emacs-tramp-rpc/issues/28#issuecomment-3775255423][ArthurHeymans/emacs-tramp-rpc#28 Clar...]]
 #+begin_src emacs-lisp :tangle packages.el
 (package! tramp-rpc
@@ -2425,10 +2427,22 @@ docker pull zevlg/telega-server:latest
 #+end_src
 
 ** tramp
-thank you, fish 4.0😄️
+[[https://github.com/alexluigit/dirvish/blob/main/docs/CUSTOMIZING.org#tramp-integration][dirvish/docs/CUSTOMIZING.org at main ...]]
 #+begin_src emacs-lisp
-(after! tramp
-  (add-to-list 'process-environment "SHELL=/bin/bash"))
+(with-eval-after-load 'tramp
+  ;; Enable full-featured Dirvish over TRAMP on ssh connections
+  ;; https://www.gnu.org/software/tramp/#Improving-performance-of-asynchronous-remote-processes
+  (connection-local-set-profile-variables
+   'remote-direct-async-process
+   '((tramp-direct-async-process . t)))
+  (connection-local-set-profiles
+   '(:application tramp :protocol "rpc")
+   'remote-direct-async-process)
+  ;; Tips to speed up connections
+  (setq tramp-verbose 0)
+  (setq tramp-chunksize 2000)
+  (setq tramp-rpc-use-controlmaster nil)
+  (setq tramp-ssh-controlmaster-options nil))
 #+end_src
 
 - [[https://github.com/akermu/emacs-libvterm/issues/689][akermu/emacs-libvterm#689 Tramp-login-shells custom doesn't match type]]
