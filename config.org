@@ -1485,6 +1485,23 @@ start session only when exactly execute it.
     :side 'bottom :size 10 :slot -2 :select t))
 #+end_src
 
+[[https://github.com/emacs-jupyter/jupyter/issues/607][emacs-jupyter/jupyter#607 'wrong-type...]]
+#+begin_src emacs-lisp
+(defun my/jupyter-org-results-drawer-pre-blank-fix (element)
+  "Advice to ensure the RESULTS drawer has a :pre-blank 0 property.
+This prevents 'wrong-type-argument wholenump nil' errors in newer Org versions."
+  (if (and element (eq (org-element-type element) 'drawer))
+      (progn
+        (org-element-put-property element :pre-blank 0)
+        (org-element-put-property element :post-blank 1)
+        element)
+    element))
+
+(advice-add 'jupyter-org-results-drawer
+            :filter-return
+            #'my/jupyter-org-results-drawer-pre-blank-fix)
+#+end_src
+
 To view contents of =.ipynb= file, see
 - [[https://github.com/astoff/code-cells.el][GitHub - astoff/code-cells.el: Emacs utilities for code split into cells, inc...]]
 
