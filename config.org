@@ -118,7 +118,7 @@ The *conventions* of this org file:
 
  :editor
  <<editor>>
- (format +onsave)
+ format
  ;file-templates
  ;multiple-cursors
  parinfer
