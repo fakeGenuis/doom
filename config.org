@@ -487,6 +487,8 @@ to use =doom/reload-font= later to enable proper color emoji display.
 
 ** Others
 #+begin_src emacs-lisp
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+
 (after! nerd-icons
   (setq nerd-icons-scale-factor 0.9))
 #+end_src
