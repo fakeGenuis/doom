@@ -1209,10 +1209,24 @@ Invoke =latex.exe= on windows.
 retain =.bbl= as it required by APS journals.
 =synctex.gz= kept to sync tex view.
 #+begin_src emacs-lisp
-(after! latex
+(with-eval-after-load 'latex
   (setq LaTeX-clean-intermediate-suffixes
-        (seq-difference LaTeX-clean-intermediate-suffixes
-                        '("\\.bbl" "\\.synctex\\.gz"))))
+        (delete "\\.bbl" (copy-sequence LaTeX-clean-intermediate-suffixes)))
+  (add-to-list 'LaTeX-clean-output-suffixes "\\.bbl"))
+
+(with-eval-after-load 'tex
+  (defun +my/TeX-clean-force-synctex-gz-a (fn &optional arg)
+    "Ensure `TeX-clean' removes the master .synctex.gz on Clean All."
+    (prog1 (funcall fn arg)
+      (when arg
+        (let ((synctex
+               (concat
+                (file-name-sans-extension
+                 (TeX-active-master (TeX-output-extension)))
+                ".synctex.gz")))
+          (when (file-exists-p synctex)
+            (delete-file synctex))))))
+  (advice-add 'TeX-clean :around #'+my/TeX-clean-force-synctex-gz-a))
 #+end_src
 
 add =XeTeX= mode in =TeX/LaTeX=
