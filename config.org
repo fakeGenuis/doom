@@ -8,7 +8,6 @@ Literate and modular Doom Emacs configuration.
 - [[#helpers][Helpers]]
   - [[#predefined][Predefined]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
-  - [[#301-specific][30.1 specific]]
   - [[#shortcuts][Shortcuts]]
 - [[#input][Input]]
   - [[#chinese][Chinese]]
@@ -194,13 +193,6 @@ Open link with host =Librewolf= browser
 #+begin_src emacs-lisp
 (if (featurep :system 'wsl)
   (setq browse-url-firefox-program "librewolf.exe"))
-#+end_src
-
-** 30.1 specific
-[[https://github.com/doomemacs/doomemacs/issues/8287][doomemacs/doomemacs#8287 eldoc error: (invalid-function incf)]]
-#+begin_src emacs-lisp :tangle no
-(package! eldoc :built-in t)
-(package! track-changes :built-in t)
 #+end_src
 
 ** Shortcuts
