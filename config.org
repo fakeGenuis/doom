@@ -1141,22 +1141,23 @@ packages=["aspell", "aspell-en"]
 #+end_src
 
 #+begin_src emacs-lisp
-(setf (alist-get 'org-mode +spell-excluded-faces-alist)
-      (append '(org-level-1 font-lock-function-name-face help-key-binding)
-              (alist-get 'org-mode +spell-excluded-faces-alist)))
+(dolist (face '(org-level-1 org-level-2 org-level-3
+                font-lock-function-name-face help-key-binding))
+  (cl-pushnew face (alist-get 'org-mode +spell-excluded-faces-alist)))
 
-(setf (alist-get 'latex-mode +spell-excluded-faces-alist)
-      (append '(font-lock-constant-face tex-math font-lock-comment-face)
-              (alist-get 'latex-mode +spell-excluded-faces-alist)))
+(dolist (face '(font-lock-constant-face tex-math font-lock-comment-face))
+  (cl-pushnew face (alist-get 'latex-mode +spell-excluded-faces-alist)))
 #+end_src
 
 Only hint spell error for English words!
 #+begin_src emacs-lisp
-(with-eval-after-load 'spell-fu
-  (setq-default spell-fu-word-regexp "\\b\\([A-Za-z]+\\(['’][A-Za-z]+\\)?\\)\\b")
-  (add-hook 'spell-fu-mode-hook
-            (lambda ()
-              (setq-local spell-fu-word-regexp spell-fu-word-regexp))))
+(defconst +my/spell-fu-english-word-regexp
+  "\\b\\([A-Za-z]+\\(['’][A-Za-z]+\\)?\\)\\b")
+
+(add-hook 'spell-fu-mode-hook
+          (lambda ()
+            (setq-local spell-fu-word-regexp
+                        +my/spell-fu-english-word-regexp)))
 #+end_src
 
 * Tools
