@@ -1679,7 +1679,8 @@ packages=[
  +roam)
 #+end_src
 
-*** org modern
+*** Core
+**** org modern
 Fix function link recognized as footnote.
 #+begin_src emacs-lisp
 (use-package org-modern
@@ -1703,7 +1704,7 @@ category.
 (add-hook 'org-mode-hook #'+my/org-stronger-emphasis)
 #+end_src
 
-*** org appear
+**** org appear
 Very useful package for "automatic visibility toggling depending on cursor
 position"! Move on following latex to test.
 #+begin_quote
@@ -1717,7 +1718,7 @@ position"! Move on following latex to test.
         org-appear-inside-latex t))
 #+end_src
 
-*** agenda
+**** agenda
 #+begin_src emacs-lisp
 (setq org-directory "~/Documents/org/"
       org-agenda-files '("agenda/todos.org" "agenda/projects.org")
@@ -1787,7 +1788,8 @@ custom agenda view from
 - [[https://stackoverflow.com/a/50875921][emacs - org-mode capture : dynamic file name - Stack Overflow]]
 - [[https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el][emacs-from-scratch/init.el at c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4 · davi...]]
 
-*** org-babel
+*** Babel
+**** org-babel
 Skip executing org source blocks within commented headings. To optimize,
 consider advising [[fn:org-babel-map-executables]]
 #+begin_src emacs-lisp
@@ -1828,7 +1830,8 @@ the current subtree, passing over the prefix argument ARG."
 (advice-add 'org-babel-execute-subtree :override #'+my/org-babel-execute-subtree)
 #+end_src
 
-*** jupyter
+*** Jupyter
+**** jupyter
 #+begin_src toml
 [jupyter]
 packages=["jupyter-notebook"]
@@ -1881,7 +1884,7 @@ Possible issues
 - [ ] [[https://github.com/emacs-jupyter/jupyter/issues/558][emacs-jupyter/jupyter#558 Jupyter and...]]
 - [ ] =(wrong-type-argument stringp nil)=
 
-*** jupyter-ext
+**** jupyter-ext
 #+begin_src emacs-lisp :tangle packages.el
 (package! jupyter-ext
   :recipe (:host github
@@ -1924,7 +1927,7 @@ Intent mainly with [[file:::wolfram in jupyter]], respect to doom's org babel la
   -90)
 #+end_src
 
-*** ob-async
+**** ob-async
 Session async have been include in org mode, see how to implement async using
 built in method.
 - [[https://github.com/jackkamm/ob-session-async][GitHub - jackkamm/ob-session-async: Asynchronous org-mode session evaluation]]
@@ -1942,13 +1945,14 @@ This branch mainly fix =apply: Wrong number of arguments= of advice
            :branch "update-signature-skip-session"))
 #+end_src
 
-*** org-noter
+*** Knowledge
+**** org-noter
 #+begin_src emacs-lisp
 (after! org-noter
   (org-noter-set-doc-split-fraction '(0.75 . 0.25)))
 #+end_src
 
-*** org-roam
+**** org-roam
 #+begin_src emacs-lisp
 (setq org-roam-directory (expand-file-name "roam/" org-directory))
 (after! org-roam
@@ -1965,7 +1969,7 @@ This branch mainly fix =apply: Wrong number of arguments= of advice
           "fuzzy" "doom-module" "kbd" "fn")))
 #+end_src
 
-*** zotxt
+**** zotxt
 #+begin_src emacs-lisp :tangle packages.el
 (package! zotxt)
 #+end_src
@@ -2039,7 +2043,7 @@ open attachment with point at arxiv link
      (org-zotxt-insert-reference-link)))
 #+end_src
 
-*** insert arxiv links
+**** insert arxiv links
 #+begin_src emacs-lisp
 (defvar rx-arxiv-regexp
   (rx (= 4 num) "." (= 5 num))
