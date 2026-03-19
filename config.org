@@ -45,12 +45,12 @@ Literate and modular Doom Emacs configuration.
   - [[#llm][llm]]
   - [[#lsp][lsp]]
   - [[#magit][magit]]
-  - [[#go-translate][go-translate]]
+  - [[#pdf][pdf]]
   - [[#transient][transient]]
+  - [[#go-translate][go-translate]]
+  - [[#figlet][figlet]]
   - [[#pacdiff][pacdiff]]
   - [[#tldr][tldr]]
-  - [[#pdf][pdf]]
-  - [[#figlet][figlet]]
 - [[#lang][Lang]]
   - [[#latex][Latex]]
   - [[#lua][lua]]
@@ -1304,13 +1304,6 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
     (ai-code-magit-setup-transients)))
 #+end_src
 
-*** Others
-#+begin_src emacs-lisp
-(after! gptel-quick
-  (setq gptel-quick-model 'qwen3:14b)
-  (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
-#+end_src
-
 *** inline-diff
 #+begin_src emacs-lisp :tangle packages.el
 (package! inline-diff
@@ -1356,6 +1349,13 @@ change key map
   (define-key inline-diff-overlay-map (kbd "M-DEL") nil))
 #+end_src
 
+*** Others
+#+begin_src emacs-lisp
+(after! gptel-quick
+  (setq gptel-quick-model 'qwen3:14b)
+  (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
+#+end_src
+
 ** lsp
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
 (lsp +eglot)
@@ -1394,102 +1394,6 @@ If you use =fish= shell, you may change ~fish_prompt~. see [[file:~/.config/fish
 [[cmd:magit-stage]] (visually stage hunks) may not work in =yadm=, which cause emacs
 to hang, use [[kbd:E s]] ([[cmd:magit-ediff-stage]]) instead.
 [[https://github.com/magit/magit/issues/719][magit/magit#719 Magit process hangs when trying to stage a hunk]]
-
-** go-translate
-#+begin_src emacs-lisp :tangle packages.el
-(package! gt)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package gt
-  :bind ("C-c t" . gt-translate)
-  :config
-  (setq gt-langs '(en zh))
-  (setq gt-default-translator
-        (gt-translator
-         :engines (list (gt-youdao-dict-engine) (gt-youdao-suggest-engine))
-         ;; :engines (gt-google-engine)
-         :render (gt-buffer-render)))
-  (set-popup-rule!
-    "^\\*gt-result\\*"
-    :side 'left :size 60 :slot -2 :select t))
-#+end_src
-
-** transient
-- [[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
-- [[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is set]]
-- [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
-#+begin_src emacs-lisp :tangle no
-(after! (transient magit gptel)
-  (setq transient-display-buffer-action
-        '(display-buffer-below-selected
-          (dedicated . t)
-          (inhibit-same-window . t)))
-  (setq transient-show-during-minibuffer-read t))
-#+end_src
-
-see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
-
-*** transient-posframe
-[[https://github.com/yanghaoxie/transient-posframe/blob/master/transient-posframe.el][transient-posframe/transient-posframe]]
-#+begin_src emacs-lisp
-(with-eval-after-load 'transient
-  (defun my/transient-posframe-display-buffer (buffer alist)
-    "Display transient BUFFER in a child frame."
-    (when (and (fboundp 'posframe-show)
-               (fboundp 'posframe-workable-p)
-               (posframe-workable-p))
-      (let ((pf (posframe-show
-                 buffer
-                 :poshandler #'posframe-poshandler-frame-bottom-center
-                 :accept-focus nil
-                 :font "ComicShannsMono Nerd Font 10"
-                 :min-width 40
-                 :border-width 2
-                 :border-color "gray50")))
-        (redisplay t)
-        (and (frame-live-p pf) (frame-root-window pf))))))
-#+end_src
-
-- [ ] still buggy, only work after manually execute this block. And sometimes
-  makes =minibuffer= height increase unintended.
-- Notes:
-  - daemon mode still has a first-popup issue: the first transient posframe in a
-    new client frame may fail to appear, while later ones usually work
-  - this block intentionally keeps the current workaround behavior because it is
-    stable enough after that first failure
-
-#+begin_src emacs-lisp
-(after! (:or magit dirvish gptel)
-  (setq transient-display-buffer-action
-        '(my/transient-posframe-display-buffer
-          (dedicated . t)
-          (inhibit-same-window . t))))
-#+end_src
-
-- [ ] try to fixed transient menu in =dirvish=
-#+begin_src emacs-lisp
-(defun transient-posframe--delete ()
-  "Delete transient posframe."
-  (posframe-delete-frame transient--buffer-name)
-  (posframe--kill-buffer transient--buffer-name))
-
-(advice-add 'transient--delete-window :override #'transient-posframe--delete)
-#+end_src
-
-** pacdiff
-#+begin_src emacs-lisp :tangle packages.el
-(package! pacdiff)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! pacdiff)
-#+end_src
-
-** tldr
-#+begin_src emacs-lisp :tangle packages.el
-(package! tldr)
-#+end_src
 
 ** pdf
 #+begin_src emacs-lisp :tangle no :noweb-ref tools
@@ -1554,6 +1458,88 @@ Auto view =.ps= file
 (add-hook 'ps-mode-hook 'doc-view-toggle-display)
 #+end_src
 
+** transient
+- [[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
+- [[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is set]]
+- [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
+#+begin_src emacs-lisp :tangle no
+(after! (transient magit gptel)
+  (setq transient-display-buffer-action
+        '(display-buffer-below-selected
+          (dedicated . t)
+          (inhibit-same-window . t)))
+  (setq transient-show-during-minibuffer-read t))
+#+end_src
+
+see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
+
+*** transient-posframe
+[[https://github.com/yanghaoxie/transient-posframe/blob/master/transient-posframe.el][transient-posframe/transient-posframe]]
+#+begin_src emacs-lisp
+(with-eval-after-load 'transient
+  (defun my/transient-posframe-display-buffer (buffer alist)
+    "Display transient BUFFER in a child frame."
+    (when (and (fboundp 'posframe-show)
+               (fboundp 'posframe-workable-p)
+               (posframe-workable-p))
+      (let ((pf (posframe-show
+                 buffer
+                 :poshandler #'posframe-poshandler-frame-bottom-center
+                 :accept-focus nil
+                 :font "ComicShannsMono Nerd Font 10"
+                 :min-width 40
+                 :border-width 2
+                 :border-color "gray50")))
+        (redisplay t)
+        (and (frame-live-p pf) (frame-root-window pf))))))
+#+end_src
+
+- [ ] still buggy, only work after manually execute this block. And sometimes
+  makes =minibuffer= height increase unintended.
+- Notes:
+  - daemon mode still has a first-popup issue: the first transient posframe in a
+    new client frame may fail to appear, while later ones usually work
+  - this block intentionally keeps the current workaround behavior because it is
+    stable enough after that first failure
+
+#+begin_src emacs-lisp
+(after! (:or magit dirvish gptel)
+  (setq transient-display-buffer-action
+        '(my/transient-posframe-display-buffer
+          (dedicated . t)
+          (inhibit-same-window . t))))
+#+end_src
+
+- [ ] try to fixed transient menu in =dirvish=
+#+begin_src emacs-lisp
+(defun transient-posframe--delete ()
+  "Delete transient posframe."
+  (posframe-delete-frame transient--buffer-name)
+  (posframe--kill-buffer transient--buffer-name))
+
+(advice-add 'transient--delete-window :override #'transient-posframe--delete)
+#+end_src
+
+** go-translate
+#+begin_src emacs-lisp :tangle packages.el
+(package! gt)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package gt
+  :bind ("C-c t" . gt-translate)
+  :config
+  (setq gt-langs '(en zh))
+  (setq gt-default-translator
+        (gt-translator
+         :engines (list (gt-youdao-dict-engine) (gt-youdao-suggest-engine))
+         ;; :engines (gt-google-engine)
+         :render (gt-buffer-render)))
+  (set-popup-rule!
+    "^\\*gt-result\\*"
+    :side 'left :size 60 :slot -2 :select t))
+#+end_src
+
 ** COMMENT shell-command+
 repository is gone?!
 
@@ -1592,6 +1578,20 @@ packages=["figlet"]
   :defer t
   :config
   (setq figlet-options '("-W" "-f" "script")))
+#+end_src
+
+** pacdiff
+#+begin_src emacs-lisp :tangle packages.el
+(package! pacdiff)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! pacdiff)
+#+end_src
+
+** tldr
+#+begin_src emacs-lisp :tangle packages.el
+(package! tldr)
 #+end_src
 
 * Lang
