@@ -43,12 +43,10 @@ Literate and modular Doom Emacs configuration.
 - [[#tools][Tools]]
   - [[#lookup][lookup]]
   - [[#llm][llm]]
-  - [[#lsp][lsp]]
   - [[#magit][magit]]
   - [[#pdf][pdf]]
   - [[#transient][transient]]
   - [[#go-translate][go-translate]]
-  - [[#figlet][figlet]]
   - [[#pacdiff][pacdiff]]
   - [[#tldr][tldr]]
 - [[#lang][Lang]]
@@ -59,10 +57,8 @@ Literate and modular Doom Emacs configuration.
   - [[#sh][sh]]
   - [[#yaml][yaml]]
   - [[#wolfram][wolfram]]
-  - [[#markdown][markdown]]
   - [[#typst][typst]]
   - [[#kdl][kdl]]
-  - [[#others-1][Others]]
 - [[#email][Email]]
   - [[#mu4e][mu4e]]
 - [[#app][App]]
@@ -131,6 +127,7 @@ The *conventions* of this org file:
 
  :tools
  <<tools>>
+ (lsp +eglot)
  ;biblio
  debugger
  ;editorconfig
@@ -143,6 +140,7 @@ The *conventions* of this org file:
  ;tty
 
  :lang
+ markdown
  <<lang>>
  ;(cc +lsp)
  emacs-lisp
@@ -191,17 +189,6 @@ enable_default=true
   (and (daemonp) (boundp 'server-name) (string= server-name "utility")))
 #+end_src
 
-#+begin_src emacs-lisp
-(defun +my/reverse-words (beg end)
-  "Reverse the order of words in region."
-  (interactive "*r")
-  (apply
-   'insert
-   (reverse
-    (split-string
-     (delete-and-extract-region beg end) "\\b"))))
-#+end_src
-
 ** Windows =Librewolf= in wsl
 Open link with host =Librewolf= browser
 #+begin_src emacs-lisp
@@ -224,11 +211,6 @@ Open link with host =Librewolf= browser
 #+end_src
 
 ** COMMENT Backup
-[[https://github.com/alhassy/ob-latex-as-png][GitHub - alhassy/ob-latex-as-png: Inline arbitrary LaTeX snippets as PNGs in Org mode]]
-#+begin_src emacs-lisp :tangle packages.el
-(package! ob-latex-as-png)
-#+end_src
-
 #+begin_src emacs-lisp
 (add-hook 'ediff-prepare-buffer-hook
           (lambda () (+word-wrap-mode)))
@@ -242,10 +224,14 @@ Open link with host =Librewolf= browser
 #+end_src
 
 No reason to scale super/sub-script down!
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (after! 'font-latex
   (set-face-attribute 'font-latex-superscript-face nil :height 'unspecified)
   (set-face-attribute 'font-latex-subscript-face nil :height 'unspecified))
+#+end_src
+
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 #+end_src
 
 * Input
@@ -602,7 +588,6 @@ to use =doom/reload-font= later to enable proper color emoji display.
 
 ** Workspace
 #+begin_src emacs-lisp
-;; Define the function
 (defun +my/kill-emacs-without-persp-save ()
   "Kill Emacs without saving perspectives."
   (interactive)
@@ -610,7 +595,6 @@ to use =doom/reload-font= later to enable proper color emoji display.
         (confirm-kill-emacs nil))
     (save-buffers-kill-emacs t)))
 
-;; Bind to SPC q Q
 (map! :leader
       :desc "Kill Emacs (no persp save)"
       :prefix "q"
@@ -644,8 +628,6 @@ and add ignored files in [[file:.projectile]].
 
 ** Others
 #+begin_src emacs-lisp
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
-
 (after! nerd-icons
   (setq nerd-icons-scale-factor 0.9))
 #+end_src
@@ -1175,10 +1157,6 @@ packages=["sqlite", "wordnet-common"]
 
 #+begin_src emacs-lisp
 (add-to-list '+lookup-provider-url-alist '("Brave" "https://search.brave.com/search?q=%s"))
-#+end_src
-
-*** search online
-#+begin_src emacs-lisp
 (add-to-list '+lookup-provider-url-alist '("Inspire" "https://inspirehep.net/literature?q=%s"))
 #+end_src
 
@@ -1354,11 +1332,6 @@ change key map
 (after! gptel-quick
   (setq gptel-quick-model 'qwen3:14b)
   (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
-#+end_src
-
-** lsp
-#+begin_src emacs-lisp :tangle no :noweb-ref tools
-(lsp +eglot)
 #+end_src
 
 ** magit
@@ -1538,46 +1511,6 @@ see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Tran
   (set-popup-rule!
     "^\\*gt-result\\*"
     :side 'left :size 60 :slot -2 :select t))
-#+end_src
-
-** COMMENT shell-command+
-repository is gone?!
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! shell-command+
-  :recipe (:host sourcehut
-           :repo "pkal/shell-command-plus"))
-#+end_src
-This package is located in =GNU ELPA=, but it cannot be installed, see
-[[https://www.reddit.com/r/DoomEmacs/comments/q4jrer/cant_install_elpa_package/][cant install elpa package]]
-
-substitute "%" to buffer file in ~shell-command~
-- [[https://puntoblogspot.blogspot.com/2021/05/current-file-name-on-emacss-shell.html][puntoblogspot: Current file name on emacs's shell-command]]
-- [[https://unix.stackexchange.com/questions/45125/how-to-get-current-buffersilename-in-emacs][function - How to get current buffer's filename in emacs? - Unix & Linux Stack Exchange]]
-
-#+begin_src emacs-lisp
-(use-package! shell-command+
-  :commands shell-command+
-  :init
-  (global-set-key (kbd "M-!") #'shell-command+))
-#+end_src
-
-** figlet
-converting comments into ascii arts
-#+begin_src toml
-[figlet]
-packages=["figlet"]
-#+end_src
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! figlet)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! figlet
-  :defer t
-  :config
-  (setq figlet-options '("-W" "-f" "script")))
 #+end_src
 
 ** pacdiff
@@ -2362,18 +2295,6 @@ Completion seems not work with =12.3=.
     (yas-define-snippets 'wolfram-mode key-templates)))
 #+end_src
 
-** markdown
-#+begin_src toml
-[markdown]
-packages=[
-    "pandoc-bin"
-]
-#+end_src
-
-#+begin_src emacs-lisp :tangle no :noweb-ref lang
-markdown
-#+end_src
-
 ** typst
 #+begin_src toml
 ["typst-mode"]
@@ -2452,18 +2373,6 @@ also one need to enable [[doom-module::lang ess]], see
 
 #+begin_src emacs-lisp
 (use-package kdl-mode)
-#+end_src
-
-** Others
-css
-#+begin_src emacs-lisp
-(prependq! auto-mode-alist '(("\\.rasi\\'" . css-mode)))
-#+end_src
-
-defer is not work, same to immediate!
-#+begin_src emacs-lisp :tangle no
-(after! parinfer-rust-mode
-  (setq parinfer-rust-check-before-enable 'defer))
 #+end_src
 
 * Email
