@@ -597,13 +597,6 @@ to use =doom/reload-font= later to enable proper color emoji display.
 [[https://docs.projectile.mx/projectile/configuration.html][Configuration :: Projectile]]
 #+begin_src emacs-lisp
 (after! projectile
-  (setq projectile-indexing-method 'alien
-        projectile-sort-order 'recently-active
-        projectile-file-exists-remote-cache-expire (* 10 60)
-        projectile-track-known-projects-automatically nil
-        ;; projectile-require-project-root t
-        projectile-auto-discover t)
-        ;; (projectile-file-exists-local-cache-expire (* 5 60)))
   (add-to-list 'projectile-globally-ignored-directories
                "*\\.run\\.tmp$")
   (dolist (m '("helpful-mode" "dired-mode"))
