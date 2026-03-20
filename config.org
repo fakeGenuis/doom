@@ -890,12 +890,7 @@ Goto random line, use with [[fn:dirvish-fd]]
    '((tramp-direct-async-process . t)))
   (connection-local-set-profiles
    '(:application tramp :protocol "rpc")
-   'remote-direct-async-process)
-  ;; Tips to speed up connections
-  (setq tramp-verbose 0)
-  (setq tramp-chunksize 2000)
-  (setq tramp-rpc-use-controlmaster nil)
-  (setq tramp-ssh-controlmaster-options nil))
+   'remote-direct-async-process))
 #+end_src
 
 - [[https://github.com/akermu/emacs-libvterm/issues/689][akermu/emacs-libvterm#689 Tramp-login-shells custom doesn't match type]]
