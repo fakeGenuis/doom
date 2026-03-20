@@ -435,11 +435,11 @@ custom doom-modeline font, valid on startup and persist after [[cmd:doom/reload-
 #+end_src
 
 *** keycast
-[[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
 #+begin_src emacs-lisp :tangle packages.el
 (package! keycast)
 #+end_src
 
+[[https://github.com/tarsius/keycast/issues/7#issuecomment-881469067][tarsius/keycast#7 Add support for moody and doom-modeline.]]
 #+begin_src emacs-lisp
 (use-package! keycast
   :commands (keycast-mode)
@@ -487,7 +487,7 @@ packages=[
     "ttf-symbola",          # required by doom
     "quivira",              # org ellipsis ⤵, ℤ
     "ttf-dejavu",           # org heading ◉ ✸ ∈
-    "ttf-sarasa-gothic-sc", # ￢
+    "ttf-sarasa-ui-sc", # ￢
     "noto-fonts-emoji",     # color emoji
     "ttf-nerd-fonts-symbols-mono" # nerd font
 ]
@@ -516,7 +516,7 @@ Doom's way of change unicode font, but it will be shadowed by
     (push "DejaVu Sans" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   ;; ￢
   (dolist (unicode-block '("Halfwidth and Fullwidth Forms"))
-    (push "Sarasa Gothic SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+    (push "Sarasa UI SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+end_src
 
 Add to [[var:after-setting-font-hook]] not work well, font display diffs after
