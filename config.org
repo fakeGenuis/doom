@@ -487,7 +487,7 @@ packages=[
     "ttf-symbola",          # required by doom
     "quivira",              # org ellipsis ⤵, ℤ
     "ttf-dejavu",           # org heading ◉ ✸ ∈
-    "ttf-sarasa-ui-sc", # ￢
+    "ttf-sarasa_ui-sc", # ￢
     "noto-fonts-emoji",     # color emoji
     "ttf-nerd-fonts-symbols-mono" # nerd font
 ]
@@ -798,7 +798,7 @@ packages=[
     "imagemagick",
     "ffmpegthumbnailer", # may require pipewire-jack
     "mediainfo",
-    # "tar", # include in =base=
+    "tar",
     "unzip"
 ]
 #+end_src
@@ -2128,7 +2128,8 @@ Smaller org src-block font size, more contents displayed.
 #+begin_src toml
 [python]
 packages=[
-    "pyright",
+    "pyright", "python-black", "python-isort",
+    "python-nose", "python-pytest",
     "tree-sitter-python"
 ]
 #+end_src
@@ -2194,7 +2195,10 @@ packages=["mathematica"]
 
 #+begin_src emacs-lisp
 (use-package! wolfram-mode
-  :defer t)
+  :defer t
+  :config
+  (with-eval-after-load 'dirvish
+    (add-to-list 'dirvish-binary-exts "nb")))
 #+end_src
 
 wolfram-format
