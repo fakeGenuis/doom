@@ -76,7 +76,7 @@ Otherwise, when FORCE is non-nil, unconditionally hide the result."
               #'my/org-babel-show-result-before-execute)
 
   ;; Fold results on file open, but rely on Org's own fold/show commands.
-  (add-hook 'org-mode-hook #'org-babel-result-hide-all)
+  (add-hook 'org-mode-hook #'org-babel-result-hide-all))
 
   ;; (map! :map org-mode-map
   ;;       :localleader
