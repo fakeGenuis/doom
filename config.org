@@ -962,22 +962,22 @@ vterm
 #+end_src
 
 #+begin_src emacs-lisp
+(defun +my/workspace-first-vterm-buffer ()
+  "Return the name of the first vterm buffer in the current workspace, or nil."
+  ;; https://stackoverflow.com/a/2238589
+  (catch 'found
+    (dolist (buffer (+workspace-buffer-list))
+      (let ((bn (buffer-name buffer)))
+        (when (and bn (with-current-buffer bn (eq major-mode 'vterm-mode)))
+          (throw 'found bn))))))
+
 (defun +my/vterm-switch ()
   "Switch to vterm buffer in `Term' workspace.
 If `Term' workspace not exist, create it.
 If no vterm buffer in `Term' workspace, create it."
   (interactive)
   (+workspace-switch "Term" t)
-  (let ((vterm-buffer
-         ;; return first vterm buffer in `Term' workspace
-         (catch 'foo
-           (dolist (buffer (+workspace-buffer-list))
-             (let ((bn (buffer-name buffer)))
-               (when (and bn
-                          ;; https://stackoverflow.com/a/2238589
-                          (with-current-buffer bn
-                            (eq major-mode 'vterm-mode)))
-                 (throw 'foo bn))))))
+  (let ((vterm-buffer (+my/workspace-first-vterm-buffer))
         (display-buffer-alist))
     (if vterm-buffer
         (switch-to-buffer vterm-buffer)
@@ -1049,14 +1049,7 @@ like =ranger=
   "Switch into recent vterm buffer, and cd into `default-directory` of dirvish buffer."
   (interactive)
   (let ((cur-dirvish-dir default-directory)
-        (vterm-buffer (catch 'foo
-                       (dolist (buffer (+workspace-buffer-list))
-                         (let ((bn (buffer-name buffer)))
-                           (when (and bn
-                                      ;; https://stackoverflow.com/a/2238589
-                                      (with-current-buffer bn
-                                        (eq major-mode 'vterm-mode)))
-                             (throw 'foo bn)))))))
+        (vterm-buffer (+my/workspace-first-vterm-buffer)))
     (dirvish-quit)
     (if vterm-buffer
         (let ((cur-vterm-dir (with-current-buffer vterm-buffer
