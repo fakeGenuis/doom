@@ -1307,17 +1307,14 @@ magit
 - [[https://www.reddit.com/r/emacs/comments/gjukb3/yadm_magit/][reddit:yadm+magit]]
 
 #+begin_src emacs-lisp
-(use-package! tramp
-  :commands yadm-status
-  :init
-  (defun yadm-status ()
-    (interactive)
-    (magit-status "/yadm::"))
-  (map! :leader
-        (:prefix "g"
-         :desc "yadm-status" "a" #'yadm-status))
-  :config
-  ;; see `man yadm'
+(defun yadm-status ()
+  (interactive)
+  (magit-status "/yadm::"))
+(map! :leader
+      (:prefix "g"
+       :desc "yadm-status" "a" #'yadm-status))
+;; see `man yadm'
+(with-eval-after-load 'tramp
   (add-to-list 'tramp-methods
                '("yadm"
                  (tramp-remote-shell "/bin/bash")
