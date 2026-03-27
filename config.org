@@ -1323,6 +1323,21 @@ magit
                  (tramp-login-args (("enter"))))))
 #+end_src
 
+Restore focus to origin window after viewing a commit and pressing =q=.
+#+begin_src emacs-lisp
+(defvar +my/magit-origin-window nil)
+(with-eval-after-load 'magit
+  (advice-add 'magit-show-commit :before
+    (lambda (&rest _)
+      (setq +my/magit-origin-window (selected-window))))
+  (advice-add 'magit-mode-quit-window :after
+    (lambda (&rest _)
+      (when (and +my/magit-origin-window
+                 (window-live-p +my/magit-origin-window))
+        (select-window +my/magit-origin-window)
+        (setq +my/magit-origin-window nil)))))
+#+end_src
+
 If you use =fish= shell, you may change ~fish_prompt~. see [[file:~/.config/fish/config.fish]]
 
 [[cmd:magit-stage]] (visually stage hunks) may not work in =yadm=, which cause emacs
