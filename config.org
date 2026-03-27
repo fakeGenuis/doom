@@ -848,7 +848,7 @@ packages=[
 
 Replace =/home/$user= to =~=
 #+begin_src emacs-lisp
-(defun +my/home-to-tide (file)
+(defun +my/home-to-tilde (file)
   "Replace /home/$user in FILE to ~."
   (let ((home (getenv "HOME"))
         (file-name (concat file)))
@@ -861,7 +861,7 @@ Replace =/home/$user= to =~=
 If MULTI-LINE, make every path occupy a new line."
   (interactive "P")
   (let* ((files (mapcar #'file-local-name (dired-get-marked-files)))
-         (related-files (mapcar #'+my/home-to-tide files))
+         (related-files (mapcar #'+my/home-to-tilde files))
          (names (mapconcat #'identity related-files (if multi-line "\n" " "))))
     (dirvish--kill-and-echo (if multi-line (concat "\n" names) names))))
 
