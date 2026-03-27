@@ -930,8 +930,8 @@ See (info "(tramp) Improving performance of asynchronous remote processes") for 
 #+begin_src emacs-lisp
 (setq url-proxy-services
    `(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
-     ("http" . ,(shell-command-to-string "echo -n $ALL_PROXY"))
-     ("https" . ,(shell-command-to-string "echo -n $ALL_PROXY"))))
+     ("http"  . ,(getenv "ALL_PROXY"))
+     ("https" . ,(getenv "ALL_PROXY"))))
 #+end_src
 
 * Term
