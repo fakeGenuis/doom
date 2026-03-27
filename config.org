@@ -396,11 +396,12 @@ Set default font size, =WSL= currently not aware dpi settings in
 #+end_src
 
 #+begin_src emacs-lisp
-(custom-set-faces
- ;; quoted text in info
- '(fixed-pitch-serif ((t (:slant italic :foreground "tomato"))))
- ;; prefer italic comment font
- '(font-lock-comment-face ((t (:slant italic)))))
+(add-hook 'doom-load-theme-hook
+  (lambda ()
+    ;; quoted text in info
+    (set-face-attribute 'fixed-pitch-serif nil :slant 'italic :foreground "tomato")
+    ;; prefer italic comment font
+    (set-face-attribute 'font-lock-comment-face nil :slant 'italic)))
 #+end_src
 
 ** doom-dashboard
