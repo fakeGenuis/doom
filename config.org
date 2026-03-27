@@ -133,7 +133,6 @@ The *conventions* of this org file:
  (eval +overlay)
  tree-sitter
  ;upload
- tree-sitter
 
  :os
  ;tty
