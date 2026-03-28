@@ -1042,6 +1042,50 @@ No text properties saved.
                           (vterm-mode)))))))
 #+end_src
 
+*** fix vterm window disappearing on workspace switch
+When a vterm buffer driven by =ai-code= has continuous output, it cycles through spinner
+characters (braille U+2802–U+28FF) in its buffer name via =vterm--set-title=. If the name
+changes between workspace deactivation (wconf save) and reactivation (wconf restore),
+=window-state-put= cannot find the buffer by name and silently collapses the window.
+
+Fix: temporarily strip the spinner prefix during wconf save/restore.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'persp-mode
+  (defun +my/persp--strip-vterm-spinners ()
+    "Strip spinner prefix from vterm buffers; return alist for restoration."
+    (let (renames)
+      ;; Do not use `doom-buffers-in-mode' here: during `persp-mode'
+      ;; initialization Doom temporarily routes `doom-buffer-list' through the
+      ;; current workspace, which may still be nil at this point.
+      (dolist (buf (doom-buffers-in-mode 'vterm-mode (buffer-list)))
+        (let* ((name (buffer-name buf))
+               (c (and (> (length name) 0) (aref name 0))))
+          (when (and c (<= #x2700 c #x28FF))
+            (push (cons buf name) renames)
+            (with-current-buffer buf
+              (rename-buffer (substring name 1) t)))))
+      renames))
+
+  (defun +my/persp--restore-vterm-names (renames)
+    (dolist (pair renames)
+      (when (buffer-live-p (car pair))
+        (with-current-buffer (car pair)
+          (rename-buffer (cdr pair) t)))))
+
+  (defadvice! +my/persp-save-stable-vterm-names-a (orig-fn &rest args)
+    :around #'persp-frame-save-state
+    (let ((renames (+my/persp--strip-vterm-spinners)))
+      (unwind-protect (apply orig-fn args)
+        (+my/persp--restore-vterm-names renames))))
+
+  (defadvice! +my/persp-restore-stable-vterm-names-a (orig-fn &rest args)
+    :around #'persp-restore-window-conf
+    (let ((renames (+my/persp--strip-vterm-spinners)))
+      (unwind-protect (apply orig-fn args)
+        (+my/persp--restore-vterm-names renames)))))
+#+end_src
+
 *** =S= cd into =dirvish= current directory
 like =ranger=
 #+begin_src emacs-lisp
