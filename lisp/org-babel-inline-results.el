@@ -1,6 +1,30 @@
 ;;; org-babel-inline-results.el -*- lexical-binding: t; -*-
 
 (after! org
+  (defun my/org-babel-show-current-src-block ()
+    "Ensure the current src block is visible."
+    (save-excursion
+      (when-let ((begin (org-babel-where-is-src-block-head)))
+        (goto-char begin)
+        (when-let ((element (org-element-at-point)))
+          (when (org-element-type-p element 'src-block)
+            (org-fold-hide-block-toggle 'off t element))))))
+
+  (defun my/org-babel-execute-src-block-preserve-visibility (fn &rest args)
+    "Execute current src block without triggering unrelated block reveals."
+    (my/org-babel-show-current-src-block)
+    ;; Org fold's fragility check runs in `after-change-functions' and may
+    ;; reveal folded blocks after Babel edits nearby text.  Disable only that
+    ;; reveal logic while keeping the rest of execution unchanged.
+    (org-fold-core-ignore-fragility-checks
+      (apply fn args)))
+
+  (defun my/org-babel-insert-result-preserve-visibility (fn &rest args)
+    "Insert Babel results without expanding unrelated folded blocks."
+    (my/org-babel-show-current-src-block)
+    (org-fold-core-ignore-fragility-checks
+      (apply fn args)))
+
   (defun my/org-babel-current-result-overlay ()
     "Return the hidden overlay for the current Babel result, if any."
     (let ((case-fold-search t))
@@ -58,8 +82,8 @@ Otherwise, when FORCE is non-nil, unconditionally hide the result."
         (unless (re-search-forward org-babel-result-regexp nil t)
           (error "Not looking at a result line")))
       (if (my/org-babel-current-result-overlay)
-            (when (or (not force) (eq force 'off))
-          (my/org-babel-show-current-result))
+          (when (or (not force) (eq force 'off))
+           (my/org-babel-show-current-result))
         (when (not (eq force 'off))
           (my/org-babel-hide-current-result)))))
 
@@ -72,6 +96,10 @@ Otherwise, when FORCE is non-nil, unconditionally hide the result."
 
   (advice-add 'org-babel-hide-result-toggle :override
               #'my/org-babel-hide-result-toggle)
+  (advice-add 'org-babel-execute-src-block :around
+              #'my/org-babel-execute-src-block-preserve-visibility)
+  (advice-add 'org-babel-insert-result :around
+              #'my/org-babel-insert-result-preserve-visibility)
   (advice-add 'org-babel-execute-src-block :before
               #'my/org-babel-show-result-before-execute)
 
