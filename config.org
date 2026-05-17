@@ -43,6 +43,7 @@ Literate and modular Doom Emacs configuration.
 - [[#tools][Tools]]
   - [[#lookup][lookup]]
   - [[#llm][llm]]
+  - [[#agent][agent]]
   - [[#magit][magit]]
   - [[#pdf][pdf]]
   - [[#transient][transient]]
@@ -1276,26 +1277,6 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
 (use-package gptel-agent :defer t)
 #+end_src
 
-*** codex
-#+begin_src emacs-lisp :tangle packages.el
-(package! ai-code)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package ai-code
-  :commands ai-code-menu
-  :bind ("C-c a" . ai-code-menu)
-  :config
-  (ai-code-set-backend 'codex)
-  ;; Optional: Enable @ file completion in comments and AI sessions
-  (ai-code-prompt-filepath-completion-mode 1)
-  ;; Optional: In AI session buffers, SPC in Evil normal state triggers the prompt-enter UI
-  (with-eval-after-load 'evil (ai-code-backends-infra-evil-setup))
-  ;; Optional: Set up Magit integration for AI commands in Magit popups
-  (with-eval-after-load 'magit
-    (ai-code-magit-setup-transients)))
-#+end_src
-
 *** inline-diff
 #+begin_src emacs-lisp :tangle packages.el
 (package! inline-diff
@@ -1346,6 +1327,79 @@ change key map
 (after! gptel-quick
   (setq gptel-quick-model 'qwen3:14b)
   (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
+#+end_src
+** agent
+*** agent-shell
+#+begin_src toml
+[agent]
+packages=[
+    "claude-agent-acp",
+    "codex-acp"
+]
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! shell-maker)
+(package! acp)
+(package! agent-shell)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! agent-shell
+  :commands (agent-shell)
+  :config
+  (setq agent-shell-context-sources '(files region error))
+  ;; Evil state-specific RET behavior: insert mode = newline, normal mode = send
+  (evil-define-key 'insert agent-shell-mode-map (kbd "RET") #'newline)
+  (evil-define-key 'normal agent-shell-mode-map (kbd "RET") #'comint-send-input)
+
+  ;; Configure *agent-shell-diff* buffers to start in Emacs state
+  (add-hook 'diff-mode-hook
+	    (lambda ()
+	      (when (string-match-p "\\*agent-shell-diff\\*" (buffer-name))
+		(evil-emacs-state))))
+  (add-to-list 'agent-shell-mcp-servers
+               '((name . "emcp")
+                 (type . "http")
+                 (headers . ())
+                 (url . (lambda ()
+                          (require 'emcp)
+                          (let ((server (emcp-start emcp-default-profile)))
+                            (emcp-server-url server))))))
+  )
+#+end_src
+
+*** claude code ide
+#+begin_src emacs-lisp :tangle packages.el
+(package! claude-code-ide
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! claude-code-ide
+  :bind ("C-c a" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+#+end_src
+
+*** COMMENT ai-code
+#+begin_src emacs-lisp :tangle packages.el
+(package! ai-code)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ai-code
+  :commands ai-code-menu
+  :bind ("C-c a" . ai-code-menu)
+  :config
+  (ai-code-set-backend 'codex)
+  ;; Optional: Enable @ file completion in comments and AI sessions
+  (ai-code-prompt-filepath-completion-mode 1)
+  ;; Optional: In AI session buffers, SPC in Evil normal state triggers the prompt-enter UI
+  (with-eval-after-load 'evil (ai-code-backends-infra-evil-setup))
+  ;; Optional: Set up Magit integration for AI commands in Magit popups
+  (with-eval-after-load 'magit
+    (ai-code-magit-setup-transients)))
 #+end_src
 
 ** magit
