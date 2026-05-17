@@ -44,6 +44,7 @@ Literate and modular Doom Emacs configuration.
   - [[#lookup][lookup]]
   - [[#llm][llm]]
   - [[#agent][agent]]
+  - [[#emacs-mcp-server][emacs MCP server]]
   - [[#magit][magit]]
   - [[#pdf][pdf]]
   - [[#transient][transient]]
@@ -1400,6 +1401,55 @@ packages=[
   ;; Optional: Set up Magit integration for AI commands in Magit popups
   (with-eval-after-load 'magit
     (ai-code-magit-setup-transients)))
+#+end_src
+
+** emacs MCP server
+#+begin_src toml
+[mcp]
+packages=[
+    "socat"
+]
+#+end_src
+
+*** emacs-mcp-server
+#+begin_src emacs-lisp :tangle packages.el
+(package! mcp-server
+  :recipe (:type git :host github :repo "rhblind/emacs-mcp-server"
+           :files ("*.el" "tools/*.el" "mcp-wrapper.py" "mcp-wrapper.sh")))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! mcp-server
+  :if (not (+my/is-utility-daemon))
+  :defer 30
+  :config
+  (mcp-server-start-unix))
+#+end_src
+
+*** emcp
+#+begin_src emacs-lisp :tangle packages.el
+(package! emcp)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! emcp
+  :after agent-shell)
+#+end_src
+
+*** anvil
+#+begin_src emacs-lisp :tangle packages.el
+(package! anvil
+  :recipe (:host github :repo "zawatton/anvil.el"
+           :branch "v1.1.1"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! anvil
+  :if (not (+my/is-utility-daemon))
+  :defer 30
+  :config
+  (anvil-enable)
+  (anvil-server-start))
 #+end_src
 
 ** magit
