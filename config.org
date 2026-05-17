@@ -9,6 +9,7 @@ Literate and modular Doom Emacs configuration.
   - [[#predefined][Predefined]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
   - [[#shortcuts][Shortcuts]]
+  - [[#ediff][ediff]]
 - [[#input][Input]]
   - [[#chinese][Chinese]]
 - [[#completion][Completion]]
@@ -201,11 +202,16 @@ Open link with host =Librewolf= browser
       :desc "M-x"                   ";"    #'execute-extended-command)
 #+end_src
 
-** COMMENT Backup
+** ediff
 #+begin_src emacs-lisp
 (add-hook 'ediff-prepare-buffer-hook
-          (lambda () (+word-wrap-mode)))
+          (lambda ()
+            (+word-wrap-mode 1)
+            (when (derived-mode-p 'org-mode)
+              (org-fold-show-all))))
 #+end_src
+
+** COMMENT Backup
 
 #+begin_src emacs-lisp
 (defun +my/corfu-add-cape-dabbrev-h ()
