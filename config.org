@@ -609,7 +609,16 @@ to use =doom/reload-font= later to enable proper color emoji display.
                "*\\.run\\.tmp$")
   (dolist (m '("helpful-mode" "dired-mode"))
     (cl-pushnew m projectile-globally-ignored-modes :test #'equal))
-  (add-to-list 'projectile-globally-ignored-buffers "*doom*"))
+  ;; why I have a mass of projects
+  (setq projectile-track-known-projects-automatically nil)
+  (add-to-list 'projectile-globally-ignored-buffers "*doom*")
+  ;; Prefer .git over .projectile so nested git repos are recognized correctly
+  (setq projectile-project-root-functions
+        '(projectile-root-local
+          projectile-root-bottom-up
+          projectile-root-marked
+          projectile-root-top-down
+          projectile-root-top-down-recurring)))
 #+end_src
 
 For non git project, better add following in project root [[file:.dir-locals.el]]
