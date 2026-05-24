@@ -1098,16 +1098,47 @@ still match the original buffer.
               :around #'+my/persp-restore-stable-vterm-names-a))
 #+end_src
 
-!!! Just ensure no one type ~rm -rf~ before navigate in =dirvish=.
+*** Integrations
+Switch from =dirvish= into the workspace vterm and sync its working directory
+when it is safe to send input at an empty prompt.  This mirrors ranger's =S=
+shortcut.
+
 #+begin_src emacs-lisp
-(defun vterm--safe-send-p ()
-  "Tell if current point safe to send string (no input after prompt)."
-  (let ((flag (save-excursion
-                (vterm-reset-cursor-point)
-                (evil-collection-vterm-append)
-                (vterm--at-prompt-p))))
-    (evil-normal-state)
-    flag))
+(defun +my/vterm-at-empty-prompt-p ()
+  "Return non-nil when the current vterm is at an empty prompt.
+
+This relies on vterm's prompt detector.  If that private helper is not
+available, refuse to send input."
+  (and (fboundp 'vterm--at-prompt-p)
+       (save-excursion
+         (let ((evil-state (and (boundp 'evil-state) evil-state)))
+           (unwind-protect
+               (progn
+                 (when (fboundp 'vterm-reset-cursor-point)
+                   (vterm-reset-cursor-point))
+                 (when (fboundp 'evil-collection-vterm-append)
+                   (evil-collection-vterm-append))
+                 (vterm--at-prompt-p))
+             (when (and (bound-and-true-p evil-local-mode) evil-state)
+               (evil-change-state evil-state)))))))
+
+(defun dirvish-cd-into-vterm ()
+  "Switch into recent vterm buffer, and cd into `default-directory` of dirvish buffer."
+  (interactive)
+  (let ((cur-dirvish-dir default-directory))
+    (dirvish-quit)
+    (if-let ((vterm-buffer (+my/workspace-first-vterm-buffer)))
+        (let ((cur-vterm-dir (with-current-buffer vterm-buffer
+                               default-directory)))
+          (switch-to-buffer vterm-buffer)
+          (when (and (not (string= cur-vterm-dir cur-dirvish-dir))
+                     (+my/vterm-at-empty-prompt-p))
+            (vterm-send-string
+             (concat " cd " (shell-quote-argument cur-dirvish-dir)))
+            (vterm-send-return)))
+      (with-temp-buffer
+        (setq-local default-directory cur-dirvish-dir)
+        (+vterm/here t)))))
 #+end_src
 
 * Checkers
