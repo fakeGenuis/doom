@@ -2527,6 +2527,19 @@ language server
 #+end_src
 more configuration on [[https://myriad-dreamin.github.io/tinymist//frontend/emacs.html][Tinymist Docs]]
 
+#+begin_src emacs-lisp
+(defun +my/tex2typ-region-to-kill-ring (beg end)
+  "Convert selected LaTeX math to Typst and copy result to kill-ring."
+  (interactive "r")
+  (let* ((text (buffer-substring-no-properties beg end))
+         (cmd (format "tex2typ %s" (shell-quote-argument text)))
+         (output (string-trim (shell-command-to-string cmd))))
+    (kill-new output)
+    (message "Copied Typst: %s" output)))
+
+(map! :v "C-c t" #'+my/tex2typ-region-to-kill-ring)
+#+end_src
+
 ** COMMENT julia
 #+begin_src toml
 [julia]
