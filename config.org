@@ -9,6 +9,7 @@ Literate and modular Doom Emacs configuration.
   - [[#predefined][Predefined]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
   - [[#shortcuts][Shortcuts]]
+  - [[#window][Window]]
   - [[#ediff][ediff]]
 - [[#input][Input]]
   - [[#chinese][Chinese]]
@@ -26,6 +27,7 @@ Literate and modular Doom Emacs configuration.
   - [[#workspace][Workspace]]
   - [[#others][Others]]
 - [[#editor][Editor]]
+  - [[#parinfer][parinfer]]
   - [[#evil][evil]]
   - [[#snippets][snippets]]
   - [[#fold][fold]]
@@ -46,8 +48,8 @@ Literate and modular Doom Emacs configuration.
   - [[#agent][agent]]
   - [[#emacs-mcp-server][emacs MCP server]]
   - [[#magit][magit]]
-  - [[#pdf][pdf]]
   - [[#transient][transient]]
+  - [[#pdf][pdf]]
   - [[#go-translate][go-translate]]
   - [[#pacdiff][pacdiff]]
   - [[#tldr][tldr]]
@@ -204,6 +206,22 @@ Open link with host =Librewolf= browser
       :desc "M-x"                   ";"    #'execute-extended-command)
 #+end_src
 
+** Window
+#+begin_src emacs-lisp
+(defun +my/ace-swap-buffer-keep-focus ()
+  "Swap current window's buffer with ace-selected window, keep cursor here."
+  (interactive)
+  (let ((cur-win (selected-window))
+        (cur-buf (current-buffer)))
+    (aw-select " Ace - Swap Buffer"
+               (lambda (win)
+                 (set-window-buffer cur-win (window-buffer win))
+                 (set-window-buffer win cur-buf)))))
+
+(map! :leader :prefix "w"
+      :desc "Swap buffer keep focus" "X" #'+my/ace-swap-buffer-keep-focus)
+#+end_src
+
 ** ediff
 #+begin_src emacs-lisp
 (add-hook 'ediff-prepare-buffer-hook
@@ -227,10 +245,6 @@ No reason to scale super/sub-script down!
 (after! 'font-latex
   (set-face-attribute 'font-latex-superscript-face nil :height 'unspecified)
   (set-face-attribute 'font-latex-subscript-face nil :height 'unspecified))
-#+end_src
-
-#+begin_src emacs-lisp
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
 #+end_src
 
 * Input
@@ -664,6 +678,16 @@ Line numbers
 #+end_src
 
 * Editor
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+#+end_src
+
+** parinfer
+#+begin_src emacs-lisp :tangle no
+(with-eval-after-load 'parinfer-rust-mode
+  (setq parinfer-rust-check-before-enable nil))
+#+end_src
+
 ** evil
 #+begin_src emacs-lisp :tangle no :noweb-ref editor
 (evil +everywhere)
@@ -720,7 +744,8 @@ Shortcut for evil normal mode
 #+begin_src emacs-lisp
 (map! :n "g U" #'browse-url-xdg-open
       :n "g u" #'evil-upcase
-      :n "g d" #'evil-downcase)
+      :n "g d" #'evil-downcase
+      :n "g R" #'normal-mode)
 #+end_src
 
 ** snippets
@@ -1099,9 +1124,8 @@ still match the original buffer.
 #+end_src
 
 *** Integrations
-Switch from =dirvish= into the workspace vterm and sync its working directory
-when it is safe to send input at an empty prompt.  This mirrors ranger's =S=
-shortcut.
+Switch from =dirvish= into the workspace vterm and sync its working directory when
+it is safe to send input at an empty prompt. This mirrors ranger's =S= shortcut.
 
 #+begin_src emacs-lisp
 (defun +my/vterm-at-empty-prompt-p ()
@@ -1290,7 +1314,7 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
 (use-package gptel-agent :defer t)
 #+end_src
 
-*** inline-diff
+*** COMMENT inline-diff
 #+begin_src emacs-lisp :tangle packages.el
 (package! inline-diff
   :recipe (:host nil :repo "https://code.tecosaur.net/tec/inline-diff"))
@@ -2299,7 +2323,7 @@ Smaller org src-block font size, more contents displayed.
 #+begin_src toml
 [python]
 packages=[
-    "pyright", "python-black", "python-isort",
+    "ty", "python-black", "python-isort",
     "python-nose", "python-pytest",
     "tree-sitter-python"
 ]
@@ -2315,6 +2339,9 @@ packages=[
   (setq org-babel-default-header-args:jupyter-python
         '((:kernel . "python3"))))
 #+end_src
+
+Emacs 30.2 on Arch once had a distro packaging issue that broke tree-sitter
+font-lock queries in =*-ts-mode=. See the [[https://emacs-china.org/t/ts-mode/31236][Emacs China discussion]].
 
 ** sh
 #+begin_src toml
@@ -2433,7 +2460,7 @@ Completion seems not work with =12.3=.
 #+end_src
 
 =<>= in =Wolfram= org-src break parentheses match.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun +my/remove-angle-brackets-from-syntax ()
   (modify-syntax-entry ?< "." (syntax-table))  ;; Treat < as punctuation
   (modify-syntax-entry ?> "." (syntax-table))) ;; Treat > as punctuation
