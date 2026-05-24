@@ -978,6 +978,7 @@ See (info "(tramp) Improving performance of asynchronous remote processes") for 
 
 * Term
 ** vterm
+*** Setup
 #+begin_src toml
 [vterm]
 packages=[
@@ -991,16 +992,16 @@ packages=[
 vterm
 #+end_src
 
-[[https://emacs.stackexchange.com/questions/24330/have-a-function-to-disable-close-confirmation-on-terms-work-on-all-terms-but-sh][have a function to disable close confirmation on terms. work on all terms but...]]
+[[https://emacs.stackexchange.com/questions/24330/have-a-function-to-disable-close-confirmation-on-terms-work-on-all-terms-but-sh][Disable process query on exit for term-like buffers]]
 #+begin_src emacs-lisp
-(defun set-no-process-query-on-exit ()
-  (let ((proc (get-buffer-process (current-buffer))))
-    (when (processp proc)
-      (set-process-query-on-exit-flag proc nil))))
+(defun +my/disable-process-query-on-exit-h ()
+  "Disable exit confirmation for the current buffer's process."
+  (when-let ((proc (get-buffer-process (current-buffer))))
+    (set-process-query-on-exit-flag proc nil)))
 
-(after! vterm
-  (if (+my/is-utility-daemon)
-      (add-hook 'vterm-mode-hook #'set-no-process-query-on-exit)))
+(with-eval-after-load 'vterm
+  (when (+my/is-utility-daemon)
+    (add-hook 'vterm-mode-hook #'+my/disable-process-query-on-exit-h)))
 #+end_src
 
 #+begin_src emacs-lisp
