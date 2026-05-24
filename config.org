@@ -785,7 +785,7 @@ work for =org-ellipsis= and fold in code mode
     (fill-paragraph nil region)))
 
 ;; Handy key definition
-(define-key global-map "\M-Q" 'unfill-paragraph)
+(define-key global-map "\M-Q" #'unfill-paragraph)
 #+end_src
 
 * Emacs
@@ -1022,53 +1022,55 @@ vterm
       (define-key vterm-mode-map (kbd (format "M-%d" num)) nil)))
 #+end_src
 
-*** save vterm buffers with command history
+*** Persistence
+Restore vterm buffer text and window layout across workspace restores.  The
+shell process itself is not restored.
+
 - [[https://github.com/akermu/emacs-libvterm/issues/666][akermu/emacs-libvterm#666 Integrate with desktop-save-mode]]
 - [[https://bmag.github.io/2015/12/26/desktop.html][Desktop-Save Mode]]
 - [[https://github.com/Bad-ptr/persp-mode.el#custom-saveload-buffer-function-example][GitHub - Bad-ptr/persp-mode.el: named perspectives(set of buffers/window conf...]]
 - [[doom:modules/ui/workspaces/config.el::263][examples in doom config]]
 
-No text properties saved.
+Only plain text is saved; text properties are intentionally omitted.
+Keep workspace restore stable when =ai-code= updates vterm buffer names with spinner prefixes.
+During =persp-mode= save/restore, temporarily strip that prefix so =window-state-put= can
+still match the original buffer.
+
 #+begin_src emacs-lisp
-(after! persp-mode
-  ;; vterm
+(with-eval-after-load 'persp-mode
   (persp-def-buffer-save/load
    :mode 'vterm-mode :tag-symbol 'def-vterm-buffer
    :save-vars '(default-directory)
    :save-function (lambda (buf tag vars)
-                    (list tag (buffer-name buf) vars
-                          (string-trim-right (buffer-string))))
-                          ;; no face and other text properties saved
-                          ;; (string-trim-right (buffer-substring-no-properties (point-min) (point-max)))))
+                    (with-current-buffer buf
+                      (list tag (buffer-name buf) vars
+                            (string-trim-right
+                             (buffer-substring-no-properties
+                              (point-min) (point-max))))))
    :load-function (lambda (savelist &rest _)
                     (cl-destructuring-bind (_ buf-name vars buf-string) savelist
                       (let ((default-directory (alist-get 'default-directory vars)))
                         (require 'vterm)
                         (with-current-buffer (get-buffer-create buf-name)
+                          (erase-buffer)
                           (insert buf-string)
-                          (vterm-mode)))))))
-#+end_src
+                          (vterm-mode))))))
 
-*** fix vterm window disappearing on workspace switch
-When a vterm buffer driven by =ai-code= has continuous output, it cycles through spinner
-characters (braille U+2802–U+28FF) in its buffer name via =vterm--set-title=. If the name
-changes between workspace deactivation (wconf save) and reactivation (wconf restore),
-=window-state-put= cannot find the buffer by name and silently collapses the window.
+  (defun +my/buffers-in-mode (mode)
+    "Return live buffers whose `major-mode' is MODE."
+    (seq-filter (lambda (buf)
+                  (and (buffer-live-p buf)
+                       (with-current-buffer buf
+                         (eq major-mode mode))))
+                (buffer-list)))
 
-Fix: temporarily strip the spinner prefix during wconf save/restore.
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'persp-mode
   (defun +my/persp--strip-vterm-spinners ()
     "Strip spinner prefix from vterm buffers; return alist for restoration."
     (let (renames)
-      ;; Do not use `doom-buffers-in-mode' here: during `persp-mode'
-      ;; initialization Doom temporarily routes `doom-buffer-list' through the
-      ;; current workspace, which may still be nil at this point.
-      (dolist (buf (doom-buffers-in-mode 'vterm-mode (buffer-list)))
+      (dolist (buf (+my/buffers-in-mode 'vterm-mode))
         (let* ((name (buffer-name buf))
                (c (and (> (length name) 0) (aref name 0))))
-          (when (and c (<= #x2700 c #x28FF))
+          (when (and c (<= #x2800 c #x28FF))
             (push (cons buf name) renames)
             (with-current-buffer buf
               (rename-buffer (substring name 1) t)))))
@@ -1080,40 +1082,20 @@ Fix: temporarily strip the spinner prefix during wconf save/restore.
         (with-current-buffer (car pair)
           (rename-buffer (cdr pair) t)))))
 
-  (defadvice! +my/persp-save-stable-vterm-names-a (orig-fn &rest args)
-    :around #'persp-frame-save-state
+  (defun +my/persp-save-stable-vterm-names-a (orig-fn &rest args)
     (let ((renames (+my/persp--strip-vterm-spinners)))
       (unwind-protect (apply orig-fn args)
         (+my/persp--restore-vterm-names renames))))
 
-  (defadvice! +my/persp-restore-stable-vterm-names-a (orig-fn &rest args)
-    :around #'persp-restore-window-conf
+  (defun +my/persp-restore-stable-vterm-names-a (orig-fn &rest args)
     (let ((renames (+my/persp--strip-vterm-spinners)))
       (unwind-protect (apply orig-fn args)
-        (+my/persp--restore-vterm-names renames)))))
-#+end_src
+        (+my/persp--restore-vterm-names renames))))
 
-*** =S= cd into =dirvish= current directory
-like =ranger=
-#+begin_src emacs-lisp
-(defun dirvish-cd-into-vterm ()
-  "Switch into recent vterm buffer, and cd into `default-directory` of dirvish buffer."
-  (interactive)
-  (let ((cur-dirvish-dir default-directory)
-        (vterm-buffer (+my/workspace-first-vterm-buffer)))
-    (dirvish-quit)
-    (if vterm-buffer
-        (let ((cur-vterm-dir (with-current-buffer vterm-buffer
-                                  default-directory)))
-          (switch-to-buffer vterm-buffer)
-          (unless (or (string= cur-vterm-dir cur-dirvish-dir)
-                      (not (vterm--safe-send-p)))
-            ; NOTE only fish shell support directory jump by dir-name
-            ;      add space to ignore command from history
-            (vterm-send-string (concat " " (file-relative-name cur-dirvish-dir cur-vterm-dir)))
-            (vterm-send-return)))
-      (with-temp-buffer (setq-local default-directory cur-dirvish-dir)
-                        (+vterm/here t)))))
+  (advice-add 'persp-frame-save-state
+              :around #'+my/persp-save-stable-vterm-names-a)
+  (advice-add 'persp-restore-window-conf
+              :around #'+my/persp-restore-stable-vterm-names-a))
 #+end_src
 
 !!! Just ensure no one type ~rm -rf~ before navigate in =dirvish=.
