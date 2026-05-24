@@ -1004,56 +1004,20 @@ vterm
     (add-hook 'vterm-mode-hook #'+my/disable-process-query-on-exit-h)))
 #+end_src
 
+*** Navigation
 #+begin_src emacs-lisp
-(defun +my/workspace-first-vterm-buffer ()
-  "Return the name of the first vterm buffer in the current workspace, or nil."
-  ;; https://stackoverflow.com/a/2238589
-  (catch 'found
-    (dolist (buffer (+workspace-buffer-list))
-      (let ((bn (buffer-name buffer)))
-        (when (and bn (with-current-buffer bn (eq major-mode 'vterm-mode)))
-          (throw 'found bn))))))
-
-(defun +my/vterm-switch ()
-  "Switch to vterm buffer in `Term' workspace.
-If `Term' workspace not exist, create it.
-If no vterm buffer in `Term' workspace, create it."
-  (interactive)
-  (+workspace-switch "Term" t)
-  (let ((vterm-buffer (+my/workspace-first-vterm-buffer))
-        (display-buffer-alist))
-    (if vterm-buffer
-        (switch-to-buffer vterm-buffer)
-      ;; create vterm buffer if not exist
-      (+vterm/here t))))
-
 (map! :leader
- :prefix "TAB"
- :desc "Switch to vterm buffer" "v" #'+my/vterm-switch)
-#+end_src
+      (:prefix "o"
+       ;; vterm to current file directory (not project root)
+       :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
+       :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
 
-#+begin_src emacs-lisp
-(defun +my/vterm-cd-project-root ()
-  (interactive)
-  (vterm-send-string "cd $PROOT")
-  (vterm-send-return))
-
-(after! vterm
+(with-eval-after-load 'vterm
   (setq vterm-buffer-name-string "%s - vterm"
         vterm-ignore-blink-cursor nil)
-  (map! :leader
-        (:prefix "o"
-         ;; vterm to current file directory (not project root)
-         ;; use `C-Return' to project root
-         :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
-         :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
   ;; TODO fixed-pitch in bpytop like
-  ;; (add-hook 'vterm-mode-hook
-  ;;           (lambda ()
-  ;;             (set (make-local-variable 'buffer-face-mode-face) 'fixed-pitch
-  ;;                  (buffer-face-mode t))))
   (define-key vterm-mode-map (kbd "M-q") #'vterm-send-escape)
-  (define-key vterm-mode-map [ (control return) ] #'+my/vterm-cd-project-root)
+  (define-key vterm-mode-map (kbd "C-l") nil)
   (dolist (num (number-sequence 0 9))
       (define-key vterm-mode-map (kbd (format "M-%d" num)) nil)))
 #+end_src
