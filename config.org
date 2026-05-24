@@ -669,6 +669,11 @@ Line numbers
 (evil +everywhere)
 #+end_src
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! evil-textobj-tree-sitter
+  :recipe (:host github :repo "meain/evil-textobj-tree-sitter"))
+#+end_src
+
 #+begin_src emacs-lisp
 (after! evil
   (setq evil-kill-on-visual-paste nil)
@@ -676,6 +681,26 @@ Line numbers
   (setq evil-move-cursor-back nil)
   ;; keep previous layout, always!
   (setq evil-auto-balance-windows nil))
+#+end_src
+
+#+begin_src emacs-lisp
+(defvar my/evil-textobj-call-queries
+  '((python-mode . ((call arguments: (argument_list) @call.inner)
+                    (call) @call.outer))
+    (python-ts-mode . ((call arguments: (argument_list) @call.inner)
+                       (call) @call.outer))))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! evil-textobj-tree-sitter
+  :after evil
+  :config
+  (define-key evil-inner-text-objects-map "F"
+              (evil-textobj-tree-sitter-get-textobj "call.inner"
+                                                    my/evil-textobj-call-queries))
+  (define-key evil-outer-text-objects-map "F"
+              (evil-textobj-tree-sitter-get-textobj "call.outer"
+                                                    my/evil-textobj-call-queries)))
 #+end_src
 
 #+begin_src emacs-lisp
