@@ -2494,7 +2494,7 @@ packages=[
 (use-package! typst-ts-mode
   :mode ("\\.typ\\'")
   :custom
-  (typst-ts-watch-options "--open")
+  ;; (typst-ts-watch-options "--open")
   (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
   (typst-ts-mode-enable-raw-blocks-highlight t)
   :config
@@ -2504,12 +2504,15 @@ packages=[
 
 use =pdf-tools= to preview
 #+begin_src emacs-lisp
-(defun typst-pdf-tools-preview (&optional buffer)
-  "Use `pdf-tools' to preview compiled pdf."
-  (interactive)
-  (find-file-other-window (typst-ts-compile-get-result-pdf-filename buffer)))
-
-(advice-add 'typst-ts-preview :override #'typst-pdf-tools-preview)
+(after! typst-ts-mode
+  (setq typst-ts-compile-hide-compilation-buffer-if-success nil)
+  (setq typst-ts-preview-function
+        (lambda (pdf)
+          (let ((buffer (find-file-noselect pdf)))
+            (display-buffer buffer)
+            (with-current-buffer buffer
+              (when (derived-mode-p 'pdf-view-mode)
+                (pdf-view-revert-buffer nil t)))))))
 #+end_src
 
 language server
