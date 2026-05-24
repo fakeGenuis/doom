@@ -130,7 +130,7 @@ The *conventions* of this org file:
  :tools
  <<tools>>
  (lsp +eglot)
- ;biblio
+ biblio
  debugger
  ;editorconfig
  (eval +overlay)
@@ -2168,7 +2168,7 @@ Opens with `org-open-file', see for more information about ARG."
 (use-package zotxt
   :hook (org-mode . org-zotxt-mode)
   :config
-  (setq zotxt-default-bibliography-style "american-physical-society-et-al"))
+  (setq zotxt-default-bibliography-style "mkbehr-short"))
 
 (map! :map org-zotxt-mode-map
       :desc "org-zotxt-insert-selected"
