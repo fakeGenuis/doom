@@ -1,10 +1,14 @@
 #!/bin/bash
 
 ARGS=(-c -s utility)
+dir=${1:-$HOME}
+
+dir=${dir//\\/\\\\}
+dir=${dir//\"/\\\"}
 
 if "$(dirname "$0")"/daemon.sh; then
     ARGS+=(-n)
 fi
 emacsclient "${ARGS[@]}" \
-    -e "(dirvish \"${1:-$HOME}\")" \
+    -e "(dirvish \"$dir\")" \
     -F "((width . 120) (height . 40))"

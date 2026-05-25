@@ -946,6 +946,11 @@ Goto random line, use with [[fn:dirvish-fd]]
     (goto-line random-line)))
 #+end_src
 
+set =dirvish= as default directory opener.
+#+begin_src fish :tangle no :eval no
+xdg-mime default dirvish.desktop inode/directory
+#+end_src
+
 ** tramp
 [[https://github.com/alexluigit/dirvish/blob/main/docs/CUSTOMIZING.org#tramp-integration][dirvish/docs/CUSTOMIZING.org at main]]
 #+begin_src emacs-lisp
