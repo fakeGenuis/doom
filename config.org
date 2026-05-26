@@ -189,7 +189,7 @@ enable_default=true
 #+begin_src emacs-lisp
 (defun +my/is-utility-daemon ()
   "If current session run from daemon called `utility`."
-  (and (daemonp) (boundp 'server-name) (string= server-name "utility")))
+  (equal (daemonp) "utility"))
 #+end_src
 
 ** Windows =Librewolf= in wsl
