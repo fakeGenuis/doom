@@ -1504,16 +1504,35 @@ see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Tran
                  buffer
                  :poshandler #'posframe-poshandler-frame-bottom-center
                  :accept-focus nil
-                 :font "ComicShannsMono Nerd Font 10"
+                 :font "ComicShannsMono Nerd Font 7"
                  :min-width 40
                  :border-width 2
                  :border-color "gray50")))
         (redisplay t)
-        (and (frame-live-p pf) (frame-root-window pf))))))
+        (and (frame-live-p pf) (frame-root-window pf)))))
+
+  ;; `transient--fit-window-to-buffer' calls `fit-frame-to-buffer' when the
+  ;; window has no parent (i.e. posframe root window).  The posframe child frame
+  ;; shares the parent frame's minibuffer window; `fit-frame-to-buffer' includes
+  ;; that shared window in its layout calculation and resizes it, causing the
+  ;; parent frame's minibuffer to grow unexpectedly.  Skip `fit-frame-to-buffer'
+  ;; for child frames and fit the window directly instead.
+  (defadvice! +my/transient--fit-window-skip-child-frame-a (orig-fn window)
+    :around #'transient--fit-window-to-buffer
+    (if (frame-parameter (window-frame window) 'parent-frame)
+        (let ((fit-window-to-buffer-horizontally t)
+              (window-resize-pixelwise t)
+              (window-size-fixed nil))
+          (set-window-parameter window 'window-preserved-size nil)
+          (fit-window-to-buffer window nil 1)
+          (set-window-parameter window 'window-preserved-size
+                                (list (window-buffer window)
+                                      (window-body-width window t)
+                                      (window-body-height window t))))
+      (funcall orig-fn window))))
 #+end_src
 
-- [ ] still buggy, only work after manually execute this block. And sometimes
-  makes =minibuffer= height increase unintended.
+- [ ] still buggy, only work after manually execute this block.
 - Notes:
   - daemon mode still has a first-popup issue: the first transient posframe in a
     new client frame may fail to appear, while later ones usually work
