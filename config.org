@@ -1319,57 +1319,13 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
 (use-package gptel-agent :defer t)
 #+end_src
 
-*** COMMENT inline-diff
-#+begin_src emacs-lisp :tangle packages.el
-(package! inline-diff
-  :recipe (:host nil :repo "https://code.tecosaur.net/tec/inline-diff"))
-#+end_src
-
-[[https://github.com/karthink/gptel/wiki/gptel][gptel‐rewrite addons · karthink/gptel Wiki · GitHub]]
-#+begin_src emacs-lisp
-;; Updated version available at https://github.com/karthink/gptel/wiki
-(use-package gptel-rewrite
-  :after gptel
-  :bind (:map gptel-rewrite-actions-map
-         ("C-c C-i" . gptel--rewrite-inline-diff))
-  :config
-  (defun gptel--rewrite-inline-diff (&optional ovs)
-    "Start an inline-diff session on OVS."
-    (interactive (list (gptel--rewrite-overlay-at)))
-    (unless (require 'inline-diff nil t)
-      (user-error "Inline diffs require the inline-diff package."))
-    (when-let* ((ov-buf (overlay-buffer (or (car-safe ovs) ovs)))
-                ((buffer-live-p ov-buf)))
-      (with-current-buffer ov-buf
-        (cl-loop for ov in (ensure-list ovs)
-                 for ov-beg = (overlay-start ov)
-                 for ov-end = (overlay-end ov)
-                 for response = (overlay-get ov 'gptel-rewrite)
-                 do (delete-overlay ov)
-                 (inline-diff-words
-                  ov-beg ov-end response)))))
-  (when (boundp 'gptel--rewrite-dispatch-actions)
-    (add-to-list
-     'gptel--rewrite-dispatch-actions '(?i "inline-diff")
-     'append)))
-#+end_src
-
-change key map
-#+begin_src emacs-lisp
-(after! inline-diff
-  (define-key inline-diff-overlay-map (kbd "M-a") #'inline-diff-apply)
-  (define-key inline-diff-overlay-map (kbd "M-r") #'inline-diff-reject)
-  ;; optional: drop the old keys
-  (define-key inline-diff-overlay-map (kbd "M-RET") nil)
-  (define-key inline-diff-overlay-map (kbd "M-DEL") nil))
-#+end_src
-
 *** Others
 #+begin_src emacs-lisp
 (after! gptel-quick
   (setq gptel-quick-model 'qwen3:14b)
   (setq gptel-quick-backend (cdr (assoc-string "ollama" gptel--known-backends))))
 #+end_src
+
 ** agent
 *** agent-shell
 #+begin_src toml
@@ -1424,24 +1380,17 @@ packages=[
   (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 #+end_src
 
-*** COMMENT ai-code
+*** claude code ide
 #+begin_src emacs-lisp :tangle packages.el
-(package! ai-code)
+(package! claude-code-ide
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package ai-code
-  :commands ai-code-menu
-  :bind ("C-c a" . ai-code-menu)
+(use-package! claude-code-ide
+  :bind ("C-c c" . claude-code-ide-menu) ; Set your favorite keybinding
   :config
-  (ai-code-set-backend 'codex)
-  ;; Optional: Enable @ file completion in comments and AI sessions
-  (ai-code-prompt-filepath-completion-mode 1)
-  ;; Optional: In AI session buffers, SPC in Evil normal state triggers the prompt-enter UI
-  (with-eval-after-load 'evil (ai-code-backends-infra-evil-setup))
-  ;; Optional: Set up Magit integration for AI commands in Magit popups
-  (with-eval-after-load 'magit
-    (ai-code-magit-setup-transients)))
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 #+end_src
 
 ** emacs MCP server
@@ -1475,22 +1424,6 @@ packages=[
 #+begin_src emacs-lisp
 (use-package! emcp
   :after agent-shell)
-#+end_src
-
-*** anvil
-#+begin_src emacs-lisp :tangle packages.el
-(package! anvil
-  :recipe (:host github :repo "zawatton/anvil.el"
-           :branch "v1.1.1"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! anvil
-  :if (not (+my/is-utility-daemon))
-  :defer 30
-  :config
-  (anvil-enable)
-  (anvil-server-start))
 #+end_src
 
 ** magit
