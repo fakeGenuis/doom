@@ -1340,6 +1340,10 @@ packages=[
 (package! shell-maker)
 (package! acp)
 (package! agent-shell)
+(package! agent-shell-notifications
+  :recipe (:host github :repo "zackattackz/agent-shell-notifications"))
+(package! agent-shell-org-transcript
+  :recipe (:host github :repo "lllShamanlll/agent-shell-org-transcript"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1367,17 +1371,17 @@ packages=[
   )
 #+end_src
 
-*** claude code ide
-#+begin_src emacs-lisp :tangle packages.el
-(package! claude-code-ide
-  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
+#+begin_src emacs-lisp
+(use-package agent-shell-notifications
+  :after agent-shell
+  :hook (agent-shell-mode . agent-shell-notifications-mode))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! claude-code-ide
-  :bind ("C-c a" . claude-code-ide-menu) ; Set your favorite keybinding
+(use-package agent-shell-org-transcript
+  :after agent-shell
   :config
-  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+  (setq agent-shell-org-transcript-directory "~/Documents/org/agent-shell/"))
 #+end_src
 
 *** claude code ide
