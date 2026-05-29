@@ -2328,7 +2328,12 @@ fish shell ligatures
     :for "for"))
 #+end_src
 
-Here is for [[var:shell-file-name]], still use =fish= and let doom doctor complains it.
+Here is for [[var:shell-file-name]], will remove ~doom doctor~'s complain.
+#+begin_src emacs-lisp
+(setq shell-file-name (executable-find "bash"))
+(setq-default vterm-shell "/bin/fish")
+(setq-default explicit-shell-file-name "/bin/fish")
+#+end_src
 
 ** yaml
 #+begin_src toml
