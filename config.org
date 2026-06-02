@@ -169,7 +169,7 @@ Extra packages from [[https://melpa.org][MELPA]]
 #+PROPERTY: header-args:emacs-lisp :results none
 Default tangle to [[file:config.el]]
 #+begin_src emacs-lisp :shebang ";;; $DOOMDIR/config.el -*- lexical-binding: t; -*-\n" :noweb tangle
-(setq user-full-name "fakeGenius")
+(load (expand-file-name "private/identity.el" doom-user-dir) nil 'nomessage)
 
 <<predefines>>
 #+end_src
@@ -211,6 +211,7 @@ Open link with host =Librewolf= browser
 (defun +my/ace-swap-buffer-keep-focus ()
   "Swap current window's buffer with ace-selected window, keep cursor here."
   (interactive)
+  (require 'ace-window)
   (let ((cur-win (selected-window))
         (cur-buf (current-buffer)))
     (aw-select " Ace - Swap Buffer"
@@ -1504,7 +1505,7 @@ see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Tran
                  buffer
                  :poshandler #'posframe-poshandler-frame-bottom-center
                  :accept-focus nil
-                 :font "ComicShannsMono Nerd Font 7"
+                 :font "ComicShannsMono Nerd Font 8"
                  :min-width 40
                  :border-width 2
                  :border-color "gray50")))
@@ -2275,9 +2276,9 @@ Avoid lengthy title
 Smaller org src-block font size, more contents displayed.
 #+begin_src emacs-lisp
 (add-hook! org-mode
-  (set-face-attribute 'org-code nil :height 0.85)
+  (set-face-attribute 'org-code nil :height 0.8)
   ;; max height of org-indent and org-code will be applied
-  (set-face-attribute 'org-indent nil :height 0.85))
+  (set-face-attribute 'org-indent nil :height 0.8))
 #+end_src
 
 ** python
