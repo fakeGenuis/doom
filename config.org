@@ -1085,48 +1085,7 @@ still match the original buffer.
                         (with-current-buffer (get-buffer-create buf-name)
                           (erase-buffer)
                           (insert buf-string)
-                          (vterm-mode))))))
-
-  (defun +my/buffers-in-mode (mode)
-    "Return live buffers whose `major-mode' is MODE."
-    (seq-filter (lambda (buf)
-                  (and (buffer-live-p buf)
-                       (with-current-buffer buf
-                         (eq major-mode mode))))
-                (buffer-list)))
-
-  (defun +my/persp--strip-vterm-spinners ()
-    "Strip spinner prefix from vterm buffers; return alist for restoration."
-    (let (renames)
-      (dolist (buf (+my/buffers-in-mode 'vterm-mode))
-        (let* ((name (buffer-name buf))
-               (c (and (> (length name) 0) (aref name 0))))
-          (when (and c (<= #x2800 c #x28FF))
-            (push (cons buf name) renames)
-            (with-current-buffer buf
-              (rename-buffer (substring name 1) t)))))
-      renames))
-
-  (defun +my/persp--restore-vterm-names (renames)
-    (dolist (pair renames)
-      (when (buffer-live-p (car pair))
-        (with-current-buffer (car pair)
-          (rename-buffer (cdr pair) t)))))
-
-  (defun +my/persp-save-stable-vterm-names-a (orig-fn &rest args)
-    (let ((renames (+my/persp--strip-vterm-spinners)))
-      (unwind-protect (apply orig-fn args)
-        (+my/persp--restore-vterm-names renames))))
-
-  (defun +my/persp-restore-stable-vterm-names-a (orig-fn &rest args)
-    (let ((renames (+my/persp--strip-vterm-spinners)))
-      (unwind-protect (apply orig-fn args)
-        (+my/persp--restore-vterm-names renames))))
-
-  (advice-add 'persp-frame-save-state
-              :around #'+my/persp-save-stable-vterm-names-a)
-  (advice-add 'persp-restore-window-conf
-              :around #'+my/persp-restore-stable-vterm-names-a))
+                          (vterm-mode)))))))
 #+end_src
 
 *** Integrations
