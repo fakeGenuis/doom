@@ -1063,9 +1063,14 @@ shell process itself is not restored.
 - [[doom:modules/ui/workspaces/config.el::263][examples in doom config]]
 
 Only plain text is saved; text properties are intentionally omitted.
-Keep workspace restore stable when =ai-code= updates vterm buffer names with spinner prefixes.
-During =persp-mode= save/restore, temporarily strip that prefix so =window-state-put= can
-still match the original buffer.
+
+A vterm buffer whose name changes (e.g. an agent terminal pushing OSC titles)
+breaks =persp-mode= window restore: =window-state-put= matches windows by
+buffer name, so a name that differs between save and restore drops the window
+and the layout collapses on workspace switch.  Rather than advising persp's
+save/restore to strip the volatile prefix, the root cause is fixed at the
+source by disabling vterm's title-driven renaming on those buffers (see [[* codex ide][codex
+ide]] / [[* claude code ide][claude code ide]], =vterm-buffer-name-string=).
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'persp-mode
@@ -1355,6 +1360,22 @@ packages=[
   :bind ("C-c c" . claude-code-ide-menu) ; Set your favorite keybinding
   :config
   (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+#+end_src
+
+The vterm backend renames its buffer from shell OSC titles via
+=vterm-buffer-name-string=.  Agent CLIs push a volatile activity title (e.g. a
+spinner prefix), so the buffer name flips between save and restore and
+=persp-mode= drops the window on workspace switch (see [[* Persistence][Persistence]]).  Pin a
+stable name on agent terminals by disabling title-driven renaming there.  This
+is buffer-local and leaves ordinary vterm buffers untouched.
+#+begin_src emacs-lisp
+(defun +my/vterm-disable-title-rename-for-agents-h ()
+  "Disable OSC-title buffer renaming in claude/codex vterm buffers.
+Keeps the buffer name stable so `persp-mode' restores its window."
+  (when (string-match-p "\\*\\(claude-code\\|codex\\)" (buffer-name))
+    (setq-local vterm-buffer-name-string nil)))
+
+(add-hook 'vterm-mode-hook #'+my/vterm-disable-title-rename-for-agents-h)
 #+end_src
 
 *** codex ide
