@@ -40,6 +40,7 @@ Literate and modular Doom Emacs configuration.
   - [[#proxy][proxy]]
 - [[#term][Term]]
   - [[#vterm][vterm]]
+  - [[#ghostel][ghostel]]
 - [[#checkers][Checkers]]
   - [[#spell-checker][Spell checker]]
 - [[#tools][Tools]]
@@ -1135,6 +1136,32 @@ available, refuse to send input."
         (+vterm/here t)))))
 #+end_src
 
+** ghostel
+[[https://github.com/dakra/ghostel][GitHub - dakra/ghostel]] is an Emacs terminal emulator powered by =libghostty-vt=
+(Ghostty's VT engine), inspired by =emacs-libvterm=.
+
+The native dynamic module is downloaded automatically on first use: a prebuilt
+binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (default
+=ask=). Trigger it manually with =M-x ghostel-download-module= if needed.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! ghostel)
+(package! evil-ghostel)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! ghostel
+  :commands (ghostel)
+  :config
+  ;; Disable exit confirmation on utility daemons, mirroring the vterm setup.
+  (when (+my/is-utility-daemon)
+    (add-hook 'ghostel-mode-hook #'+my/disable-process-query-on-exit-h)))
+
+(use-package! evil-ghostel
+  :after (ghostel evil)
+  :hook (ghostel-mode . evil-ghostel-mode))
+#+end_src
+
 * Checkers
 ** Spell checker
 #+begin_src toml
@@ -1358,6 +1385,10 @@ packages=[
 #+begin_src emacs-lisp
 (use-package! claude-code-ide
   :bind ("C-c c" . claude-code-ide-menu) ; Set your favorite keybinding
+  :init
+  ;; Use ghostel (libghostty-vt) as the terminal backend instead of the
+  ;; default vterm.  Valid values: 'vterm, 'eat, 'ghostel.
+  (setq claude-code-ide-terminal-backend 'ghostel)
   :config
   (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 #+end_src
