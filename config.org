@@ -1409,20 +1409,6 @@ Keeps the buffer name stable so `persp-mode' restores its window."
 (add-hook 'vterm-mode-hook #'+my/vterm-disable-title-rename-for-agents-h)
 #+end_src
 
-*** codex ide
-A pure Emacs Codex client built on =codex app-server=, inspired by =claude-code-ide.el=.
-- [[https://github.com/dgillis/emacs-codex-ide][GitHub - dgillis/emacs-codex-ide]]
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! codex-ide
-  :recipe (:host github :repo "dgillis/emacs-codex-ide"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! codex-ide
-  :bind ("C-c o" . codex-ide-menu))
-#+end_src
-
 ** emacs MCP server
 #+begin_src toml
 [mcp]
