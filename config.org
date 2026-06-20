@@ -47,7 +47,7 @@ Literate and modular Doom Emacs configuration.
   - [[#lookup][lookup]]
   - [[#llm][llm]]
   - [[#agent][agent]]
-  - [[#emacs-mcp-server][emacs MCP server]]
+  - [[#mcp-server][MCP server]]
   - [[#magit][magit]]
   - [[#transient][transient]]
   - [[#pdf][pdf]]
@@ -1409,30 +1409,7 @@ Keeps the buffer name stable so `persp-mode' restores its window."
 (add-hook 'vterm-mode-hook #'+my/vterm-disable-title-rename-for-agents-h)
 #+end_src
 
-** emacs MCP server
-#+begin_src toml
-[mcp]
-packages=[
-    "socat"
-]
-#+end_src
-
-*** emacs-mcp-server
-#+begin_src emacs-lisp :tangle packages.el
-(package! mcp-server
-  :recipe (:type git :host github :repo "rhblind/emacs-mcp-server"
-           :files ("*.el" "tools/*.el" "mcp-wrapper.py" "mcp-wrapper.sh")))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! mcp-server
-  :if (not (+my/is-utility-daemon))
-  :defer 30
-  :config
-  (mcp-server-start-unix))
-#+end_src
-
-*** emcp
+** MCP server
 #+begin_src emacs-lisp :tangle packages.el
 (package! emcp)
 #+end_src
