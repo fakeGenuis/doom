@@ -1445,7 +1445,9 @@ Keeps the buffer name stable so `persp-mode' restores its window."
 
 #+begin_src emacs-lisp
 (use-package! emcp
-  :after agent-shell)
+  :after agent-shell
+  :config
+  (add-hook 'emcp-confirm-mode-hook #'evil-emacs-state))
 #+end_src
 
 ** magit
