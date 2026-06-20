@@ -39,6 +39,7 @@ Literate and modular Doom Emacs configuration.
   - [[#tramp][tramp]]
   - [[#proxy][proxy]]
 - [[#term][Term]]
+  - [[#navigation][Navigation]]
   - [[#vterm][vterm]]
   - [[#ghostel][ghostel]]
 - [[#checkers][Checkers]]
@@ -1009,6 +1010,14 @@ See (info "(tramp) Improving performance of asynchronous remote processes") for 
 #+end_src
 
 * Term
+** Navigation
+#+begin_src emacs-lisp
+(map! :leader
+      (:prefix "o"
+       :desc "Open terminal here" "t" #'+my/term-here
+       :desc "Open terminal buffer here" "T" (cmd! (ghostel t))))
+#+end_src
+
 ** vterm
 *** Setup
 #+begin_src toml
@@ -1038,12 +1047,6 @@ vterm
 
 *** Navigation
 #+begin_src emacs-lisp
-(map! :leader
-      (:prefix "o"
-       ;; vterm to current file directory (not project root)
-       :desc "Toggle vterm popup" "t" (cmd!! #'+vterm/toggle t)
-       :desc "Open vterm here" "T" (cmd!! #'+vterm/here t)))
-
 (with-eval-after-load 'vterm
   (setq vterm-buffer-name-string "%s - vterm"
         vterm-ignore-blink-cursor nil)
@@ -1150,6 +1153,28 @@ binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (def
 #+end_src
 
 #+begin_src emacs-lisp
+(defun +my/ghostel-close-window-on-kill-h ()
+  "Close the window displaying the current Ghostel buffer."
+  (let ((windows (get-buffer-window-list (current-buffer) nil t)))
+    (run-at-time
+     0 nil
+     (lambda (windows)
+       (dolist (window windows)
+         (when (window-live-p window)
+           (ignore-errors (delete-window window)))))
+     windows)))
+
+(defun +my/term-here ()
+  "Open a new Ghostel terminal below the current window."
+  (interactive)
+  (let ((buffer (let ((display-buffer-overriding-action
+                       '((display-buffer-below-selected)
+                         (window-height . 12))))
+                  (ghostel t))))
+    (with-current-buffer buffer
+      (setq-local ghostel-kill-buffer-on-exit t)
+      (add-hook 'kill-buffer-hook #'+my/ghostel-close-window-on-kill-h nil t))))
+
 (use-package! ghostel
   :commands (ghostel)
   :config
