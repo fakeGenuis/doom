@@ -1147,11 +1147,36 @@ The native dynamic module is downloaded automatically on first use: a prebuilt
 binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (default
 =ask=). Trigger it manually with =M-x ghostel-download-module= if needed.
 
+*** Setup
 #+begin_src emacs-lisp :tangle packages.el
 (package! ghostel)
 (package! evil-ghostel)
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package! ghostel
+  :commands (ghostel)
+  :config
+  ;; Disable exit confirmation on utility daemons, mirroring the vterm setup.
+  (when (+my/is-utility-daemon)
+    (add-hook 'ghostel-mode-hook #'+my/disable-process-query-on-exit-h)))
+
+(use-package! evil-ghostel
+  :after (ghostel evil)
+  :hook (ghostel-mode . evil-ghostel-mode)
+  :config
+  (ghostel-comint-global-mode 1)
+  ;; Unbind ESC here so it falls through to evil-insert-state-map, i.e. ESC
+  ;; always exits to normal state instead of being routed to the terminal.
+  ;; M-q forwards a real ESC into ghostel in both insert and normal states.
+  ;; (evil-define-key* 'insert evil-ghostel-mode-map
+  ;;                   (kbd "<escape>") nil)
+  ;; (evil-define-key* '(insert normal) evil-ghostel-mode-map
+  ;;                   (kbd "M-q") (cmd! (ghostel-send-key "escape")))
+  )
+#+end_src
+
+*** Navigation
 #+begin_src emacs-lisp
 (defun +my/ghostel-close-window-on-kill-h ()
   "Close the window displaying the current Ghostel buffer."
@@ -1182,17 +1207,6 @@ binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (def
       (kill-buffer buffer))))
 
 (add-hook 'delete-frame-functions #'+my/kill-frame-ghostel-buffer-h)
-
-(use-package! ghostel
-  :commands (ghostel)
-  :config
-  ;; Disable exit confirmation on utility daemons, mirroring the vterm setup.
-  (when (+my/is-utility-daemon)
-    (add-hook 'ghostel-mode-hook #'+my/disable-process-query-on-exit-h)))
-
-(use-package! evil-ghostel
-  :after (ghostel evil)
-  :hook (ghostel-mode . evil-ghostel-mode))
 #+end_src
 
 * Checkers
