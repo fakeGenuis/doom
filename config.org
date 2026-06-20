@@ -1402,7 +1402,11 @@ packages=[
 #+end_src
 
 *** claude code ide
+=web-server= is needed by the MCP HTTP server; declare it explicitly so straight
+pulls it on a fresh sync.
 #+begin_src emacs-lisp :tangle packages.el
+(package! web-server)
+
 (package! claude-code-ide
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 #+end_src
