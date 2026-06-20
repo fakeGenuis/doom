@@ -6,5 +6,9 @@ if "$(dirname "$0")"/daemon.sh; then
     ARGS+=(-n)
 fi
 emacsclient "${ARGS[@]}" \
-    -e "(progn (setq-local default-directory \"${1:-$HOME}\") (+vterm/here t))" \
+    -e "(let* ((default-directory \"${1:-$HOME}\")
+               (buffer (ghostel t)))
+          (set-frame-parameter nil '+my/ghostel-buffer buffer)
+          (with-current-buffer buffer
+            (setq-local ghostel-kill-buffer-on-exit t)))" \
     -F "((width . 120) (height . 40))"

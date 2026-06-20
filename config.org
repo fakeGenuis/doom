@@ -1175,6 +1175,14 @@ binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (def
       (setq-local ghostel-kill-buffer-on-exit t)
       (add-hook 'kill-buffer-hook #'+my/ghostel-close-window-on-kill-h nil t))))
 
+(defun +my/kill-frame-ghostel-buffer-h (frame)
+  "Kill the Ghostel buffer associated with FRAME."
+  (when-let ((buffer (frame-parameter frame '+my/ghostel-buffer)))
+    (when (buffer-live-p buffer)
+      (kill-buffer buffer))))
+
+(add-hook 'delete-frame-functions #'+my/kill-frame-ghostel-buffer-h)
+
 (use-package! ghostel
   :commands (ghostel)
   :config
