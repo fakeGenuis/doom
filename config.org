@@ -2267,6 +2267,12 @@ Local org extensions
 #+end_src
 
 *** Others
+Do not track remote files in org-persist; it may reconnect to TRAMP hosts on exit.
+#+begin_src emacs-lisp
+(after! org-persist
+  (setq org-persist-remote-files nil))
+#+end_src
+
 [[kbd:SPC s b]] should work as expected
 - [[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
 
