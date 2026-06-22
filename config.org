@@ -891,6 +891,7 @@ packages=[
 #+begin_src emacs-lisp
 (after! dirvish
   (setq dirvish-side-width 25)
+  (setq dirvish-reuse-session 'quit)
   (map!
    :map dirvish-mode-map
    :gn "S"    #'dirvish-cd-into-vterm
