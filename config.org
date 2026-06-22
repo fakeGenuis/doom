@@ -1824,6 +1824,7 @@ ligatures
 #+end_src
 
 ** org
+*** Setup
 #+begin_src toml
 [org]
 packages=[
@@ -2226,23 +2227,7 @@ open attachment with point at arxiv link
     (org-insert-link nil (concat "https://arxiv.org/abs/" id) id)))
 #+end_src
 
-*** Others
-[[kbd:SPC s b]] should work as expected
-- [[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
-
-revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
-#+begin_src emacs-lisp
-(after! evil-org
-  (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
-#+end_src
-
-[[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
-#+begin_src emacs-lisp
-(after! org-src
-  (setq org-src-window-setup 'reorganize-frame)
-  (set-popup-rule! "^\\*Org Src" :ignore t))
-#+end_src
-
+*** Format
 format org-src
 #+begin_src emacs-lisp
 (map! :after org :map evil-org-mode-map
@@ -2279,6 +2264,23 @@ Local org extensions
 
 (after! org
   (set-formatter! 'orgfmt #'apheleia-format-org-buffer :modes '(org-mode)))
+#+end_src
+
+*** Others
+[[kbd:SPC s b]] should work as expected
+- [[https://github.com/doomemacs/doomemacs/issues/6478#issuecomment-1328110153][doomemacs/doomemacs#6478 `evil-ex-search` skips matches in folded regions (in...)]]
+
+revert native ~org-cycle~ style, see [[doom-modules:lang/org/README.org]]
+#+begin_src emacs-lisp
+(after! evil-org
+  (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
+#+end_src
+
+[[https://github.com/hlissner/doom-emacs/issues/5436][hlissner/doom-emacs#5436 org-src-window-setup not working correctly]]
+#+begin_src emacs-lisp
+(after! org-src
+  (setq org-src-window-setup 'reorganize-frame)
+  (set-popup-rule! "^\\*Org Src" :ignore t))
 #+end_src
 
 #+begin_src emacs-lisp
