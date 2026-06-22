@@ -1726,12 +1726,10 @@ Invoke =latex.exe= on windows.
         evil-tex-select-newlines-with-envs nil))
 #+end_src
 
-retain =.bbl= as it required by APS journals.
-=synctex.gz= kept to sync tex view.
 #+begin_src emacs-lisp
 (with-eval-after-load 'latex
   (setq LaTeX-clean-intermediate-suffixes
-        (delete "\\.bbl" (copy-sequence LaTeX-clean-intermediate-suffixes)))
+        (delete "\\.synctex\\.gz" (copy-sequence LaTeX-clean-intermediate-suffixes)))
   (dolist (suffix '("\\.loc" "\\.soc" "Notes\\.bib"))
     (add-to-list 'LaTeX-clean-intermediate-suffixes suffix))
   (dolist (suffix '("\\.bbl" "\\.synctex\\.gz"))
