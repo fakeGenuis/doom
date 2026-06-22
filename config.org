@@ -1698,6 +1698,7 @@ Auto view =.ps= file
 
 * Lang
 ** Latex
+*** Setup
 #+begin_src toml
 [latex]
 enabled="not is_wsl"
@@ -1709,10 +1710,7 @@ packages=[
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
-(latex
- +lsp
- +fold
- +cdlatex)
+(latex +lsp +fold +cdlatex)
 #+end_src
 
 Invoke =latex.exe= on windows.
@@ -1728,44 +1726,19 @@ Invoke =latex.exe= on windows.
         evil-tex-select-newlines-with-envs nil))
 #+end_src
 
-=cdlatex=
-#+begin_src emacs-lisp
-(map! :map cdlatex-mode-map
-  :i "TAB" #'cdlatex-tab)
-#+end_src
-
 retain =.bbl= as it required by APS journals.
 =synctex.gz= kept to sync tex view.
 #+begin_src emacs-lisp
 (with-eval-after-load 'latex
   (setq LaTeX-clean-intermediate-suffixes
         (delete "\\.bbl" (copy-sequence LaTeX-clean-intermediate-suffixes)))
-  (add-to-list 'LaTeX-clean-output-suffixes "\\.bbl"))
-
-(with-eval-after-load 'tex
-  (defun +my/TeX-clean-force-synctex-gz-a (fn &optional arg)
-    "Ensure `TeX-clean' removes the master .synctex.gz on Clean All."
-    (prog1 (funcall fn arg)
-      (when arg
-        (let ((synctex
-               (concat
-                (file-name-sans-extension
-                 (TeX-active-master (TeX-output-extension)))
-                ".synctex.gz")))
-          (when (file-exists-p synctex)
-            (delete-file synctex))))))
-  (advice-add 'TeX-clean :around #'+my/TeX-clean-force-synctex-gz-a))
+  (dolist (suffix '("\\.loc" "\\.soc" "Notes\\.bib"))
+    (add-to-list 'LaTeX-clean-intermediate-suffixes suffix))
+  (dolist (suffix '("\\.bbl" "\\.synctex\\.gz"))
+    (add-to-list 'LaTeX-clean-output-suffixes suffix)))
 #+end_src
 
-add =XeTeX= mode in =TeX/LaTeX=
-- [[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
-- [[https://stackoverflow.com/a/65179402][emacs - Add XeLaTeX to the command li...]]
-
-Most convenient way, still use =LATEX= as compile command.
-#+begin_src tex :tangle no
-% -*- TeX-engine: xetex; -*-
-#+end_src
-
+*** Format
 [[fn:latex-indent]] [[cmd:LaTeX-fill-buffer]]
 - [[https://github.com/lassik/emacs-format-all-the-code/issues/127][lassik/emacs-format-all-the-code#127 LaTeX formatting]]
 
@@ -1775,6 +1748,22 @@ Most convenient way, still use =LATEX= as compile command.
 (after! apheleia
   (set-formatter! 'latexindent '("latexindent" "-l" "-r" "--logfile=/dev/null")
     :modes '(LaTeX-mode)))
+#+end_src
+
+*** Editing
+add =XeTeX= mode in =TeX/LaTeX=
+- [[https://tex.stackexchange.com/a/21205][emacs - AUCTeX and XeTeX - TeX - LaTeX Stack Exchange]]
+- [[https://stackoverflow.com/a/65179402][emacs - Add XeLaTeX to the command li...]]
+
+Most convenient way, still use =LATEX= as compile command.
+#+begin_src tex :tangle no
+% -*- TeX-engine: xetex; -*-
+#+end_src
+
+=cdlatex=
+#+begin_src emacs-lisp
+(map! :map cdlatex-mode-map
+  :i "TAB" #'cdlatex-tab)
 #+end_src
 
 [[https://tex.stackexchange.com/questions/254539/latextidy-in-emacs][formatting - LaTeXTidy in Emacs - TeX - LaTeX Stack Exchange]]
