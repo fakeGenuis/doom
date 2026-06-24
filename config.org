@@ -657,22 +657,18 @@ Transparency
   "Toggle between opaque and semi-transparent frame."
   (interactive)
   (let* ((opaque 100)
-         (transparent 97)
-         (cur (or (frame-parameter nil 'alpha-background)
-                  (let ((a (frame-parameter nil 'alpha)))
-                    (cond ((numberp a) a)
-                          ((consp a) (or (cdr a) (car a)))
-                          (t opaque)))
-                  opaque))
+         (transparent 92)
+         (cur (or (frame-parameter nil 'alpha-background) opaque))
          (new (if (= cur opaque) transparent opaque)))
-    ;; Wayland (pgtk)
-    (set-frame-parameter nil 'alpha-background new)
-    ;; X11/Xwayland
-    (set-frame-parameter nil 'alpha (cons new new))))
+    (dolist (frame (frame-list))
+      (set-frame-parameter frame 'alpha-background new))
+    (setf (alist-get 'alpha-background default-frame-alist) new)))
 
 (map! :leader
       (:prefix "t"
        :desc "Toggle transparency" "T" #'my/toggle-transparency))
+
+(my/toggle-transparency)
 #+end_src
 
 Line numbers
