@@ -27,6 +27,7 @@ Literate and modular Doom Emacs configuration.
   - [[#workspace][Workspace]]
   - [[#others][Others]]
 - [[#editor][Editor]]
+  - [[#whitespace][whitespace]]
   - [[#parinfer][parinfer]]
   - [[#evil][evil]]
   - [[#snippets][snippets]]
@@ -677,8 +678,9 @@ Line numbers
 #+end_src
 
 * Editor
-#+begin_src emacs-lisp
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
+** whitespace
+#+begin_src emacs-lisp :tangle no :noweb-ref editor
+(whitespace +guess +trim)
 #+end_src
 
 ** parinfer
