@@ -120,7 +120,7 @@ The *conventions* of this org file:
 
  :emacs
  <<emacs>>
- ;electric
+ electric
  ;ibuffer
  undo
  vc
@@ -953,6 +953,10 @@ xdg-mime default dirvish.desktop inode/directory
 #+end_src
 
 ** tramp
+#+begin_src emacs-lisp :tangle no :noweb-ref emacs
+tramp
+#+end_src
+
 [[https://github.com/alexluigit/dirvish/blob/main/docs/CUSTOMIZING.org#tramp-integration][dirvish/docs/CUSTOMIZING.org at main]]
 #+begin_src emacs-lisp
 (with-eval-after-load 'tramp
