@@ -302,9 +302,9 @@ word-wrapping for CJK text mixed with Latin text.
     (expand-file-name (format "straight/build-%s/cns" emacs-version) doom-local-dir))
   (setq cns-process-type 'shell
         cns-prog (expand-file-name "cnws" cns-packages-path)
-        cns-dict-directory (expand-file-name "dict" cns-packages-path))
-  :hook
-  (find-file . cns-auto-enable))
+        cns-dict-directory (expand-file-name "dict" cns-packages-path)))
+  ;; :hook
+  ;; (find-file . cns-auto-enable))
 #+end_src
 
 * Completion
