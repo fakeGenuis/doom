@@ -876,13 +876,12 @@ packages=[
   (setq dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
-     ("c" "~/.config/"                  "Config")
      ("D" "~/Documents/"                "Documents")
-     ("l" "~/lib/"                      "Personal Library")
-     ("L" "~/.local/lib/"               "Library")
-     ("m" "/mnt/"                       "Mounts")
-     ("n" "~/.Nextcloud/"               "Nextcloud")
      ("p" "~/Pictures/"                 "Pictures")
+     ("l" "~/lib/"                      "Library")
+     ("c" "~/.config/"                  "Config")
+     ("n" "~/.Nextcloud/"               "Nextcloud")
+     ("m" "/mnt/"                       "Mounts")
      ("t" "~/.local/share/Trash/files/" "TrashCan"))))
 #+end_src
 
@@ -892,7 +891,7 @@ packages=[
   (setq dirvish-reuse-session 'quit)
   (map!
    :map dirvish-mode-map
-   :gn "S"    #'dirvish-cd-into-vterm
+   :gn "S" #'dirvish-cd-into-vterm
    ;; remap previous =S= to =o=
    :gn "o" #'dirvish-quicksort))
 #+end_src
@@ -2636,10 +2635,11 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
   (setq elfeed-db-directory (concat (getenv "NCDIR") "elfeed/db/")
         elfeed-enclosure-default-dir (concat (getenv "NCDIR") "elfeed/enclosures/")
         ;; elfeed-search-filter "@1-month-ago +unread"
-        rmh-elfeed-org-files (list (expand-file-name "elfeed.org" org-directory)))
-  (map! :leader
-        (:prefix "o"
-         :desc "elfeed"    "e" #'elfeed)))
+        rmh-elfeed-org-files (list (expand-file-name "elfeed.org" org-directory))))
+
+(map! :leader
+       (:prefix "o"
+        :desc "elfeed"    "e" #'elfeed))
 
 (after! elfeed-goodies
   (setq elfeed-goodies/entry-pane-size 0.5))
