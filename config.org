@@ -283,6 +283,12 @@ word-wrapping for CJK text mixed with Latin text.
 (setq word-wrap-by-category t)
 #+end_src
 
+Disable autoload generation for =names= to suppress obsolete =defadvice= warnings.
+#+begin_src emacs-lisp :tangle packages.el
+(package! names
+  :recipe (:build (:not autoloads)))
+#+end_src
+
 *** cns
 [[https://github.com/kanglmf/emacs-chinese-word-segmentation][GitHub - kanglmf/emacs-chinese-word-segmentation]]
 
