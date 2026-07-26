@@ -1388,17 +1388,17 @@ packages=[
 #+begin_src emacs-lisp
 (use-package! agent-shell
   :commands (agent-shell)
+  :bind (:map agent-shell-mode-map
+              ("RET" . newline)
+              ("C-c RET" . shell-maker-submit))
   :config
   (setq agent-shell-context-sources '(files region error))
-  ;; Evil state-specific RET behavior: insert mode = newline, normal mode = send
-  (evil-define-key 'insert agent-shell-mode-map (kbd "RET") #'newline)
-  (evil-define-key 'normal agent-shell-mode-map (kbd "RET") #'comint-send-input)
 
   ;; Configure *agent-shell-diff* buffers to start in Emacs state
   (add-hook 'diff-mode-hook
-	    (lambda ()
-	      (when (string-match-p "\\*agent-shell-diff\\*" (buffer-name))
-		(evil-emacs-state))))
+            (lambda ()
+              (when (string-match-p "\\*agent-shell-diff\\*" (buffer-name))
+                (evil-emacs-state))))
   (add-to-list 'agent-shell-mcp-servers
                '((name . "emcp")
                  (type . "http")
