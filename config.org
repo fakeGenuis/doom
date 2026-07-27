@@ -1392,7 +1392,9 @@ packages=[
               ("RET" . newline)
               ("C-c RET" . shell-maker-submit))
   :config
-  (setq agent-shell-context-sources '(files region error))
+  (setq agent-shell-context-sources '(files region error)
+        agent-shell-show-welcome-message nil
+        agent-shell-header-style 'text)
 
   (add-hook 'agent-shell-mode-hook
             (lambda ()
