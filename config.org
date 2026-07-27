@@ -1394,6 +1394,11 @@ packages=[
   :config
   (setq agent-shell-context-sources '(files region error))
 
+  (add-hook 'agent-shell-mode-hook
+            (lambda ()
+              (remove-hook 'completion-at-point-functions
+                           #'comint-completion-at-point t)))
+
   ;; Configure *agent-shell-diff* buffers to start in Emacs state
   (add-hook 'diff-mode-hook
             (lambda ()
