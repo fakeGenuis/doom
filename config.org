@@ -1164,6 +1164,10 @@ binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (def
 #+begin_src emacs-lisp
 (use-package! ghostel
   :commands ghostel
+  :init
+  (setq ghostel-module-auto-install 'download
+        ghostel-module-directory
+        (expand-file-name "ghostel/" doom-data-dir))
   :config
   ;; recenter
   (define-key ghostel-semi-char-mode-map (kbd "C-l") nil)
