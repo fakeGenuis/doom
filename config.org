@@ -364,24 +364,23 @@ packages=["words"]
 (use-package! ewal-doom-themes)
 #+end_src
 
-Load and automatically refresh the dynamically generated Dank Emacs theme.
+Register and automatically refresh the dynamically generated Dank Emacs theme.
 #+begin_src emacs-lisp
-(defconst +my/dank-theme-dir
-  (expand-file-name "~/.config/emacs/themes/"))
+(defconst +my/dank-theme-file
+  (expand-file-name "~/.config/emacs/themes/dank-emacs-theme.el"))
 
-(add-to-list 'custom-theme-load-path +my/dank-theme-dir)
-
-(load-theme 'dank-emacs t)
+(load +my/dank-theme-file)
 
 (defvar +my/dank-theme-watch nil)
 
 (unless +my/dank-theme-watch
   (setq +my/dank-theme-watch
         (file-notify-add-watch
-         (expand-file-name "dank-emacs-theme.el" +my/dank-theme-dir)
+         +my/dank-theme-file
          '(change)
          (lambda (_event)
-           (load-theme 'dank-emacs t)))))
+           (when (eq (car custom-enabled-themes) 'dank-emacs)
+             (load-theme 'dank-emacs t))))))
 #+end_src
 
 load wal theme from command line
