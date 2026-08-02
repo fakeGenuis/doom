@@ -330,7 +330,9 @@ packages=["words"]
 
 ;; dabb_ only match dabbrev not Dabbrev!
 (after! dabbrev
-  (setq dabbrev-case-fold-search nil))
+  (setq dabbrev-case-fold-search nil
+        ;; NEVER complete Chinese
+        dabbrev-abbrev-char-regexp "[-_A-Za-z0-9]"))
 #+end_src
 
 ** vertico
