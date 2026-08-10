@@ -1352,7 +1352,7 @@ If the last line at END starts with '** ', exclude it from shifting."
 #+begin_src emacs-lisp :tangle packages.el
 (package! gptel-got
   :recipe (:host nil
-	   :repo "https://codeberg.org/bajsicki/gptel-got"))
+           :repo "https://git.bajsicki.com/phil/gptel-got"))
 #+end_src
 
 #+begin_src emacs-lisp
