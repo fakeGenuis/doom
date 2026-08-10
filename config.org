@@ -366,21 +366,29 @@ packages=["words"]
 
 Register and automatically refresh the dynamically generated Dank Emacs theme.
 #+begin_src emacs-lisp
-(defconst +my/dank-theme-file
-  (expand-file-name "~/.config/emacs/themes/dank-emacs-theme.el"))
-
-(load +my/dank-theme-file)
-
 (defvar +my/dank-theme-watch nil)
 
-(unless +my/dank-theme-watch
-  (setq +my/dank-theme-watch
-        (file-notify-add-watch
-         +my/dank-theme-file
-         '(change)
-         (lambda (_event)
-           (when (eq (car custom-enabled-themes) 'dank-emacs)
-             (load-theme 'dank-emacs t))))))
+(defun +my/theme-file-path (theme)
+  (locate-file (format "%s-theme.el" theme)
+               (cl-remove-if-not #'stringp custom-theme-load-path)))
+
+(defun +my/dank-theme-watch-sync ()
+  (cond
+   ((and (eq (car custom-enabled-themes) 'dank-emacs)
+         (not +my/dank-theme-watch))
+    (require 'filenotify)
+    (setq +my/dank-theme-watch
+          (file-notify-add-watch
+           (+my/theme-file-path 'dank-emacs) '(change)
+           (lambda (_)
+             (when (eq (car custom-enabled-themes) 'dank-emacs)
+               (load-theme 'dank-emacs t))))))
+   ((and (not (eq (car custom-enabled-themes) 'dank-emacs))
+         +my/dank-theme-watch)
+    (file-notify-rm-watch +my/dank-theme-watch)
+    (setq +my/dank-theme-watch nil))))
+
+(add-hook 'load-theme-hook #'+my/dank-theme-watch-sync)
 #+end_src
 
 load wal theme from command line
