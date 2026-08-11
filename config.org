@@ -548,6 +548,7 @@ packages=[
     "ttf-dejavu",           # org heading ◉ ✸ ∈
     "ttf-sarasa_ui-sc", # ￢
     "noto-fonts-emoji",     # color emoji
+    "maplemono-cn",         # Chinese font
     "ttf-nerd-fonts-symbols-mono" # nerd font
 ]
 #+end_src
@@ -1170,15 +1171,22 @@ available, refuse to send input."
 [[https://github.com/dakra/ghostel][GitHub - dakra/ghostel]] is an Emacs terminal emulator powered by =libghostty-vt=
 (Ghostty's VT engine), inspired by =emacs-libvterm=.
 
-#+begin_src emacs-lisp :tangle no :noweb-ref term
-ghostel
-#+end_src
-
 The native dynamic module is downloaded automatically on first use: a prebuilt
 binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (default
 =ask=). Trigger it manually with =M-x ghostel-download-module= if needed.
 
 *** Setup
+#+begin_src emacs-lisp :tangle no :noweb-ref term
+ghostel
+#+end_src
+
+#+begin_src toml
+[ghostel]
+packages=[
+    "inetutils" # =hostname= command
+]
+#+end_src
+
 #+begin_src emacs-lisp
 (after! ghostel
   (setq ghostel-module-auto-install 'download
