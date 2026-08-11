@@ -40,8 +40,6 @@ Literate and modular Doom Emacs configuration.
   - [[#tramp][tramp]]
   - [[#proxy][proxy]]
 - [[#term][Term]]
-  - [[#navigation][Navigation]]
-  - [[#vterm][vterm]]
   - [[#ghostel][ghostel]]
 - [[#checkers][Checkers]]
   - [[#spell-checker][Spell checker]]
@@ -1047,15 +1045,7 @@ See (info "(tramp) Improving performance of asynchronous remote processes") for 
 #+end_src
 
 * Term
-** Navigation
-#+begin_src emacs-lisp
-(map! :leader
-      (:prefix "o"
-       :desc "Open terminal here" "t" #'+my/term-here
-       :desc "Open terminal buffer here" "T" (cmd! (ghostel t))))
-#+end_src
-
-** vterm
+** COMMENT vterm
 *** Setup
 #+begin_src toml
 [vterm]
@@ -1180,36 +1170,28 @@ available, refuse to send input."
 [[https://github.com/dakra/ghostel][GitHub - dakra/ghostel]] is an Emacs terminal emulator powered by =libghostty-vt=
 (Ghostty's VT engine), inspired by =emacs-libvterm=.
 
+#+begin_src emacs-lisp :tangle no :noweb-ref term
+ghostel
+#+end_src
+
 The native dynamic module is downloaded automatically on first use: a prebuilt
 binary exists for =x86_64-linux=, governed by =ghostel-module-auto-install= (default
 =ask=). Trigger it manually with =M-x ghostel-download-module= if needed.
 
 *** Setup
-#+begin_src emacs-lisp :tangle packages.el
-(package! ghostel)
-(package! evil-ghostel)
-#+end_src
-
 #+begin_src emacs-lisp
-(use-package! ghostel
-  :commands ghostel
-  :init
+(after! ghostel
   (setq ghostel-module-auto-install 'download
         ghostel-module-directory
         (expand-file-name "ghostel/" doom-data-dir))
-  :config
   ;; recenter
   (define-key ghostel-semi-char-mode-map (kbd "C-l") nil)
   ;; switch workspace
   (dolist (num (number-sequence 0 9))
       (define-key ghostel-semi-char-mode-map (kbd (format "M-%d" num)) nil)))
-
-(use-package! evil-ghostel
-  :after (ghostel evil)
-  :hook (ghostel-mode . evil-ghostel-mode))
 #+end_src
 
-*** Navigation
+*** COMMENT Navigation
 #+begin_src emacs-lisp
 (defun +my/ghostel-close-window-on-kill-h ()
   "Close the window displaying the current Ghostel buffer."
