@@ -1188,11 +1188,12 @@ packages=[
 #+end_src
 
 #+begin_src emacs-lisp
+(setq ghostel-module-auto-install 'download
+      ghostel-module-directory
+      (expand-file-name "ghostel/" doom-data-dir))
+
 (after! ghostel
-  (setq ghostel-module-auto-install 'download
-        ghostel-module-directory
-        (expand-file-name "ghostel/" doom-data-dir)
-        ghostel-term "xterm-256color")
+  (setq ghostel-term "xterm-256color")
   ;; recenter
   (define-key ghostel-semi-char-mode-map (kbd "C-l") nil)
   ;; switch workspace
