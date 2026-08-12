@@ -1191,13 +1191,16 @@ packages=[
 (after! ghostel
   (setq ghostel-module-auto-install 'download
         ghostel-module-directory
-        (expand-file-name "ghostel/" doom-data-dir))
+        (expand-file-name "ghostel/" doom-data-dir)
+        ghostel-term "xterm-256color")
   ;; recenter
   (define-key ghostel-semi-char-mode-map (kbd "C-l") nil)
   ;; switch workspace
   (dolist (num (number-sequence 0 9))
       (define-key ghostel-semi-char-mode-map (kbd (format "M-%d" num)) nil)))
 #+end_src
+
+Using =xterm-256color= avoids terminfo lookup failures across =sudo=, SSH sessions, and containers that do not provide =xterm-ghostty=. This compatibility fallback disables Ghostel-specific capability advertisement, so advanced features such as synchronized output and the Kitty keyboard protocol may be unavailable.
 
 *** COMMENT Navigation
 #+begin_src emacs-lisp
