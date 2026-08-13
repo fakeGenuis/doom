@@ -1416,8 +1416,11 @@ packages=[
 (use-package! agent-shell
   :commands (agent-shell)
   :bind (:map agent-shell-mode-map
-              ("RET" . newline)
-              ("C-c RET" . shell-maker-submit))
+              ("S-<return>" . newline))
+  :init
+  (map! :leader
+        (:prefix "o"
+         :desc "agent-shell" "a" #'agent-shell))
   :config
   (setq agent-shell-context-sources '(files region error)
         agent-shell-show-welcome-message nil
@@ -1472,11 +1475,13 @@ pulls it on a fresh sync.
 
 #+begin_src emacs-lisp
 (use-package! claude-code-ide
-  :bind ("C-c c" . claude-code-ide-menu) ; Set your favorite keybinding
   :init
   ;; Use ghostel (libghostty-vt) as the terminal backend instead of the
   ;; default vterm.  Valid values: 'vterm, 'eat, 'ghostel.
   (setq claude-code-ide-terminal-backend 'ghostel)
+  (map! :leader
+        (:prefix "o"
+         :desc "claude-code-ide" "c" #'claude-code-ide-menu))
   :config
   (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 #+end_src
