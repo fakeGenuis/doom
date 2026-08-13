@@ -1421,7 +1421,11 @@ packages=[
   :config
   (setq agent-shell-context-sources '(files region error)
         agent-shell-show-welcome-message nil
-        agent-shell-header-style 'text)
+        agent-shell-header-style 'text
+        agent-shell-display-action
+        '((display-buffer-in-side-window)
+          (side . right)
+          (window-width . 0.4)))
 
   (add-hook 'agent-shell-mode-hook
             (lambda ()
