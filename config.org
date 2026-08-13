@@ -1198,7 +1198,10 @@ packages=[
   (define-key ghostel-semi-char-mode-map (kbd "C-l") nil)
   ;; switch workspace
   (dolist (num (number-sequence 0 9))
-      (define-key ghostel-semi-char-mode-map (kbd (format "M-%d" num)) nil)))
+      (define-key ghostel-semi-char-mode-map (kbd (format "M-%d" num)) nil))
+  ;; Alt+q acts as Escape
+  (define-key ghostel-semi-char-mode-map (kbd "M-q")
+              (lambda () (interactive) (ghostel-send-key "escape"))))
 #+end_src
 
 Using =xterm-256color= avoids terminfo lookup failures across =sudo=, SSH sessions, and containers that do not provide =xterm-ghostty=. This compatibility fallback disables Ghostel-specific capability advertisement, so advanced features such as synchronized output and the Kitty keyboard protocol may be unavailable.
