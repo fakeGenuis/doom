@@ -1422,6 +1422,7 @@ packages=[
   (setq agent-shell-context-sources '(files region error)
         agent-shell-show-welcome-message nil
         agent-shell-header-style 'text
+        agent-shell-session-restore-verbosity 'full
         agent-shell-display-action
         '((display-buffer-in-side-window)
           (side . right)
