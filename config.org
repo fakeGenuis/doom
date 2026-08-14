@@ -1835,7 +1835,9 @@ Most convenient way, still use =LATEX= as compile command.
 #+begin_src toml
 [lua]
 enabled="not is_wsl"
-packages=["lua-language-server"]
+packages=["lua-language-server",
+  "stylua" # deterministic Lua formatter
+]
 #+end_src
 
 #+begin_src emacs-lisp :tangle no :noweb-ref lang
