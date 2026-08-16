@@ -1037,12 +1037,6 @@ File preview is not supported in this connection.
 See (info "(tramp) Improving performance of asynchronous remote processes") for details.
 
 ** proxy
-#+begin_src emacs-lisp
-(setq url-proxy-services
-   `(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
-     ("http"  . ,(getenv "ALL_PROXY"))
-     ("https" . ,(getenv "ALL_PROXY"))))
-#+end_src
 
 * Term
 ** COMMENT vterm
@@ -1420,6 +1414,7 @@ packages=[
   :bind (:map agent-shell-mode-map
               ("S-<return>" . newline))
   :init
+  (setenv "CODEX_HOME" (expand-file-name "~/.local/share/codex"))
   (map! :leader
         (:prefix "o"
          :desc "agent-shell" "a" #'agent-shell))
@@ -1478,6 +1473,7 @@ pulls it on a fresh sync.
 #+begin_src emacs-lisp
 (use-package! claude-code-ide
   :init
+  (setenv "CLAUDE_CONFIG_DIR" (expand-file-name "~/.local/share/claude"))
   ;; Use ghostel (libghostty-vt) as the terminal backend instead of the
   ;; default vterm.  Valid values: 'vterm, 'eat, 'ghostel.
   (setq claude-code-ide-terminal-backend 'ghostel)
