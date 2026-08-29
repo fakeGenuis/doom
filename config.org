@@ -546,7 +546,7 @@ packages=[
     "ttf-symbola",          # required by doom
     "quivira",              # org ellipsis ⤵, ℤ
     "ttf-dejavu",           # org heading ◉ ✸ ∈
-    "ttf-sarasa_ui-sc", # ￢
+    "ttf-sarasa-gothic-sc", # ￢
     "noto-fonts-emoji",     # color emoji
     "ttf-nerd-fonts-symbols-mono" # nerd font
 ]
@@ -575,7 +575,7 @@ Doom's way of change unicode font, but it will be shadowed by
     (push "DejaVu Sans" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   ;; ￢
   (dolist (unicode-block '("Halfwidth and Fullwidth Forms"))
-    (push "Sarasa UI SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+    (push "Sarasa Gothic SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+end_src
 
 Add to [[var:after-setting-font-hook]] not work well, font display diffs after
