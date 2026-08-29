@@ -1741,7 +1741,6 @@ Auto view =.ps= file
 *** Setup
 #+begin_src toml
 [latex]
-enabled="not is_wsl"
 packages=[
     "miktex", "texlab",
     # for `latexindent.pl` to work, which is called by `+format/buffer`
@@ -1829,7 +1828,6 @@ Most convenient way, still use =LATEX= as compile command.
 ** lua
 #+begin_src toml
 [lua]
-enabled="not is_wsl"
 packages=["lua-language-server",
   "stylua" # deterministic Lua formatter
 ]
@@ -2427,7 +2425,6 @@ packages=["yaml-language-server"]
 ** wolfram
 #+begin_src toml
 [wolfram]
-enabled="not is_wsl"
 packages=["mathematica"]
 #+end_src
 
