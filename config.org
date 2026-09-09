@@ -204,7 +204,8 @@ Open link with host =Librewolf= browser
 #+begin_src emacs-lisp
 (map! :leader
       :desc "Eval expression"       ":"    #'pp-eval-expression
-      :desc "M-x"                   ";"    #'execute-extended-command)
+      :desc "M-x"                   ";"    #'execute-extended-command
+      :desc "Kill buffer and window" "b d" #'kill-buffer-and-window)
 #+end_src
 
 ** Window
