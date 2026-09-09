@@ -1091,12 +1091,12 @@ shell process itself is not restored.
 Only plain text is saved; text properties are intentionally omitted.
 
 A vterm buffer whose name changes (e.g. an agent terminal pushing OSC titles)
-breaks =persp-mode= window restore: =window-state-put= matches windows by
-buffer name, so a name that differs between save and restore drops the window
-and the layout collapses on workspace switch.  Rather than advising persp's
-save/restore to strip the volatile prefix, the root cause is fixed at the
-source by disabling vterm's title-driven renaming on those buffers (see [[* codex ide][codex
-ide]] / [[* claude code ide][claude code ide]], =vterm-buffer-name-string=).
+breaks =persp-mode= window restore: =window-state-put= matches windows by buffer
+name, so a name that differs between save and restore drops the window and the
+layout collapses on workspace switch. Rather than advising persp's save/restore
+to strip the volatile prefix, the root cause is fixed at the source by disabling
+vterm's title-driven renaming on those buffers (see [[* agent-shell][codex ide]] / [[* claude code ide][claude code ide]],
+=vterm-buffer-name-string=).
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'persp-mode
@@ -1427,8 +1427,12 @@ packages=[
         agent-shell-display-action
         '((display-buffer-in-side-window)
           (side . right)
-          (window-width . 0.4)))
+          (window-width . 0.45)))
 
+  ;; codex-acp currently advertises every discovered skill as an available
+  ;; command without respecting its enabled state, so disabled or remote-plugin
+  ;; skills may clutter agent-shell's `/` completion. See
+  ;; https://github.com/agentclientprotocol/codex-acp/issues/385.
   (add-hook 'agent-shell-mode-hook
             (lambda ()
               (remove-hook 'completion-at-point-functions
@@ -1460,7 +1464,8 @@ packages=[
 (use-package agent-shell-org-transcript
   :after agent-shell
   :config
-  (setq agent-shell-org-transcript-directory "~/Documents/org/agent-shell/"))
+  (setq agent-shell-org-transcript-directory
+      "~/.local/share/agent-shell/transcripts/"))
 #+end_src
 
 *** claude code ide
