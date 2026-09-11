@@ -1394,7 +1394,7 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
 #+begin_src toml
 [agent]
 packages=[
-    "claude-agent-acp",
+    # "claude-agent-acp",
     "codex-acp"
 ]
 #+end_src
@@ -2636,8 +2636,8 @@ packages=[
 
 Example for initialing =mu= and =mbsync=
 #+begin_src fish :tangle no
-mkdir -p ~/.mail/$mailname
-mu init --maildir=~/.mail --my-address=...@...
+mkdir -p ~/.local/share/mail/$mailname
+mu init --maildir=~/.local/share/mail --my-address=...@...
 mu index
 mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
