@@ -1534,6 +1534,25 @@ Keeps the buffer name stable so `persp-mode' restores its window."
 (add-hook 'vterm-mode-hook #'+my/vterm-disable-title-rename-for-agents-h)
 #+end_src
 
+*** dsh-emacs
+[[https://github.com/vritser/dsh-emacs][GitHub - vritser/dsh-emacs: An Emacs client for DeepSeek Harness]]
+#+begin_src emacs-lisp :tangle packages.el
+(package! dsh-emacs
+  :recipe (:host github :repo "vritser/dsh-emacs"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! dsh-emacs
+  :commands (dsh-emacs dsh-emacs-new-session)
+  :init
+  (map! :leader
+        (:prefix "o"
+         :desc "dsh-emacs" "d" #'dsh-emacs))
+  :config
+  (setq dsh-emacs-show-reasoning t
+        dsh-emacs-show-tool-calls t))
+#+end_src
+
 ** MCP server
 #+begin_src emacs-lisp :tangle packages.el
 (package! emcp)
