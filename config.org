@@ -1323,6 +1323,22 @@ llm
   (load-in-doom-dir "private/gpt.el"))
 #+end_src
 
+*** ChatGPT OAuth (Codex)
+ChatGPT Plus/Pro OAuth backend for Codex (no API key).  Login once with
+[[cmd:gptel-openai-oauth-login]] (over SSH use =device=); default model =gpt-6=,
+reasoning effort =low=.
+#+begin_src emacs-lisp
+(with-eval-after-load 'gptel
+  (gptel-make-openai-oauth "ChatGPT"
+    :stream t
+    :models '(gpt-6 gpt-5.3-codex)
+    :request-params '(:reasoning (:effort "low")))
+  (gptel-make-preset 'codex
+    :description "OpenAI Codex (ChatGPT OAuth)"
+    :backend "ChatGPT"
+    :model 'gpt-6))
+#+end_src
+
 *** gptel tweaks
 After [[cmd:gptel-org-set-topic]], remove the top heading for collect conversation.
 #+begin_src emacs-lisp
