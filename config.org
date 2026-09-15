@@ -930,6 +930,18 @@ packages=[
    :gn "o" #'dirvish-quicksort))
 #+end_src
 
+Dirvish previews text synchronously; with =org-startup-with-inline-images=,
+org-mode scans the whole buffer for link previews and hangs on big agent logs.
+Cap text previews at 128 KB and skip that scan in previews only.
+
+#+begin_src emacs-lisp
+(after! dirvish
+  (setq dirvish-preview-large-file-threshold 131072) ; 128 KB
+  (setq dirvish-preview-environment
+        (append dirvish-preview-environment
+                '((org-startup-with-inline-images . nil)))))
+#+end_src
+
 #+begin_src emacs-lisp
 (defun dirvish-open-binaries-externally (file fn)
   "When FN is not `dired', open binary FILE externally."
