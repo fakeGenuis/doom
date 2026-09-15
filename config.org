@@ -54,6 +54,7 @@ Literate and modular Doom Emacs configuration.
   - [[#go-translate][go-translate]]
   - [[#pacdiff][pacdiff]]
   - [[#tldr][tldr]]
+  - [[#tree-sitter][tree-sitter]]
 - [[#lang][Lang]]
   - [[#latex][Latex]]
   - [[#lua][lua]]
@@ -1787,6 +1788,16 @@ Auto view =.ps= file
 ** tldr
 #+begin_src emacs-lisp :tangle packages.el
 (package! tldr)
+#+end_src
+
+** tree-sitter
+Doom sets =treesit-enabled-modes= to =t= and Emacs 31 asks to install missing
+grammars, so previewing a =.php= file nags.  Disable auto-install; keep
+=python-ts-mode= only (Doom registers it under =python-mode=).
+
+#+begin_src emacs-lisp
+(setq treesit-auto-install-grammar 'never
+      treesit-enabled-modes '(python-mode))
 #+end_src
 
 * Lang
