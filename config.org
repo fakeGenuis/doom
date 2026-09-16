@@ -1420,6 +1420,8 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
 
 ** agent
 *** agent-shell
+- [ ] Streaming auto-scroll can stop: agent-shell uses `(eobp)` but shell-maker uses `pos-visible-in-window-p`, stranding point when they disagree (upstream bug).
+
 #+begin_src toml
 [agent]
 packages=[
