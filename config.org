@@ -1504,6 +1504,18 @@ packages=[
 #+end_src
 
 #+begin_src emacs-lisp
+(defun +my/agent-shell-quiet-input-h ()
+  "Disable Corfu and suppress redisplay messages in agent-shell buffers."
+  (setq-local inhibit-message t
+              message-log-max nil)
+  (when (fboundp 'corfu-mode)
+    (corfu-mode -1)))
+
+;; Side effect: agent-shell will not show or log ordinary minibuffer messages.
+(add-hook 'agent-shell-mode-hook #'+my/agent-shell-quiet-input-h 90)
+#+end_src
+
+#+begin_src emacs-lisp
 (use-package agent-shell-notifications
   :after agent-shell
   :hook (agent-shell-mode . agent-shell-notifications-mode))
