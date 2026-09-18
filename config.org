@@ -1537,6 +1537,28 @@ pulls it on a fresh sync.
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 #+end_src
 
+A scratch entry point: throwaway sessions share one directory, so Claude's
+config keeps one session record and one trusted path instead of one per session.
+#+begin_src emacs-lisp
+(defvar +my/claude-code-ide-scratch-directory
+  (expand-file-name "~/Test/scratch")
+  "Directory for throwaway Claude Code sessions.")
+
+(defun +my/claude-code-ide-scratch ()
+  "Start Claude Code in `+my/claude-code-ide-scratch-directory'."
+  (interactive)
+  (make-directory +my/claude-code-ide-scratch-directory t)
+  ;; `project-current' still wins inside a repo.
+  (let ((default-directory +my/claude-code-ide-scratch-directory))
+    (claude-code-ide)))
+
+;; Add its own entry to the `SPC o c' menu, right after "Start".
+;; Safe to re-evaluate: a conflicting key is dropped on insert.
+(with-eval-after-load 'claude-code-ide-transient
+  (transient-append-suffix 'claude-code-ide-menu 'claude-code-ide
+    '("S" "Start scratch session" +my/claude-code-ide-scratch)))
+#+end_src
+
 #+begin_src emacs-lisp
 (use-package! claude-code-ide
   :init
