@@ -1541,7 +1541,7 @@ A scratch entry point: throwaway sessions share one directory, so Claude's
 config keeps one session record and one trusted path instead of one per session.
 #+begin_src emacs-lisp
 (defvar +my/claude-code-ide-scratch-directory
-  (expand-file-name "~/Test/scratch")
+  (file-name-as-directory (expand-file-name "~/Test/scratch"))
   "Directory for throwaway Claude Code sessions.")
 
 (defun +my/claude-code-ide-scratch ()
