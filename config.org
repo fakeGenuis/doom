@@ -2674,8 +2674,7 @@ WARNING: The convert command is deprecated in IMv7, use "magick" instead of
 #+end_quote
 
 *Issues*
-1. Region not correctly selected in =vterm= buffer
-2. When select in visual line mode, newline not stripped
+1. When select in visual line mode, newline not stripped
 
 ** COMMENT shrface
 #+begin_src emacs-lisp :tangle packages.el
