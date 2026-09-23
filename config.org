@@ -942,11 +942,6 @@ packages=[
 (after! dirvish
   (setq dirvish-side-width 25)
   (setq dirvish-reuse-session 'quit)
-  (map!
-   :map dirvish-mode-map
-   :gn "S" #'dirvish-cd-into-vterm
-   ;; remap previous =S= to =o=
-   :gn "o" #'dirvish-quicksort))
 #+end_src
 
 Dirvish previews text synchronously; with =org-startup-with-inline-images=,
