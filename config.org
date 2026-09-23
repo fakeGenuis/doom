@@ -1108,39 +1108,6 @@ packages=[
 
 Using =xterm-256color= avoids terminfo lookup failures across =sudo=, SSH sessions, and containers that do not provide =xterm-ghostty=. This compatibility fallback disables Ghostel-specific capability advertisement, so advanced features such as synchronized output and the Kitty keyboard protocol may be unavailable.
 
-*** COMMENT Navigation
-#+begin_src emacs-lisp
-(defun +my/ghostel-close-window-on-kill-h ()
-  "Close the window displaying the current Ghostel buffer."
-  (let ((windows (get-buffer-window-list (current-buffer) nil t)))
-    (run-at-time
-     0 nil
-     (lambda (windows)
-       (dolist (window windows)
-         (when (window-live-p window)
-           (ignore-errors (delete-window window)))))
-     windows)))
-
-(defun +my/term-here ()
-  "Open a new Ghostel terminal below the current window."
-  (interactive)
-  (let ((buffer (let ((display-buffer-overriding-action
-                       '((display-buffer-below-selected)
-                         (window-height . 12))))
-                  (ghostel t))))
-    (with-current-buffer buffer
-      (setq-local ghostel-kill-buffer-on-exit t)
-      (add-hook 'kill-buffer-hook #'+my/ghostel-close-window-on-kill-h nil t))))
-
-(defun +my/kill-frame-ghostel-buffer-h (frame)
-  "Kill the Ghostel buffer associated with FRAME."
-  (when-let ((buffer (frame-parameter frame '+my/ghostel-buffer)))
-    (when (buffer-live-p buffer)
-      (kill-buffer buffer))))
-
-(add-hook 'delete-frame-functions #'+my/kill-frame-ghostel-buffer-h)
-#+end_src
-
 * Checkers
 ** Spell checker
 #+begin_src toml
