@@ -172,8 +172,6 @@ Extra packages from [[https://melpa.org][MELPA]]
 Default tangle to [[file:config.el]]
 #+begin_src emacs-lisp :shebang ";;; $DOOMDIR/config.el -*- lexical-binding: t; -*-\n" :noweb tangle
 (load (expand-file-name "private/identity.el" doom-user-dir) nil 'nomessage)
-
-<<predefines>>
 #+end_src
 
 Default install all packages in [[file:packages.toml]]
@@ -183,16 +181,6 @@ enable_default=true
 #+end_src
 
 * Helpers
-** Predefined
-:PROPERTIES:
-:header-args:emacs-lisp: :noweb-ref predefines
-:END:
-
-#+begin_src emacs-lisp
-(defun +my/is-utility-daemon ()
-  "If current session run from daemon called `utility`."
-  (equal (daemonp) "utility"))
-#+end_src
 
 ** Windows =Librewolf= in wsl
 Open link with host =Librewolf= browser
