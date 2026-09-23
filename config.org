@@ -1946,19 +1946,13 @@ Restore window-start after execute subtree. For hook based implement for all
 - [[https://emacs.stackexchange.com/questions/13556/restoring-position-in-window-after-narrowing][Restoring position in window after narrowing - Emacs Stack Exchange]]
 
 #+begin_src emacs-lisp
-(defun +my/org-babel-execute-subtree (&optional arg)
-  "Execute source code blocks in a subtree.
-Call `org-babel-execute-src-block' on every source block in
-the current subtree, passing over the prefix argument ARG."
-  (interactive "P")
+(defun +my/org-babel-execute-subtree-a (orig-fn &rest args)
+  "Restore `window-start' around ORIG-FN, which see."
   (let ((original-start (window-start)))
-    (save-restriction
-      (save-excursion
-        (org-narrow-to-subtree)
-        (org-babel-execute-buffer arg)))
-    (set-window-start (selected-window) original-start)))
+    (prog1 (apply orig-fn args)
+      (set-window-start (selected-window) original-start))))
 
-(advice-add 'org-babel-execute-subtree :override #'+my/org-babel-execute-subtree)
+(advice-add 'org-babel-execute-subtree :around #'+my/org-babel-execute-subtree-a)
 #+end_src
 
 *** Jupyter
