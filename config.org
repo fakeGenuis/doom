@@ -220,22 +220,6 @@ Open link with host =Librewolf= browser
               (org-fold-show-all))))
 #+end_src
 
-** COMMENT Backup
-
-#+begin_src emacs-lisp
-(defun +my/corfu-add-cape-dabbrev-h ()
-  (add-hook 'completion-at-point-functions #'cape-dabbrev 90 t))
-(advice-add '+corfu-add-cape-dabbrev-h :override #'+my/corfu-add-cape-dabbrev-h)
-;; (advice-remove '+corfu-add-cape-dabbrev-h #'+my/corfu-add-cape-dabbrev-h)
-#+end_src
-
-No reason to scale super/sub-script down!
-#+begin_src emacs-lisp
-(after! font-latex
-  (set-face-attribute 'font-latex-superscript-face nil :height 'unspecified)
-  (set-face-attribute 'font-latex-subscript-face nil :height 'unspecified))
-#+end_src
-
 * Input
 ** Chinese
 #+begin_src toml
@@ -979,7 +963,7 @@ If MULTI-LINE, make every path occupy a new line."
     (dirvish--kill-and-echo (if multi-line (concat "\n" names) names))))
 
 (after! dirvish
- (advice-add 'dirvish-copy-file-path :override #'+my/dirvish-copy-file-path))
+  (advice-add 'dirvish-copy-file-path :override #'+my/dirvish-copy-file-path))
 #+end_src
 
 Goto random line, use with [[fn:dirvish-fd]]
