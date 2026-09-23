@@ -1595,22 +1595,12 @@ respect to your home."
     (setq filename (replace-regexp-in-string "^/home/\\w+" (getenv "HOME") filename)))
   filename)
 
-(defun +my/pdf-sync-backward-search (x y &optional page)
-  "Go to the source corresponding to image coordinates X, Y.
+(defun +my/pdf-sync-correlate-true-path (correlate)
+  "Rewrite SOURCE in the (SOURCE FINDER) pair CORRELATE returns."
+  (cons (+my/synced-true-path (car correlate)) (cdr correlate)))
 
-Try to find the exact position, if
-`pdf-sync-backward-use-heuristic' is non-nil."
-  (cl-destructuring-bind (source finder)
-      (pdf-sync-backward-correlate x y page)
-    (setq source (+my/synced-true-path source))
-    (pop-to-buffer (or (find-buffer-visiting source)
-                       (find-file-noselect source))
-                   pdf-sync-backward-display-action)
-    (push-mark)
-    (funcall finder)
-    (run-hooks 'pdf-sync-backward-hook)))
-
-(advice-add 'pdf-sync-backward-search :override #'+my/pdf-sync-backward-search)
+(advice-add 'pdf-sync-backward-correlate :filter-return
+            #'+my/pdf-sync-correlate-true-path)
 #+end_src
 
 Auto view =.ps= file
