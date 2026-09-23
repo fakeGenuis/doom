@@ -1035,9 +1035,6 @@ tramp
    'remote-direct-async-process))
 #+end_src
 
-- [[https://github.com/akermu/emacs-libvterm/issues/689][akermu/emacs-libvterm#689 Tramp-login-shells custom doesn't match type]]
-- [[https://github.com/akermu/emacs-libvterm/pull/706][akermu/emacs-libvterm#706 Allow using the default login shell for remote connections]]
-
 *** tramp-rpc
 [[https://github.com/ArthurHeymans/emacs-tramp-rpc][GitHub - ArthurHeymans/emacs-tramp-rpc]]
 
@@ -1071,126 +1068,6 @@ See (info "(tramp) Improving performance of asynchronous remote processes") for 
 ** proxy
 
 * Term
-** COMMENT vterm
-*** Setup
-#+begin_src toml
-[vterm]
-packages=[
-    "libvterm",
-    "cmake",
-    "inetutils" # =hostname= command
-]
-#+end_src
-
-#+begin_src emacs-lisp :tangle no :noweb-ref term
-vterm
-#+end_src
-
-[[https://emacs.stackexchange.com/questions/24330/have-a-function-to-disable-close-confirmation-on-terms-work-on-all-terms-but-sh][Disable process query on exit for term-like buffers]]
-#+begin_src emacs-lisp
-(defun +my/disable-process-query-on-exit-h ()
-  "Disable exit confirmation for the current buffer's process."
-  (when-let ((proc (get-buffer-process (current-buffer))))
-    (set-process-query-on-exit-flag proc nil)))
-
-(with-eval-after-load 'vterm
-  (when (+my/is-utility-daemon)
-    (add-hook 'vterm-mode-hook #'+my/disable-process-query-on-exit-h)))
-#+end_src
-
-*** Navigation
-#+begin_src emacs-lisp
-(with-eval-after-load 'vterm
-  (setq vterm-buffer-name-string "%s - vterm"
-        vterm-ignore-blink-cursor nil)
-  ;; TODO fixed-pitch in bpytop like
-  (define-key vterm-mode-map (kbd "M-q") #'vterm-send-escape)
-  (define-key vterm-mode-map (kbd "C-l") nil)
-  (dolist (num (number-sequence 0 9))
-      (define-key vterm-mode-map (kbd (format "M-%d" num)) nil)))
-#+end_src
-
-*** Persistence
-Restore vterm buffer text and window layout across workspace restores.  The
-shell process itself is not restored.
-
-- [[https://github.com/akermu/emacs-libvterm/issues/666][akermu/emacs-libvterm#666 Integrate with desktop-save-mode]]
-- [[https://bmag.github.io/2015/12/26/desktop.html][Desktop-Save Mode]]
-- [[https://github.com/Bad-ptr/persp-mode.el#custom-saveload-buffer-function-example][GitHub - Bad-ptr/persp-mode.el: named perspectives(set of buffers/window conf...]]
-- [[doom:modules/ui/workspaces/config.el::263][examples in doom config]]
-
-Only plain text is saved; text properties are intentionally omitted.
-
-A vterm buffer whose name changes (e.g. an agent terminal pushing OSC titles)
-breaks =persp-mode= window restore: =window-state-put= matches windows by buffer
-name, so a name that differs between save and restore drops the window and the
-layout collapses on workspace switch. Rather than advising persp's save/restore
-to strip the volatile prefix, the root cause is fixed at the source by disabling
-vterm's title-driven renaming on those buffers (see [[* agent-shell][codex ide]] / [[* claude code ide][claude code ide]],
-=vterm-buffer-name-string=).
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'persp-mode
-  (persp-def-buffer-save/load
-   :mode 'vterm-mode :tag-symbol 'def-vterm-buffer
-   :save-vars '(default-directory)
-   :save-function (lambda (buf tag vars)
-                    (with-current-buffer buf
-                      (list tag (buffer-name buf) vars
-                            (string-trim-right
-                             (buffer-substring-no-properties
-                              (point-min) (point-max))))))
-   :load-function (lambda (savelist &rest _)
-                    (cl-destructuring-bind (_ buf-name vars buf-string) savelist
-                      (let ((default-directory (alist-get 'default-directory vars)))
-                        (require 'vterm)
-                        (with-current-buffer (get-buffer-create buf-name)
-                          (erase-buffer)
-                          (insert buf-string)
-                          (vterm-mode)))))))
-#+end_src
-
-*** Integrations
-Switch from =dirvish= into the workspace vterm and sync its working directory when
-it is safe to send input at an empty prompt. This mirrors ranger's =S= shortcut.
-
-#+begin_src emacs-lisp
-(defun +my/vterm-at-empty-prompt-p ()
-  "Return non-nil when the current vterm is at an empty prompt.
-
-This relies on vterm's prompt detector.  If that private helper is not
-available, refuse to send input."
-  (and (fboundp 'vterm--at-prompt-p)
-       (save-excursion
-         (let ((evil-state (and (boundp 'evil-state) evil-state)))
-           (unwind-protect
-               (progn
-                 (when (fboundp 'vterm-reset-cursor-point)
-                   (vterm-reset-cursor-point))
-                 (when (fboundp 'evil-collection-vterm-append)
-                   (evil-collection-vterm-append))
-                 (vterm--at-prompt-p))
-             (when (and (bound-and-true-p evil-local-mode) evil-state)
-               (evil-change-state evil-state)))))))
-
-(defun dirvish-cd-into-vterm ()
-  "Switch into recent vterm buffer, and cd into `default-directory` of dirvish buffer."
-  (interactive)
-  (let ((cur-dirvish-dir default-directory))
-    (dirvish-quit)
-    (if-let ((vterm-buffer (+my/workspace-first-vterm-buffer)))
-        (let ((cur-vterm-dir (with-current-buffer vterm-buffer
-                               default-directory)))
-          (switch-to-buffer vterm-buffer)
-          (when (and (not (string= cur-vterm-dir cur-dirvish-dir))
-                     (+my/vterm-at-empty-prompt-p))
-            (vterm-send-string
-             (concat " cd " (shell-quote-argument cur-dirvish-dir)))
-            (vterm-send-return)))
-      (with-temp-buffer
-        (setq-local default-directory cur-dirvish-dir)
-        (+vterm/here t)))))
-#+end_src
 
 ** ghostel
 [[https://github.com/dakra/ghostel][GitHub - dakra/ghostel]] is an Emacs terminal emulator powered by =libghostty-vt=
@@ -1571,22 +1448,6 @@ config keeps one session record and one trusted path instead of one per session.
          :desc "claude-code-ide" "c" #'claude-code-ide-menu))
   :config
   (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
-#+end_src
-
-The vterm backend renames its buffer from shell OSC titles via
-=vterm-buffer-name-string=.  Agent CLIs push a volatile activity title (e.g. a
-spinner prefix), so the buffer name flips between save and restore and
-=persp-mode= drops the window on workspace switch (see [[* Persistence][Persistence]]).  Pin a
-stable name on agent terminals by disabling title-driven renaming there.  This
-is buffer-local and leaves ordinary vterm buffers untouched.
-#+begin_src emacs-lisp
-(defun +my/vterm-disable-title-rename-for-agents-h ()
-  "Disable OSC-title buffer renaming in claude/codex vterm buffers.
-Keeps the buffer name stable so `persp-mode' restores its window."
-  (when (string-match-p "\\*\\(claude-code\\|codex\\)" (buffer-name))
-    (setq-local vterm-buffer-name-string nil)))
-
-(add-hook 'vterm-mode-hook #'+my/vterm-disable-title-rename-for-agents-h)
 #+end_src
 
 *** dsh-emacs
@@ -2526,7 +2387,6 @@ fish shell ligatures
 Here is for [[var:shell-file-name]], will remove ~doom doctor~'s complain.
 #+begin_src emacs-lisp
 (setq shell-file-name (executable-find "bash"))
-(setq-default vterm-shell "/bin/fish")
 (setq-default explicit-shell-file-name "/bin/fish")
 #+end_src
 
