@@ -1192,7 +1192,7 @@ After [[cmd:gptel-org-set-topic]], remove the top heading for collect conversati
   (while (re-search-backward "\\(?:^\\* .+$\\)[[:space:]]+" nil t)
     (delete-region (match-beginning 0) (match-end 0))))
 
-(add-hook 'gptel-prompt-filter-hook #'+my/gptel-org-rm-upper-heading)
+(add-hook 'gptel-prompt-transform-functions #'+my/gptel-org-rm-upper-heading)
 #+end_src
 
 #+begin_src elisp
