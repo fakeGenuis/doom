@@ -6,7 +6,6 @@ Literate and modular Doom Emacs configuration.
 - [[#about][About]]
 - [[#tangle][Tangle]]
 - [[#helpers][Helpers]]
-  - [[#predefined][Predefined]]
   - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
   - [[#shortcuts][Shortcuts]]
   - [[#window][Window]]
