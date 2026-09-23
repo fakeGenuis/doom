@@ -233,7 +233,7 @@ Open link with host =Librewolf= browser
 
 No reason to scale super/sub-script down!
 #+begin_src emacs-lisp
-(after! 'font-latex
+(after! font-latex
   (set-face-attribute 'font-latex-superscript-face nil :height 'unspecified)
   (set-face-attribute 'font-latex-subscript-face nil :height 'unspecified))
 #+end_src
