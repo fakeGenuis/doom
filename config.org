@@ -926,7 +926,7 @@ packages=[
 #+begin_src emacs-lisp
 (after! dirvish
   (setq dirvish-side-width 25)
-  (setq dirvish-reuse-session 'quit)
+  (setq dirvish-reuse-session 'quit))
 #+end_src
 
 Dirvish previews text synchronously; with =org-startup-with-inline-images=,
