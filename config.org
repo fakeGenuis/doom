@@ -1547,12 +1547,16 @@ see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Tran
 
 - [ ] try to fixed transient menu in =dirvish=
 #+begin_src emacs-lisp
-(defun transient-posframe--delete ()
-  "Delete transient posframe."
-  (posframe-delete-frame transient--buffer-name)
-  (posframe--kill-buffer transient--buffer-name))
+(defun +my/transient-posframe--delete-a (orig-fn)
+  "Delete a posframe transient, else fall back to ORIG-FN."
+  (if (and (window-live-p transient--window)
+           (frame-parameter (window-frame transient--window) 'parent-frame))
+      (progn
+        (posframe-delete-frame transient--buffer-name)
+        (posframe--kill-buffer transient--buffer-name))
+    (funcall orig-fn)))
 
-(advice-add 'transient--delete-window :override #'transient-posframe--delete)
+(advice-add 'transient--delete-window :around #'+my/transient-posframe--delete-a)
 #+end_src
 
 ** pdf
