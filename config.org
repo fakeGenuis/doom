@@ -78,8 +78,6 @@ The *conventions* of this org file:
 - Configured module goes to second level heading ::
   - Prerequisite packages tangled into [[file:packages.toml]] (=Arch= only)
 
-  - Bootstrap scripts tangled to [[file:install.d/]]
-
   - Comment a module with [[kbd:][C-c ;]] at heading
 
 - One line config goes into [[* Tangle]] ::
