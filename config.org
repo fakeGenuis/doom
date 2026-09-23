@@ -375,7 +375,7 @@ Register and automatically refresh the dynamically generated Dank Emacs theme.
     (file-notify-rm-watch +my/dank-theme-watch)
     (setq +my/dank-theme-watch nil))))
 
-(add-hook 'load-theme-hook #'+my/dank-theme-watch-sync)
+(add-hook 'doom-load-theme-hook #'+my/dank-theme-watch-sync)
 #+end_src
 
 load wal theme from command line
