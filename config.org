@@ -246,6 +246,29 @@ Default simplified Chinese input
   (setq pyim-default-scheme 'rime-quanpin))
 #+end_src
 
+liberime 0.0.11 searches in a throwaway session, while pyim 5.3.6 expects a
+search to leave the default session composing, so candidate selection died with
+=(wrong-type-argument stringp nil)=. Restore the old contract until pyim catches
+up.
+#+begin_src emacs-lisp
+(defun +my/liberime-search-compose-a (orig-fn string &rest args)
+  "Compose STRING in the default session, as liberime <0.0.11 did."
+  (prog1 (apply orig-fn string args)
+    (liberime-clear-composition)
+    (liberime-simulate-key-sequence string)))
+
+(defun +my/pyim-liberime--get-code-a (orig-fn word input &optional limit)
+  "Read the preedit of INPUT, not of whatever composition was left behind."
+  (liberime-clear-composition)
+  (unwind-protect (funcall orig-fn word input limit)
+    (ignore-errors (liberime-clear-composition))))
+
+(after! liberime
+  (advice-add 'liberime-search :around #'+my/liberime-search-compose-a))
+(after! pyim-liberime
+  (advice-add 'pyim-liberime--get-code :around #'+my/pyim-liberime--get-code-a))
+#+end_src
+
 This is useful for allowing breaking after CJK characters and improves the
 word-wrapping for CJK text mixed with Latin text.
 #+begin_src emacs-lisp
