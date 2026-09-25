@@ -8,7 +8,6 @@ fi
 emacsclient "${ARGS[@]}" \
     -e "(let* ((default-directory \"${1:-$HOME}\")
                (buffer (ghostel t)))
-          (set-frame-parameter nil '+my/ghostel-buffer buffer)
           (with-current-buffer buffer
             (setq-local ghostel-kill-buffer-on-exit t)))" \
     -F "((width . 120) (height . 40))"

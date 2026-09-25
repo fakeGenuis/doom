@@ -10,6 +10,7 @@ Literate and modular Doom Emacs configuration.
   - [[#shortcuts][Shortcuts]]
   - [[#window][Window]]
   - [[#ediff][ediff]]
+  - [[#scripts][Scripts]]
 - [[#input][Input]]
   - [[#chinese][Chinese]]
 - [[#completion][Completion]]
@@ -218,6 +219,18 @@ Open link with host =Librewolf= browser
             (when (derived-mode-p 'org-mode)
               (org-fold-show-all))))
 #+end_src
+
+** Scripts
+Wrappers in [[file:scripts/]] that hand work to the =utility= daemon, so a file
+manager or a desktop entry can open things in an already running frame.
+
+- =daemon.sh= :: start the =utility= daemon when =emacsclient= cannot reach it;
+  exits 1 on the run that starts it, so callers can tell the two cases apart.
+- =dirvish= :: open =dirvish= on the directory given as =$1= (default =$HOME=) in
+  a 120x40 frame.
+- =PDF-tools= :: open the PDF given as =$1= in a small frame.
+- =ghostel= :: open a =ghostel= terminal at =$1= (default =$HOME=), killing its
+  buffer when the shell exits.
 
 * Input
 ** Chinese
