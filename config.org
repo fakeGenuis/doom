@@ -985,16 +985,6 @@ If MULTI-LINE, make every path occupy a new line."
   (advice-add 'dirvish-copy-file-path :override #'+my/dirvish-copy-file-path))
 #+end_src
 
-Goto random line, use with [[fn:dirvish-fd]]
-#+begin_src emacs-lisp
-(defun goto-random-line ()
-  "Go to a random line in the current buffer."
-  (interactive)
-  (let* ((total-lines (count-lines (point-min) (point-max)))
-         (random-line (1+ (random total-lines))))
-    (goto-line random-line)))
-#+end_src
-
 set =dirvish= as default directory opener.
 #+begin_src fish :tangle no :eval no
 xdg-mime default dirvish.desktop inode/directory
@@ -2141,35 +2131,6 @@ Opens with `org-open-file', see for more information about ARG."
       "C-c <quote> <quote>" (cmd!! #'org-zotxt-insert-reference-link '(4))
       :desc "org-zotxt-copy-attachment-path"
       "C-c <quote> c" #'org-zotxt-copy-attachment-path)
-#+end_src
-
-open attachment with point at arxiv link
-- [[https://emacs.stackexchange.com/a/38297][Get description of an org-mode link - Emacs Stack Exchange]]
-#+begin_src emacs-lisp
-(defun org-zotxt-open-arxiv-attachment ()
-  "open attachment from arxiv link, by zotxt"
-  (interactive)
-  (let* ((link (org-element-context))
-         (desc (buffer-substring-no-properties (org-element-property :contents-begin link)
-                                               (org-element-property :contents-end link))))
-     (org-zotxt-insert-reference-link)))
-#+end_src
-
-**** insert arxiv links
-#+begin_src emacs-lisp
-(defvar rx-arxiv-regexp
-  (rx (= 4 num) "." (= 5 num))
-  "Regular expression for arxiv id.")
-
-(defun org-insert-arxiv-link ()
-  "Insert arxiv link with arxiv id as description."
-  (interactive)
-  (let* ((ring (current-kill 0))
-         (id (if (string-match rx-arxiv-regexp ring)
-                 (match-string 0 ring)
-               (read-string "Input arxiv id:"))))
-    (insert " ")
-    (org-insert-link nil (concat "https://arxiv.org/abs/" id) id)))
 #+end_src
 
 *** Format
