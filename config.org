@@ -1449,16 +1449,6 @@ to hang, use [[kbd:E s]] ([[cmd:magit-ediff-stage]]) instead.
 - [[file:~/.config/emacs/modules/tools/magit/config.el::transient-display-buffer-action]]
 - [[https://github.com/magit/transient/issues/338#issuecomment-2528948033][magit/transient#338 Transient window doesn't come back if display-action is set]]
 - [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
-#+begin_src emacs-lisp :tangle no
-(after! (transient magit gptel)
-  (setq transient-display-buffer-action
-        '(display-buffer-below-selected
-          (dedicated . t)
-          (inhibit-same-window . t)))
-  (setq transient-show-during-minibuffer-read t))
-#+end_src
-
-see also [[https://github.com/karthink/gptel/issues/583][karthink/gptel#583 Transient issue when selecting a model in `gptel-menu`]]
 
 *** transient-posframe
 [[https://github.com/yanghaoxie/transient-posframe/blob/master/transient-posframe.el][transient-posframe/transient-posframe]]
