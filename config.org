@@ -37,7 +37,6 @@ Literate and modular Doom Emacs configuration.
   - [[#dired][dired]]
   - [[#dirvish][dirvish]]
   - [[#tramp][tramp]]
-  - [[#proxy][proxy]]
 - [[#term][Term]]
   - [[#ghostel][ghostel]]
 - [[#checkers][Checkers]]
@@ -1051,8 +1050,6 @@ File preview is not supported in this connection.
 2. Adjust your `direct-async' tramp settings, for example:
 
 See (info "(tramp) Improving performance of asynchronous remote processes") for details.
-
-** proxy
 
 * Term
 
