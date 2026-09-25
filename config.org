@@ -571,29 +571,9 @@ Doom's way of change unicode font, but it will be shadowed by
     (push "Sarasa Gothic SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+end_src
 
-Add to [[var:after-setting-font-hook]] not work well, font display diffs after
-[[cmd:doom/reload-theme]]
-#+begin_src emacs-lisp :tangle no
-(defun +my/unicode-fonts ()
-  (dolist (unicode-block '("Letterlike Symbols" "Supplemental Arrows-B"))
-    (push "Quivira" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
-(add-hook 'after-setting-font-hook #'+my/unicode-fonts 60)
-#+end_src
-
-Add hook but with [[fn:set-fontset-font]] succeed
-#+begin_src emacs-lisp :tangle no
-(defun +my/unicode-fonts ()
-  ; Supplemental Arrows-B, include ⤵
-  (set-fontset-font t '(#x2900 . #x297f) "Quivira")
-  ; Mathematical symbols, 𝔹
-  (set-fontset-font t '(#x1d400 . #x1d7ff) "Quivira")
-  ; Mathematical operators, ⨂
-  (set-fontset-font t '(#x2208 . #x22ff) "DejaVu Math TeX Gyre")
-  (dolist (chars '("￢")) ; keywords =not= in code ligatures
-     (set-fontset-font t (string-to-char chars) "Sarasa Gothic SC")))
-(add-hook 'after-setting-font-hook #'+my/unicode-fonts 60)
-#+end_src
-see more in [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
+=after-setting-font-hook= does not work well here: font display differs after
+[[cmd:doom/reload-theme]].  See
+[[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]].
 
 *** Chinese fonts
 [[https://rongcuid.github.io/posts/2021-04-02-Doom-Emacs-CJK.html][Rongcui Dong's Site - 如何在 Doom Emacs 中设置中文]]
