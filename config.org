@@ -968,12 +968,9 @@ Cap text previews at 128 KB and skip that scan in previews only.
 Replace =/home/$user= to =~=
 #+begin_src emacs-lisp
 (defun +my/home-to-tilde (file)
-  "Replace /home/$user in FILE to ~."
-  (let ((home (getenv "HOME"))
-        (file-name (concat file)))
-    (if (s-starts-with? home file-name)
-        (s-replace home "~" file-name)
-      file-name)))
+  "Replace the /home/$user prefix in FILE with ~.
+Leaves FILE alone when it is not below $HOME, e.g. /home/flynn."
+  (abbreviate-file-name file))
 
 (defun +my/dirvish-copy-file-path (&optional multi-line)
   "Copy filepath of marked files.
@@ -2116,14 +2113,6 @@ This branch mainly fix =apply: Wrong number of arguments= of advice
         (deferred:nextc it
           (lambda (path) path))))))
 
-(defun +my/tilde-home-path (path)
-  "covert path starts with /home/$usr/ to '~'"
-  (interactive)
-  (let ((home (getenv "HOME")))
-    (if (string-prefix-p home path)
-        (string-join `("~" ,(string-remove-prefix home path)) "")
-      path)))
-
 (defun org-zotxt-copy-attachment-path ()
   "Open attachment of Zotero items linked at point.
 Opens with `org-open-file', see for more information about ARG."
@@ -2134,7 +2123,7 @@ Opens with `org-open-file', see for more information about ARG."
         (org-zotxt-get-attachment-path)))
     (deferred:nextc it
       (lambda (path)
-        (let ((new-path (+my/tilde-home-path path)))
+        (let ((new-path (+my/home-to-tilde path)))
           (kill-new new-path)
           (message "\"%s\" send to system clipboard!" new-path))))))
 #+end_src
