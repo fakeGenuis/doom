@@ -2545,6 +2545,17 @@ command are configured in =private/mu4e.el=.
         "C-c u" #'+my/mu4e-update-account))
 #+end_src
 
+WSL notifications show senders and subjects.  Test: =+my/mu4e-test-notification=;
+log: =*mu4e-wsl-notify*=.
+#+begin_src emacs-lisp
+(after! mu4e
+  (when (and (featurep :system 'wsl)
+             (executable-find "powershell.exe"))
+    (load-in-doom-dir "lisp/mu4e-wsl-notify.el")
+    (setq mu4e-notification-filter #'always
+          mu4e-notification-function #'+my/mu4e-wsl-notify)))
+#+end_src
+
 * App
 ** rss
 #+begin_src emacs-lisp :tangle no :noweb-ref app
