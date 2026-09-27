@@ -2521,6 +2521,30 @@ private variables ~mu4e-get-mail-command~ and ~mu4e-contexts~
   (load-in-doom-dir "private/mu4e.el"))
 #+end_src
 
+=C-c u= syncs one account; =U= syncs all.  Account identifiers and the full-sync
+command are configured in =private/mu4e.el=.
+#+begin_src emacs-lisp
+(after! mu4e
+  (defvar +my/mu4e-sync-accounts nil
+    "Account identifiers supplied by the private mail configuration.")
+  (defun +my/mu4e-update-account (account &optional background)
+    "Sync ACCOUNT and update the index; with a prefix, run in BACKGROUND."
+    (interactive
+     (list (if +my/mu4e-sync-accounts
+               (completing-read "Update mail account: "
+                                +my/mu4e-sync-accounts nil t)
+             (user-error "No mail sync accounts configured"))
+           current-prefix-arg))
+    (let ((mu4e-get-mail-command
+           (format "sh %s %s"
+                   (shell-quote-argument
+                    (expand-file-name "scripts/mail-sync.sh" doom-user-dir))
+                   (shell-quote-argument account))))
+      (mu4e-update-mail-and-index background)))
+  (map! :map mu4e-main-mode-map
+        "C-c u" #'+my/mu4e-update-account))
+#+end_src
+
 * App
 ** rss
 #+begin_src emacs-lisp :tangle no :noweb-ref app
