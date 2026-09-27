@@ -2480,8 +2480,8 @@ packages=[
 
 Example for initialing =mu= and =mbsync=
 #+begin_src fish :tangle no
-mkdir -p ~/.local/share/mail/$mailname
-mu init --maildir=~/.local/share/mail --my-address=...@...
+mkdir -p ~/.mail/$mailname
+mu init --maildir=~/.mail --my-address=...@...
 mu index
 mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
@@ -2495,9 +2495,9 @@ mbsync -c ~/.config/isync/$mbsyncrc -V -a
 #+end_src
 
 #+begin_src emacs-lisp
-(setq mu4e-update-interval 300)
 (after! mu4e
-  (setq mu4e-split-view 'vertical
+  (setq mu4e-update-interval 300
+        mu4e-split-view 'vertical
         mu4e-change-filenames-when-moving t
         mu4e-attachment-dir "~/Downloads"
         ;; every new email composition gets its own frame!
@@ -2509,7 +2509,7 @@ send email by =msmtp=, see [[file:~/.config/msmtp/config]]
 #+begin_src emacs-lisp
 (after! mu4e
   (setq sendmail-program (executable-find "msmtp")
-        send-mail-function #'smtpmail-send-it
+        send-mail-function #'sendmail-send-it
         message-sendmail-f-is-evil t
         message-sendmail-extra-arguments '("--read-envelope-from")
         message-send-mail-function #'message-send-mail-with-sendmail))
