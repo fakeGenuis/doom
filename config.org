@@ -70,6 +70,7 @@ Literate and modular Doom Emacs configuration.
   - [[#rss][rss]]
   - [[#everywhere][everywhere]]
   - [[#screenshot][screenshot]]
+  - [[#telega][telega]]
 
 * About
 The *conventions* of this org file:
@@ -178,7 +179,6 @@ enable_default=true
 #+end_src
 
 * Helpers
-
 ** Windows browser in wsl
 Links open in the host =LibreWolf= (=librewolf.exe= through the =~/.local/bin=
 symlink), handed over from a drive directory: from a WSL share the browser drops
@@ -1038,7 +1038,6 @@ File preview is not supported in this connection.
 See (info "(tramp) Improving performance of asynchronous remote processes") for details.
 
 * Term
-
 ** ghostel
 [[https://github.com/dakra/ghostel][GitHub - dakra/ghostel]] is an Emacs terminal emulator powered by =libghostty-vt=
 (Ghostty's VT engine), inspired by =emacs-libvterm=.
@@ -2668,7 +2667,7 @@ WARNING: The convert command is deprecated in IMv7, use "magick" instead of
                   (shrface-html-export-as-org data))))))
 #+end_src
 
-** COMMENT telega
+** telega
 #+begin_src emacs-lisp :tangle packages.el
 (package! telega)
 #+end_src
@@ -2693,7 +2692,6 @@ docker pull zevlg/telega-server:latest
   ;; Use "xdg-open" to open files by default
   (setcdr (assq t org-file-apps-gnu) 'browse-url-xdg-open)
   (setq telega-open-file-function 'org-open-file)
-  (setq telega-proxies '((:server "127.0.0.1" :port 1089 :enable t
-                          :type (:@type "proxyTypeSocks5")))))
-  ;; (setq telega-server-libs-prefix "/usr"))
+  ;; SPC scrolls in the message area, where the leader is wanted instead
+  (define-key telega-msg-button-map (kbd "SPC") nil))
 #+end_src
