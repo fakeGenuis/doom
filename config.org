@@ -6,7 +6,7 @@ Literate and modular Doom Emacs configuration.
 - [[#about][About]]
 - [[#tangle][Tangle]]
 - [[#helpers][Helpers]]
-  - [[#windows-librewolf-in-wsl][Windows =Librewolf= in wsl]]
+  - [[#windows-browser-in-wsl][Windows browser in wsl]]
   - [[#shortcuts][Shortcuts]]
   - [[#window][Window]]
   - [[#ediff][ediff]]
@@ -179,11 +179,17 @@ enable_default=true
 
 * Helpers
 
-** Windows =Librewolf= in wsl
-Open link with host =Librewolf= browser
+** Windows browser in wsl
+Links open in the host =LibreWolf= (=librewolf.exe= through the =~/.local/bin=
+symlink), handed over from a drive directory: from a WSL share the browser drops
+the URL.  Its window does not come to the front by itself.
 #+begin_src emacs-lisp
-(if (featurep :system 'wsl)
-  (setq browse-url-firefox-program "librewolf.exe"))
+(when (featurep :system 'wsl)
+  (setq browse-url-firefox-program "librewolf.exe"
+        browse-url-browser-function
+        (lambda (url &optional new-window)
+          (let ((default-directory "/mnt/c/"))
+            (browse-url-firefox url new-window)))))
 #+end_src
 
 ** Shortcuts
@@ -780,7 +786,7 @@ Line numbers
 
 Shortcut for evil normal mode
 #+begin_src emacs-lisp
-(map! :n "g U" #'browse-url-xdg-open
+(map! :n "g U" #'browse-url
       :n "g u" #'evil-upcase
       :n "g d" #'evil-downcase
       :n "g R" #'normal-mode)
