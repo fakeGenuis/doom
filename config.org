@@ -1063,6 +1063,15 @@ packages=[
       ghostel-module-directory
       (expand-file-name "ghostel/" doom-data-dir))
 
+(map! :leader
+      :desc "Open ghostel here"
+      "o T"
+      (cmd!
+       (ghostel
+        (cond ((null current-prefix-arg) '(4))
+              ((consp current-prefix-arg) nil)
+              (t current-prefix-arg)))))
+
 (after! ghostel
   (setq ghostel-term "xterm-256color")
   ;; recenter
