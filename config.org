@@ -934,6 +934,30 @@ packages=[
   (setq dirvish-reuse-session 'quit))
 #+end_src
 
+Refresh when =!= returns. Let Dired preserve positions across subtree restoration.
+For background commands this refresh happens at launch, not at completion.
+
+#+begin_src emacs-lisp
+(defun +my/dirvish-refresh-after-shell-command-a (&rest _)
+  "Refresh Dirvish after a shell command returns."
+  (when (dirvish-curr)
+    (revert-buffer nil t)))
+
+(defun +my/dirvish-subtree-preserve-position-a (fn &rest args)
+  "Preserve Dired's restored position across subtree restoration."
+  (let ((positions (dired-save-positions)))
+    (prog1 (apply fn args)
+      (dired-restore-positions positions))))
+
+(after! dirvish
+  (advice-add 'dired-do-shell-command :after
+              #'+my/dirvish-refresh-after-shell-command-a))
+
+(after! dirvish-subtree
+  (advice-add 'dirvish-subtree--revert :around
+              #'+my/dirvish-subtree-preserve-position-a))
+#+end_src
+
 Dirvish previews text synchronously; with =org-startup-with-inline-images=,
 org-mode scans the whole buffer for link previews and hangs on big agent logs.
 Cap text previews at 128 KB and skip that scan in previews only.
