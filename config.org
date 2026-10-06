@@ -915,6 +915,16 @@ packages=[
 #+end_src
 
 #+begin_src emacs-lisp
+(defun +my/dirvish-jump-single-column ()
+  "Jump to the current file's directory in single-column Dirvish."
+  (interactive)
+  (call-interactively #'dired-jump)
+  (when (dv-curr-layout (dirvish-curr))
+    (dirvish-layout-toggle)))
+
+(map! :leader
+      :desc "Dirvish (single column)" "o -" #'+my/dirvish-jump-single-column)
+
 (after! dirvish
   (setq dirvish-quick-access-entries
    '(("h" "~/"                          "Home")
