@@ -1159,6 +1159,14 @@ Only hint spell error for English words!
 #+end_src
 
 * Tools
+** Eglot
+Disable inline hints in all Eglot buffers while retaining Eldoc in the minibuffer.
+#+begin_src emacs-lisp
+(add-hook 'eglot-managed-mode-hook
+          (defun my/eglot-disable-inlay-hints ()
+            (eglot-inlay-hints-mode -1)))
+#+end_src
+
 ** lookup
 #+begin_src toml
 [lookup]
