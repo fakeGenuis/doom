@@ -43,6 +43,7 @@ Literate and modular Doom Emacs configuration.
 - [[#checkers][Checkers]]
   - [[#spell-checker][Spell checker]]
 - [[#tools][Tools]]
+  - [[#eglot][Eglot]]
   - [[#lookup][lookup]]
   - [[#llm][llm]]
   - [[#agent][agent]]
@@ -558,7 +559,7 @@ packages=[
     "ttf-symbola",          # required by doom
     "quivira",              # org ellipsis ⤵, ℤ
     "ttf-dejavu",           # org heading ◉ ✸ ∈
-    "ttf-sarasa-gothic-sc", # ￢
+    "ttf-sarasa_ui-sc", # ￢
     "noto-fonts-emoji",     # color emoji
     "ttf-nerd-fonts-symbols-mono" # nerd font
 ]
@@ -587,7 +588,7 @@ Doom's way of change unicode font, but it will be shadowed by
     (push "DejaVu Sans" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   ;; ￢
   (dolist (unicode-block '("Halfwidth and Fullwidth Forms"))
-    (push "Sarasa Gothic SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
+    (push "Sarasa UI SC" (cadr (assoc unicode-block unicode-fonts-block-font-mapping)))))
 #+end_src
 
 =after-setting-font-hook= does not work well here: font display differs after
