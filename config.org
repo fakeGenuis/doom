@@ -173,11 +173,8 @@ Default tangle to [[file:config.el]]
 (load (expand-file-name "private/identity.el" doom-user-dir) nil 'nomessage)
 #+end_src
 
-Default install all packages in [[file:packages.toml]]
+Package declarations are tangled into [[file:packages.toml]].
 #+PROPERTY: header-args:toml :tangle packages.toml
-#+begin_src toml
-enable_default=true
-#+end_src
 
 * Helpers
 ** Windows browser in wsl
