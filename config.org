@@ -244,7 +244,7 @@ manager or a desktop entry can open things in an already running frame.
 #+begin_src toml
 [chinese]
 packages=["base-devel",
-    "librime" # for +rime
+    ["librime", "for +rime"]
 ]
 #+end_src
 
@@ -556,12 +556,12 @@ Prefer stack at right for following info windows, since they are fill-columned
 #+begin_src toml
 [unicode]
 packages=[
-    "ttf-symbola",          # required by doom
-    "quivira",              # org ellipsis ⤵, ℤ
-    "ttf-dejavu",           # org heading ◉ ✸ ∈
-    "ttf-sarasa_ui-sc", # ￢
-    "noto-fonts-emoji",     # color emoji
-    "ttf-nerd-fonts-symbols-mono" # nerd font
+    ["ttf-symbola", "required by doom"],
+    ["quivira", "org ellipsis ⤵, ℤ"],
+    ["ttf-dejavu", "org heading ◉ ✸ ∈"],
+    ["ttf-sarasa_ui-sc", "￢"],
+    ["noto-fonts-emoji", "color emoji"],
+    ["ttf-nerd-fonts-symbols-mono", "nerd font"]
 ]
 #+end_src
 
@@ -908,7 +908,7 @@ packages=[
     "fd",
     "libvips",
     "imagemagick",
-    "ffmpegthumbnailer", # may require pipewire-jack
+    ["ffmpegthumbnailer", "may require pipewire-jack"],
     "mediainfo",
     "tar",
     "unzip"
@@ -1089,7 +1089,7 @@ ghostel
 #+begin_src toml
 [ghostel]
 packages=[
-    "inetutils" # =hostname= command
+    ["inetutils", "=hostname= command"]
 ]
 #+end_src
 
@@ -1308,7 +1308,6 @@ And more in [[https://github.com/munen/emacs.d?tab=readme-ov-file#tool-use][GitH
 #+begin_src toml
 [agent]
 packages=[
-    # "claude-agent-acp",
     "codex-acp"
 ]
 #+end_src
@@ -1694,8 +1693,8 @@ grammars, so previewing a =.php= file nags.  Disable auto-install; keep
 [latex]
 packages=[
     "miktex", "texlab",
-    # for `latexindent.pl` to work, which is called by `+format/buffer`
-    "perl-yaml-tiny", "perl-file-homedir"
+    ["perl-yaml-tiny", "perl-file-homedir",
+     "for `latexindent.pl` to work, which is called by `+format/buffer`"]
 ]
 #+end_src
 
@@ -1780,7 +1779,7 @@ Most convenient way, still use =LATEX= as compile command.
 #+begin_src toml
 [lua]
 packages=["lua-language-server",
-  "stylua" # deterministic Lua formatter
+  ["stylua", "deterministic Lua formatter"]
 ]
 #+end_src
 
@@ -2431,9 +2430,8 @@ Completion seems not work with =12.3=.
 ["typst-mode"]
 packages=[
     "typst",
-    "tree-sitter-typst-git", # tree sitter grammar for typst, demand by typst-ts-mode
-    "tinymist" # language server
-    # "typst-lsp-bin" # alternative language server
+    ["tree-sitter-typst-git", "tree sitter grammar for typst, demand by typst-ts-mode"],
+    ["tinymist", "language server"]
 ]
 #+end_src
 
@@ -2531,7 +2529,6 @@ packages=[
     "mu",
     "pass",
     "msmtp"
-    #"imagemagick"
 ]
 #+end_src
 
