@@ -1118,6 +1118,23 @@ packages=[
 
 Using =xterm-256color= avoids terminfo lookup failures across =sudo=, SSH sessions, and containers that do not provide =xterm-ghostty=. This compatibility fallback disables Ghostel-specific capability advertisement, so advanced features such as synchronized output and the Kitty keyboard protocol may be unavailable.
 
+*** evil-ghostel
+=evil-ghostel-goto-input-position= subtracts VT cell columns from Emacs buffer
+columns, so a wide glyph before the cursor (codex's =›=) makes the delta off by
+one and fires a stray =←=, which opens codex's agent command center. Skip the
+arrow keys when the target already is the cursor.
+#+begin_src emacs-lisp
+(defun +my/ghostel-skip-arrow-on-cursor-a (orig-fn pos)
+  "Skip the PTY arrow keys when POS already is the terminal cursor."
+  (if (and ghostel--cursor-char-pos (= pos ghostel--cursor-char-pos))
+      (prog1 t (goto-char pos))
+    (funcall orig-fn pos)))
+
+(after! evil-ghostel
+  (advice-add 'evil-ghostel-goto-input-position
+              :around #'+my/ghostel-skip-arrow-on-cursor-a))
+#+end_src
+
 * Checkers
 ** Spell checker
 #+begin_src toml
