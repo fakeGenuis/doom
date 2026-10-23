@@ -1340,13 +1340,23 @@ packages=[
 (use-package! agent-shell
   :commands (agent-shell)
   :bind (:map agent-shell-mode-map
+              ("RET" . newline)
+              ("<return>" . newline)
+              ("C-<return>" . agent-shell-submit)
               ("S-<return>" . newline))
   :init
   (setenv "CODEX_HOME" (expand-file-name "~/.local/share/codex"))
+  ;; WSL may lack a logind session for system-sleep's D-Bus request.
+  (when (featurep :system 'wsl)
+    (setq agent-shell-inhibit-system-sleep nil))
   (map! :leader
         (:prefix "o"
          :desc "agent-shell" "a" #'agent-shell))
   :config
+  (map! :map agent-shell-mode-map
+        :i "RET" #'newline
+        :i "<return>" #'newline
+        :in "C-<return>" #'agent-shell-submit)
   (setq agent-shell-context-sources '(files region error)
         agent-shell-show-welcome-message nil
         agent-shell-header-style 'text
