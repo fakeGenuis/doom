@@ -2345,7 +2345,7 @@ packages=["yaml-language-server"]
 ** wolfram
 #+begin_src toml
 [wolfram]
-packages=["mathematica"]
+packages=["mathematica:110"]
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -2539,7 +2539,7 @@ also one need to enable doom module ~:lang ess~, see
 #+begin_src toml
 [mu4e]
 packages=[
-    "isync",
+    "isync-imap-id",
     "mu",
     "pass",
     "msmtp"
@@ -2757,4 +2757,21 @@ docker pull zevlg/telega-server:latest
   (setq telega-open-file-function 'org-open-file)
   ;; SPC scrolls in the message area, where the leader is wanted instead
   (define-key telega-msg-button-map (kbd "SPC") nil))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! telega
+  (add-hook
+   'telega-before-auth-hook
+   (lambda ()
+     (let ((proxy (getenv "https_proxy")))
+       (when (and proxy (not (string-empty-p proxy)))
+         (let ((url (url-generic-parse-url proxy)))
+           (telega--addProxy
+               (list :@type "proxy"
+                     :server (url-host url)
+                     :port (url-port url)
+                     :type '(:@type "proxyTypeHttp"
+                             :http_only :false))
+             :enable-p t)))))))
 #+end_src
