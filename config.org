@@ -1855,6 +1855,20 @@ packages=[
 #+end_src
 
 *** Core
+Show sibling headings at each ancestor level when revealing jump destinations.
+#+begin_src emacs-lisp
+(after! org
+  (setq org-fold-show-context-detail '((agenda . local)
+                                       (default . tree))))
+
+(after! (org evil)
+  (defun +my/org-reveal-after-goto-line-a (&rest _)
+    "Reveal the destination of an Evil line jump in Org buffers."
+    (when (derived-mode-p 'org-mode)
+      (org-fold-show-context)))
+  (advice-add 'evil-goto-line :after #'+my/org-reveal-after-goto-line-a))
+#+end_src
+
 **** org modern
 Fix function link recognized as footnote.
 #+begin_src emacs-lisp
