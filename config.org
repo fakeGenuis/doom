@@ -1012,6 +1012,20 @@ If MULTI-LINE, make every path occupy a new line."
   (advice-add 'dirvish-copy-file-path :override #'+my/dirvish-copy-file-path))
 #+end_src
 
+Sort by folder size instead of by the size of the folder *file*: =s= and =S=
+in =dirvish-quicksort= measure each directory with =du= before ordering.
+Implemented in [[file:lisp/dired-recursive-size-sort.el]], loaded when the
+first =Dired= buffer appears.
+
+#+begin_src emacs-lisp
+(defun +my/dired-recursive-size-sort-init ()
+  "Load the recursive-size sorter before Dired reads its first listing."
+  (require 'dired-recursive-size-sort
+           (expand-file-name "lisp/dired-recursive-size-sort.el" doom-user-dir)))
+
+(add-hook 'dired-mode-hook #'+my/dired-recursive-size-sort-init)
+#+end_src
+
 set =dirvish= as default directory opener.
 #+begin_src fish :tangle no :eval no
 xdg-mime default dirvish.desktop inode/directory
