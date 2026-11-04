@@ -1629,6 +1629,12 @@ default pdf viewer in emacs
 
 ;; always use midnight view mode
 (add-hook! 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
+
+;; `evil-local-mode' is already on when `pdf-view-mode' starts, so
+;; evil-collection's deferred removal never runs; drop the hook here.
+(add-hook 'pdf-view-mode-hook
+          (lambda ()
+            (remove-hook 'activate-mark-hook #'evil-visual-activate-hook t)))
 #+end_src
 
 Selection in =pdf-tools= when evil mode enabled
