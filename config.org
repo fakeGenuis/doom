@@ -861,21 +861,9 @@ work for =org-ellipsis= and fold in code mode
 (dired +dirvish +icons)
 #+end_src
 
-#+begin_src emacs-lisp
-(after! dired
-  (setq delete-by-moving-to-trash t)
-  (setq dired-listing-switches
-        "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
-  ;; Dirvish respects all the keybindings in `dired-mode-map'
-  (map! :map dired-mode-map
-        :n "e" #'dired-create-empty-file
-        :n "." #'dired-omit-mode))
-#+end_src
-
-Better trash/restore file with =trash-put=, =trash-restore= from =trash-cli= package.
+Trash files with =trash-put= and restore them with =trash-restore= from =trash-cli=.
 [[https://emacs.stackexchange.com/questions/37492/how-restore-file-from-trash][How restore file from trash?]]
 
-~trash-put~ in =dired=
 #+begin_src emacs-lisp
 (defun system-move-file-to-trash (filename)
   "Trash FILENAME using trash-cli's `trash-put'."
@@ -887,7 +875,36 @@ Better trash/restore file with =trash-put=, =trash-restore= from =trash-cli= pac
                (shell-quote-argument file) (string-trim (buffer-string)))))))
 #+end_src
 
+Permanently delete files with =X=, after confirmation.
+
 #+begin_src emacs-lisp
+(defun +my/dired-delete-permanently (&optional arg)
+  "Permanently delete marked files or the file at point, with confirmation.
+With prefix ARG, use the usual `dired-do-delete' selection rules.
+Non-empty directories are deleted recursively after confirmation."
+  (interactive "P")
+  (let ((delete-by-moving-to-trash nil)
+        (dired-recursive-deletes 'always)
+        (dired-deletion-confirmer
+         (lambda (prompt)
+           (let ((use-dialog-box nil))
+             (y-or-n-p
+              (concat "PERMANENT deletion (including directory contents). "
+                      prompt))))))
+    (dired-do-delete arg)))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! dired
+  (setq delete-by-moving-to-trash t)
+  (setq dired-listing-switches
+        "-l --almost-all --sort=time --human-readable --time-style=long-iso --group-directories-first --no-group")
+  ;; Dirvish respects all the keybindings in `dired-mode-map'
+  (map! :map dired-mode-map
+        :n "e" #'dired-create-empty-file
+        :n "X" #'+my/dired-delete-permanently
+        :n "." #'dired-omit-mode))
+
 (after! dired-x
   ;; Make dired-omit-mode hide all "dotfiles"
   (setq dired-omit-files
