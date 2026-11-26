@@ -142,7 +142,7 @@ The *conventions* of this org file:
  ;upload
 
  :os
- ;tty
+ tty
 
  :lang
  markdown
