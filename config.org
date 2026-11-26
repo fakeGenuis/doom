@@ -2483,7 +2483,16 @@ Completion seems not work with =12.3=.
     (yas-define-snippets 'wolfram-mode key-templates)))
 #+end_src
 
-** typst
+#+begin_src emacs-lisp
+(after! nerd-icons
+  (dolist (ext '("wl" "wls" "m"))
+    (setf (alist-get ext nerd-icons-extension-icon-alist nil nil #'equal)
+          '(nerd-icons-devicon "nf-dev-wolfram" :face nerd-icons-red)))
+  (setf (alist-get "nb" nerd-icons-extension-icon-alist nil nil #'equal)
+        '(nerd-icons-mdicon "nf-md-notebook_outline" :face nerd-icons-red)))
+#+end_src
+
+** COMMENT typst
 #+begin_src toml
 ["typst-mode"]
 packages=[
