@@ -6,6 +6,7 @@ Literate and modular Doom Emacs configuration.
 - [[#about][About]]
 - [[#tangle][Tangle]]
 - [[#helpers][Helpers]]
+  - [[#environment][Environment]]
   - [[#windows-browser-in-wsl][Windows browser in wsl]]
   - [[#shortcuts][Shortcuts]]
   - [[#window][Window]]
@@ -177,6 +178,15 @@ Package declarations are tangled into [[file:packages.toml]].
 #+PROPERTY: header-args:toml :tangle packages.toml
 
 * Helpers
+** Environment
+Load shared paths and expand environment-variable references such as =${HOME}=.
+#+begin_src emacs-lisp
+(with-temp-buffer
+  (insert-file-contents "~/.config/environment.d/20-agent-homes.conf")
+  (while (re-search-forward "^\\([A-Za-z_][A-Za-z0-9_]*\\)=\\(.*\\)$" nil t)
+    (setenv (match-string 1) (match-string 2) t)))
+#+end_src
+
 ** Windows browser in wsl
 Links open in the host =LibreWolf= (=librewolf.exe= through the =~/.local/bin=
 symlink), handed over from a drive directory: from a WSL share the browser drops
@@ -1370,7 +1380,6 @@ packages=[
               ("C-<return>" . agent-shell-submit)
               ("S-<return>" . newline))
   :init
-  (setenv "CODEX_HOME" (expand-file-name "~/.local/share/codex"))
   ;; WSL may lack a logind session for system-sleep's D-Bus request.
   (when (featurep :system 'wsl)
     (setq agent-shell-inhibit-system-sleep nil))
@@ -1464,7 +1473,6 @@ config keeps one session record and one trusted path instead of one per session.
 #+begin_src emacs-lisp
 (use-package! claude-code-ide
   :init
-  (setenv "CLAUDE_CONFIG_DIR" (expand-file-name "~/.local/share/claude"))
   ;; Use ghostel (libghostty-vt) as the terminal backend instead of the
   ;; default vterm.  Valid values: 'vterm, 'eat, 'ghostel.
   (setq claude-code-ide-terminal-backend 'ghostel)
