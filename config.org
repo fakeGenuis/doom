@@ -1387,9 +1387,10 @@ packages=[
         agent-shell-header-style 'text
         agent-shell-session-restore-verbosity 'full
         agent-shell-display-action
-        '((display-buffer-in-side-window)
-          (side . right)
-          (window-width . 0.45)))
+        '((display-buffer-in-direction)
+          (direction . right)
+          (window . root)
+          (window-width . 0.4)))
 
   ;; codex-acp currently advertises every discovered skill as an available
   ;; command without respecting its enabled state, so disabled or remote-plugin
@@ -1414,18 +1415,6 @@ packages=[
                           (let ((server (emcp-start emcp-default-profile)))
                             (emcp-server-url server))))))
   )
-#+end_src
-
-#+begin_src emacs-lisp
-(defun +my/agent-shell-quiet-input-h ()
-  "Disable Corfu and suppress redisplay messages in agent-shell buffers."
-  (setq-local inhibit-message t
-              message-log-max nil)
-  (when (fboundp 'corfu-mode)
-    (corfu-mode -1)))
-
-;; Side effect: agent-shell will not show or log ordinary minibuffer messages.
-(add-hook 'agent-shell-mode-hook #'+my/agent-shell-quiet-input-h 90)
 #+end_src
 
 #+begin_src emacs-lisp
