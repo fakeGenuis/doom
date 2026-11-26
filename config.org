@@ -1017,6 +1017,32 @@ Cap text previews at 128 KB and skip that scan in previews only.
   (setq dirvish-binary-exts (remove "pdf" dirvish-binary-exts)))
 #+end_src
 
+Disable remote TRAMP preview for binary and disabled file types in Dirvish,
+showing a notice in the preview pane instead.
+
+- [ ] Add a custom remote image preview dispatcher over =tramp-rpc= (fetch into
+  =dirvish-cache-dir= with a size cap and render via =create-image=).
+
+#+begin_src emacs-lisp
+(defun +my/dirvish-tramp-skip-binary-preview-a (fn file ext preview-window dv)
+  "Show a notice instead of previewing remote binary/disabled files in Dirvish."
+  (let ((msg (cond
+              ((member ext dirvish-preview-disabled-exts)
+               (format "Preview for filetype [ %s ] has been disabled" ext))
+              ((or (member ext dirvish-binary-exts)
+                   (member ext '("pdf" "gz" "bz2" "zst" "so" "o" "pyc" "docx" "xlsx" "pptx")))
+               (format "Preview disabled for binary files [ %s ]" ext)))))
+    (if msg
+        (progn
+          (when-let* ((proc (get-buffer-process (dirvish--special-buffer 'preview dv t))))
+            (delete-process proc))
+          `(info . ,msg))
+      (funcall fn file ext preview-window dv))))
+
+(after! dirvish-tramp
+  (advice-add 'dirvish-tramp-dp :around #'+my/dirvish-tramp-skip-binary-preview-a))
+#+end_src
+
 Replace =/home/$user= to =~=
 #+begin_src emacs-lisp
 (defun +my/home-to-tilde (file)
