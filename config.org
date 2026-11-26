@@ -623,21 +623,19 @@ to use =doom/reload-font= later to enable proper color emoji display.
 #+end_src
 
 *** fallback for Latin Extended-B
-Maple6 NF has no glyphs at all in Latin Extended-B (U+0180–024F); the florin =ƒ=
-is the one that shows up first, falling back to a proportional font and breaking
-the monospace grid. The whole range goes to Adwaita Mono (=adwaita-fonts=), which
-is monospaced and exactly one cell wide.
-
-=nil= is the frame's own fontset (=t= has no effect on it), and tty frames have
-to be skipped or a daemon's tty frame makes =set-fontset-font= error.
+Adds a frame-local Adwaita Mono fallback for Latin Extended-B glyphs missing
+from Maple6 NF, skips TTY frames, and reapplies it on new frames or font
+changes.
 
 #+begin_src emacs-lisp
 (defun +my/latin-ext-b-font (&rest _)
   (dolist (frame (frame-list))
     (when (display-graphic-p frame)
-      (set-fontset-font nil '(#x0180 . #x024f) "Adwaita Mono" frame))))
+      (set-fontset-font nil '(#x0180 . #x024f)
+                        (font-spec :family "Adwaita Mono") frame))))
 
-(add-hook 'after-setting-font-hook #'+my/latin-ext-b-font)
+(add-hook 'after-setting-font-hook #'+my/latin-ext-b-font 90)
+(add-hook 'after-make-frame-functions #'+my/latin-ext-b-font 90)
 #+end_src
 
 ** rainbow-mode
