@@ -1379,6 +1379,8 @@ packages=[
   :recipe (:host github :repo "zackattackz/agent-shell-notifications"))
 (package! agent-shell-org-transcript
   :recipe (:host github :repo "lllShamanlll/agent-shell-org-transcript"))
+(package! agent-shell-tramp
+  :recipe (:host github :repo "junyi-hou/agent-shell-tramp"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1448,6 +1450,13 @@ packages=[
   :config
   (setq agent-shell-org-transcript-directory
       "~/.local/share/agent-shell/transcripts/"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! agent-shell-tramp
+  :after (tramp agent-shell)
+  :config
+  (agent-shell-tramp-mode 1))
 #+end_src
 
 *** claude code ide
