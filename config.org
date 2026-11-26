@@ -1319,15 +1319,6 @@ If the last line at END starts with '** ', exclude it from shifting."
 
 *** Tools Collection
 [[https://github.com/karthink/gptel/wiki/Tools-collection][Tools collection · karthink/gptel Wik...]]
-#+begin_src emacs-lisp :tangle packages.el
-(package! gptel-got
-  :recipe (:host nil
-           :repo "https://git.bajsicki.com/phil/gptel-got"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package gptel-got :after gptel)
-#+end_src
 
 =codel= have merged into this =llm-tool-collection= fork. see [[https://github.com/ultronozm/codel.el/issues/2][ultronozm/codel.el#2 Errors with gpte...]]
 #+begin_src emacs-lisp :tangle packages.el
