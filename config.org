@@ -911,7 +911,8 @@ Non-empty directories are deleted recursively after confirmation."
   (map! :map dired-mode-map
         :n "e" #'dired-create-empty-file
         :n "X" #'+my/dired-delete-permanently
-        :n "." #'dired-omit-mode))
+        :n "." #'dired-omit-mode
+        :n "RET" #'dired-view-file))
 
 (after! dired-x
   ;; Make dired-omit-mode hide all "dotfiles"
@@ -1001,8 +1002,9 @@ Cap text previews at 128 KB and skip that scan in previews only.
 
 #+begin_src emacs-lisp
 (defun dirvish-open-binaries-externally (file fn)
-  "When FN is not `dired', open binary FILE externally."
+  "When FN is not `dired', open local binary FILE externally."
   (when-let* (((not (eq fn 'dired)))
+              ((not (file-remote-p file)))
               ((file-exists-p file))
               ((not (file-directory-p file)))
               ((member (downcase (or (file-name-extension file) ""))
@@ -1105,6 +1107,7 @@ tramp
 (use-package tramp-rpc
   :after tramp
   :config
+  (setq tramp-rpc-deploy-git-build-policy 'release)
   ;; Local cache directory (default: ~/.emacs.d/tramp-rpc/)
   (setq tramp-rpc-deploy-local-cache-directory "~/.cache/tramp-rpc-binaries")
   ;; Remote installation directory (default: ~/.cache/tramp-rpc)
