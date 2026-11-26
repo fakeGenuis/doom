@@ -1061,19 +1061,6 @@ xdg-mime default dirvish.desktop inode/directory
 tramp
 #+end_src
 
-[[https://github.com/alexluigit/dirvish/blob/main/docs/CUSTOMIZING.org#tramp-integration][dirvish/docs/CUSTOMIZING.org at main]]
-#+begin_src emacs-lisp
-(with-eval-after-load 'tramp
-  ;; Enable full-featured Dirvish over TRAMP on ssh connections
-  ;; https://www.gnu.org/software/tramp/#Improving-performance-of-asynchronous-remote-processes
-  (connection-local-set-profile-variables
-   'remote-direct-async-process
-   '((tramp-direct-async-process . t)))
-  (connection-local-set-profiles
-   '(:application tramp :protocol "rpc")
-   'remote-direct-async-process))
-#+end_src
-
 *** tramp-rpc
 [[https://github.com/ArthurHeymans/emacs-tramp-rpc][GitHub - ArthurHeymans/emacs-tramp-rpc]]
 
@@ -1097,12 +1084,6 @@ tramp
   ;; Remote installation directory (default: ~/.cache/tramp-rpc)
   (setq tramp-rpc-deploy-remote-directory "~/.local/bin/tramp-rpc"))
 #+end_src
-
-File preview is not supported in this connection.
-1. Please check if you have GNU ls installed over remote host.
-2. Adjust your `direct-async' tramp settings, for example:
-
-See (info "(tramp) Improving performance of asynchronous remote processes") for details.
 
 * Term
 ** ghostel
